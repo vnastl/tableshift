@@ -165,7 +165,36 @@ COLLEGE_SCORECARD_FEATURES = FeatureList(features=[
                 na_values=('PrivacySuppressed',)),
 ])
 
+COLLEGE_SCORECARD_FEATURES_CAUSAL = FeatureList(features=[
+        Feature('C150_4', int, is_target=True,
+                name_extended="Completion rate for first-time, full-time "
+                              "students at four-year institutions (150% of "
+                              "expected time to completion/6 years)"),
+        Feature('AccredAgency', cat_dtype, name_extended='Accreditor for institution'),
+        Feature('HIGHDEG', cat_dtype, name_extended='Highest degree awarded',
+                value_mapping={
+                        0: "Non-degree-granting",
+                        1: "Certificate degree",
+                        2: "Associate degree",
+                        3: "Bachelor's degree",
+                        4: "Graduate degree"}),
+        Feature('CONTROL', cat_dtype, name_extended='Control of institution'),
+        Feature('region', cat_dtype, name_extended='Region (IPEDS)'),
+        Feature('LOCALE', cat_dtype, name_extended='Locale of institution'),
+        Feature('locale2', float, name_extended='Degree of urbanization of institution'),
+        Feature('CCBASIC', cat_dtype, name_extended='Carnegie Classification -- basic'),
+        Feature('CCSIZSET', cat_dtype, name_extended='Carnegie Classification -- size and setting'),
+        Feature('HBCU', cat_dtype, name_extended='Flag for Historically Black College and University'),
+        Feature('DISTANCEONLY', cat_dtype, name_extended='Flag for distance-education-only education'),
+        Feature('TUITIONFEE_IN', float, name_extended='In-state tuition and fees'),
+        Feature('TUITIONFEE_OUT', float, name_extended='Out-of-state tuition and fees'),
+        Feature('TUITIONFEE_PROG', float, name_extended='Tuition and fees for program-year institutions'),
+])
 
 def preprocess_college_scorecard(df:pd.DataFrame)->pd.DataFrame:
         df[COLLEGE_SCORECARD_FEATURES.target] = (df[COLLEGE_SCORECARD_FEATURES.target] > 0.5).astype(int)
         return df
+
+# def preprocess_college_scorecard_causal(df:pd.DataFrame)->pd.DataFrame:
+#         df[COLLEGE_SCORECARD_FEATURES_CAUSAL.target] = (df[COLLEGE_SCORECARD_FEATURES_CAUSAL.target] > 0.5).astype(int)
+#         return df

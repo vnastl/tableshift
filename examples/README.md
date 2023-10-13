@@ -71,20 +71,20 @@ To train a model, you need to use the correct identifier as an argument to the `
 | Distributionally Robust Optimization (DRO) | `dro`             |
 | Domain MixUp                               | `mixup`           |
 | Domain Adversarial Neural Networks         | `dann`            |
-| FT-Transformer                             | `ft_transformer`  |
+| ! FT-Transformer                           | `ft_transformer`  |
 | Group DRO (domains as 'groups')            | `group_dro`       |
 | Group DRO (labels/classes as 'groups')     | `label_group_dro` |
-| HistGBM                                    | `histgbm`         |
+| ! HistGBM                                  | `histgbm`         |
 | Invariant Risk Minimization                | `irm`             |
-| LightGBM                                   | `lightgbm`        |
-| Maximum Mean Discrepancy (MMD)             | `mmd`             |
-| MLP                                        | `mlp`             |
-| Neural Oblivious Decision Ensembles (NODE) | `node`            |
+| ! LightGBM                                 | `lightgbm`        |
+| ! Maximum Mean Discrepancy (MMD)           | `mmd`             |
+| ! MLP                                      | `mlp`             |
+| ! Neural Oblivious Decision Ensembles (NODE| `node`            |
 | Risk Extrapolation (V-REx)                 | `vrex`            |
-| SAINT                                      | `saint`           |
-| TabTransformer                             | `tabtransformer`  |
-| Tabular ResNet                             | `resnet`          |
-| XGBoost                                    | `xgb`             |
+| ! SAINT                                    | `saint`           |
+| !TabTransformer                            | `tabtransformer`  |
+| ! Tabular ResNet                           | `resnet`          |
+| ! XGBoost                                  | `xgb`             |
 
 For details on each model, see the paper; implementations for each model are in the `tableshift.models` module.
 

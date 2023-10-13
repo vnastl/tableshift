@@ -244,6 +244,37 @@ BENCHMARK_CONFIGS = {
         ),
         tabular_dataset_kwargs={},
     ),
+    
+    "college_scorecard_causal": ExperimentConfig(
+        splitter=DomainSplitter(val_size=DEFAULT_ID_VAL_SIZE,
+                                ood_val_size=DEFAULT_OOD_VAL_SIZE,
+                                random_state=DEFAULT_RANDOM_STATE,
+                                id_test_size=DEFAULT_ID_TEST_SIZE,
+                                domain_split_varname='CCBASIC',
+                                domain_split_ood_values=[
+                                    'Special Focus Institutions--Other special-focus institutions',
+                                    'Special Focus Institutions--Theological seminaries, Bible colleges, and other faith-related institutions',
+                                    "Associate's--Private For-profit 4-year Primarily Associate's",
+                                    'Baccalaureate Colleges--Diverse Fields',
+                                    'Special Focus Institutions--Schools of art, music, and design',
+                                    "Associate's--Private Not-for-profit",
+                                    "Baccalaureate/Associate's Colleges",
+                                    "Master's Colleges and Universities (larger programs)"]
+                                ),
+        grouper=None,
+        preprocessor_config=PreprocessorConfig(
+            # Several categorical features in college scorecard have > 10k
+            # unique values; so we label-encode instead of one-hot encoding.
+            categorical_features="label_encode",
+            # Some important numeric features are not reported by universities
+            # in a way that could be systematic (and we would like these included
+            # in the sample, not excluded), so we use kbins
+            numeric_features="kbins",
+            n_bins=100,
+            dropna=None,
+        ),
+        tabular_dataset_kwargs={},
+    ),
 
     "nhanes_lead": ExperimentConfig(
         splitter=DomainSplitter(val_size=DEFAULT_ID_VAL_SIZE,

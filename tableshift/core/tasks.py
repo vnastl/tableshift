@@ -217,6 +217,8 @@ _TASK_REGISTRY = {
         TaskConfig(AdFraudDataSource, AD_FRAUD_FEATURES),
     'college_scorecard':
         TaskConfig(CollegeScorecardDataSource, COLLEGE_SCORECARD_FEATURES),
+    'college_scorecard_causal':
+        TaskConfig(CollegeScorecardDataSource, COLLEGE_SCORECARD_FEATURES_CAUSAL),
 }
 
 
