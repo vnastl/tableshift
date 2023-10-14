@@ -22,13 +22,11 @@ logging.basicConfig(
     datefmt='%Y-%m-%d %H:%M:%S')
 
 
-def main(experiment, cache_dir, model, debug: bool):
+def main(experiment, dset, model, debug: bool):
     if debug:
         print("[INFO] running in debug mode.")
         experiment = "_debug"
 
-    dset = get_dataset(experiment, cache_dir)
-    X, y, _, _ = dset.get_pandas("train")
     config = get_default_config(model, dset)
     estimator = get_estimator(model, **config)
     estimator = train(estimator, dset, config=config)
@@ -46,7 +44,8 @@ def main(experiment, cache_dir, model, debug: bool):
             evaluation[test_split] = acc
             nobs = len(y_te)
             count = nobs*acc
-            acc_conf = proportion_confint(count, nobs, alpha=0.05, method='normal')
+            # beta : Clopper-Pearson interval based on Beta distribution
+            acc_conf = proportion_confint(count, nobs, alpha=0.05, method='beta')
             evaluation[test_split + "_conf"] = acc_conf
             print(f"training completed! {test_split} accuracy: {acc:.4f}")
             # Open a file in write mode
@@ -59,6 +58,19 @@ def main(experiment, cache_dir, model, debug: bool):
     else:
         # Case: pytorch estimator; eval is already performed + printed by train().
         print("training completed!")
+        with open(f'tableshift/experiments_vnastl/{experiment}/{model}_eval.json', 'w') as f:
+            # Use json.dump to write the dictionary into the file
+            evaluation = estimator.fit_metrics
+            for test_split in ["id_test","ood_test"]:
+                # Fetch predictions and labels for a sklearn model.
+                X_te, y_te, _, _ = dset.get_pandas(test_split)
+                nobs = len(y_te)
+                acc = evaluation[test_split]
+                count = nobs*acc
+                acc_conf = proportion_confint(count, nobs, alpha=0.05, method='beta')
+                evaluation[test_split + "_conf"] = acc_conf
+            evaluation["features"] = dset.predictors
+            json.dump(evaluation, f)
     return
 
 if __name__ == "__main__":
@@ -75,31 +87,32 @@ if __name__ == "__main__":
     #                     help="model to use.")
     # args = parser.parse_args()
     # main(**vars(args))
-    models = [
-        "ft_transformer",
-        "histgbm",
-        "lightgbm",
-        "mmd",
-        "mlp",
-        "node",
-        "saint",
-        "tabtransformer",
-        "resnet",
-        "xgb",
-        ]
-    for model in models:
-        main(experiment="college_scorecard",cache_dir="tmp",model=model,debug=False)
-        main(experiment="college_scorecard_causal",cache_dir="tmp",model=model,debug=False)
-    
-    models = [
-        "aldro",
-        "deepcoral",
-        "dro",
-        "mixup",
-        "dann",
-        "group_dro",
-        "label_group_dro",
-        "irm",
-        "vrex",
-        ]
+    experiments=["college_scorecard","college_scorecard_causal"]
+    cache_dir="tmp"
 
+    for experiment in experiments:
+        dset = get_dataset(experiment, cache_dir)
+        X, y, _, _ = dset.get_pandas("train")
+        models = [
+            "ft_transformer",
+            "histgbm",
+            "mlp",
+            "node",
+            "saint",
+            "tabtransformer",
+            "resnet",
+            "xgb",
+            # "mixup",
+            # "dann",
+            "group_dro",
+            "label_group_dro",
+            # "irm",
+            # "vrex",
+            "aldro",
+            "dro",
+            # "mmd",
+            # "lightgbm",
+            # "deepcoral"
+            ]
+        for model in models:
+            main(experiment=experiment,dset=dset,model=model,debug=False)

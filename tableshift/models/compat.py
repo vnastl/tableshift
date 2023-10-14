@@ -110,7 +110,7 @@ class SklearnStylePytorchModel(ABC, nn.Module):
                                checkpoint=checkpoint)
 
             fit_metrics = append_by_key(from_dict=metrics, to_dict=fit_metrics)
-
+            self.fit_metrics = metrics
         return fit_metrics
 
 
