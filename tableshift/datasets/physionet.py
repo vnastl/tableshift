@@ -13,6 +13,9 @@ import pandas as pd
 
 from tableshift.core.features import Feature, FeatureList, cat_dtype
 
+################################################################################
+# Feature list
+################################################################################
 PHYSIONET_FEATURES = FeatureList(features=[
     Feature("HR", float, name_extended="Heart rate (in beats per minute)"),
     Feature("O2Sat", float, name_extended="Pulse oximetry (%)"),
@@ -76,6 +79,47 @@ PHYSIONET_FEATURES = FeatureList(features=[
     Feature("set", cat_dtype,
             "The training set (i..e hospital) from which an example is drawn "
             "unique (values: 'a', 'b').")
+], documentation="https://physionet.org/content/challenge-2019/1.0.0"
+                 "/physionet_challenge_2019_ccm_manuscript.pdf")
+
+################################################################################
+# Causal feature list
+################################################################################
+PHYSIONET_FEATURES_CAUSAL = FeatureList(features=[
+    Feature("Age", int, name_extended="Age (years)"),
+    Feature("Gender", int, name_extended="Female (0) or male (1)"),
+    Feature("Unit1", int,
+            name_extended="Administrative identifier for ICU unit (MICU); "
+                          "false (0) or true (1)"),
+    Feature("Unit2", int,
+            name_extended="Administrative identifier for ICU unit (SICU); "
+                          "false (0) or true (1)"),
+    Feature("HospAdmTime", float,
+            name_extended="Time between hospital and ICU admission ("
+                          "hours since ICU admission)"),
+    Feature("ICULOS", float,
+            name_extended="ICU length of stay (hours since ICU admission)"),
+    Feature("SepsisLabel", int,
+            name_extended="For septic patients, SepsisLabel is 1 if t ≥ "
+                          "t_sepsis − 6 and 0 if t < t_sepsis − 6. For "
+                          "non-septic patients, SepsisLabel is 0.",
+            is_target=True),
+], documentation="https://physionet.org/content/challenge-2019/1.0.0"
+                 "/physionet_challenge_2019_ccm_manuscript.pdf")
+
+PHYSIONET_FEATURES_ANTICAUSAL = FeatureList(features=[
+    Feature("Temp", float, name_extended="Temperature (deg C)"),
+    Feature("WBC", float, name_extended="Leukocyte count (count/L)"),
+    Feature("Fibrinogen", float,
+            name_extended="Fibrinogen concentration (mg/dL)"),
+    Feature("Platelets", float, name_extended="Platelet count (count/mL)"),
+    Feature("ICULOS", float,
+            name_extended="ICU length of stay (hours since ICU admission)"),
+    Feature("SepsisLabel", int,
+            name_extended="For septic patients, SepsisLabel is 1 if t ≥ "
+                          "t_sepsis − 6 and 0 if t < t_sepsis − 6. For "
+                          "non-septic patients, SepsisLabel is 0.",
+            is_target=True),
 ], documentation="https://physionet.org/content/challenge-2019/1.0.0"
                  "/physionet_challenge_2019_ccm_manuscript.pdf")
 

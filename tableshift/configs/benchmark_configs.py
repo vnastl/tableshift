@@ -71,6 +71,36 @@ BENCHMARK_CONFIGS = {
         grouper=Grouper({"RAC1P": [1, ], "SEX": [1, ]}, drop=False),
         preprocessor_config=PreprocessorConfig(),
         tabular_dataset_kwargs={"acs_task": "acsunemployment"}),
+    
+    "acsunemployment_causal": ExperimentConfig(
+        splitter=DomainSplitter(val_size=DEFAULT_ID_VAL_SIZE,
+                                ood_val_size=DEFAULT_OOD_VAL_SIZE,
+                                random_state=DEFAULT_RANDOM_STATE,
+                                id_test_size=DEFAULT_ID_TEST_SIZE,
+                                domain_split_varname='SCHL',
+                                # No high school diploma vs. GED/diploma or higher.
+                                domain_split_ood_values=['01', '02', '03', '04',
+                                                         '05', '06', '07', '08',
+                                                         '09', '10', '11', '12',
+                                                         '13', '14', '15']),
+        grouper=Grouper({"RAC1P": [1, ], "SEX": [1, ]}, drop=False),
+        preprocessor_config=PreprocessorConfig(),
+        tabular_dataset_kwargs={"acs_task": "acsunemployment"}),
+
+    "acsunemployment_anticausal": ExperimentConfig(
+        splitter=DomainSplitter(val_size=DEFAULT_ID_VAL_SIZE,
+                                ood_val_size=DEFAULT_OOD_VAL_SIZE,
+                                random_state=DEFAULT_RANDOM_STATE,
+                                id_test_size=DEFAULT_ID_TEST_SIZE,
+                                domain_split_varname='SCHL',
+                                # No high school diploma vs. GED/diploma or higher.
+                                domain_split_ood_values=['01', '02', '03', '04',
+                                                         '05', '06', '07', '08',
+                                                         '09', '10', '11', '12',
+                                                         '13', '14', '15']),
+        grouper=None,
+        preprocessor_config=PreprocessorConfig(),
+        tabular_dataset_kwargs={"acs_task": "acsunemployment"}),
 
     # ANES, Split by region; OOD is south: (AL, AR, DE, D.C., FL, GA, KY, LA,
     # MD, MS, NC, OK, SC,TN, TX, VA, WV)
@@ -293,6 +323,30 @@ BENCHMARK_CONFIGS = {
 
     # LOS >= 47 is roughly the 80th %ile of data.
     "physionet": ExperimentConfig(
+        splitter=DomainSplitter(val_size=DEFAULT_ID_VAL_SIZE,
+                                ood_val_size=DEFAULT_OOD_VAL_SIZE,
+                                random_state=DEFAULT_RANDOM_STATE,
+                                id_test_size=DEFAULT_ID_TEST_SIZE,
+                                domain_split_varname='ICULOS',
+                                domain_split_gt_thresh=47.0),
+        grouper=None,
+        preprocessor_config=PreprocessorConfig(numeric_features="kbins",
+                                               dropna=None),
+        tabular_dataset_kwargs={"name": "physionet"}),
+
+    "physionet_causal": ExperimentConfig(
+        splitter=DomainSplitter(val_size=DEFAULT_ID_VAL_SIZE,
+                                ood_val_size=DEFAULT_OOD_VAL_SIZE,
+                                random_state=DEFAULT_RANDOM_STATE,
+                                id_test_size=DEFAULT_ID_TEST_SIZE,
+                                domain_split_varname='ICULOS',
+                                domain_split_gt_thresh=47.0),
+        grouper=None,
+        preprocessor_config=PreprocessorConfig(numeric_features="kbins",
+                                               dropna=None),
+        tabular_dataset_kwargs={"name": "physionet"}),
+
+    "physionet_anticausal": ExperimentConfig(
         splitter=DomainSplitter(val_size=DEFAULT_ID_VAL_SIZE,
                                 ood_val_size=DEFAULT_OOD_VAL_SIZE,
                                 random_state=DEFAULT_RANDOM_STATE,

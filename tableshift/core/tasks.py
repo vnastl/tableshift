@@ -41,6 +41,12 @@ _TASK_REGISTRY = {
     "acsunemployment":
         TaskConfig(ACSDataSource,
                    ACS_UNEMPLOYMENT_FEATURES + ACS_SHARED_FEATURES),
+    "acsunemployment_causal":
+        TaskConfig(ACSDataSource,
+                   ACS_UNEMPLOYMENT_FEATURES_CAUSAL),
+    "acsunemployment_anticausal":
+        TaskConfig(ACSDataSource,
+                   ACS_UNEMPLOYMENT_FEATURES_ANTICAUSAL),
     "adult":
         TaskConfig(AdultDataSource, ADULT_FEATURES),
     "anes":
@@ -106,6 +112,10 @@ _TASK_REGISTRY = {
                    NHANES_LEAD_FEATURES),
     "physionet":
         TaskConfig(PhysioNetDataSource, PHYSIONET_FEATURES),
+    "physionet_causal":
+        TaskConfig(PhysioNetDataSource, PHYSIONET_FEATURES_CAUSAL),
+    "physionet_anticausal":
+        TaskConfig(PhysioNetDataSource, PHYSIONET_FEATURES_ANTICAUSAL),
     "electricity":
         TaskConfig(GrinstajnHFDataSource, ELECTRICITY_FEATURES),
     "bank-marketing":

@@ -11,6 +11,9 @@ For more information on datasets and access in TableShift, see:
 import pandas as pd
 from tableshift.core.features import Feature, FeatureList, cat_dtype
 
+################################################################################
+# Feature list
+################################################################################
 COLLEGE_SCORECARD_FEATURES = FeatureList(features=[
         Feature('C150_4', int, is_target=True,
                 name_extended="Completion rate for first-time, full-time "
@@ -165,6 +168,9 @@ COLLEGE_SCORECARD_FEATURES = FeatureList(features=[
                 na_values=('PrivacySuppressed',)),
 ])
 
+################################################################################
+# Causal feature list
+################################################################################
 COLLEGE_SCORECARD_FEATURES_CAUSAL = FeatureList(features=[
         Feature('C150_4', int, is_target=True,
                 name_extended="Completion rate for first-time, full-time "
@@ -183,12 +189,12 @@ COLLEGE_SCORECARD_FEATURES_CAUSAL = FeatureList(features=[
         Feature('LOCALE', cat_dtype, name_extended='Locale of institution'),
         Feature('locale2', float, name_extended='Degree of urbanization of institution'),
         Feature('CCBASIC', cat_dtype, name_extended='Carnegie Classification -- basic'),
-        Feature('CCSIZSET', cat_dtype, name_extended='Carnegie Classification -- size and setting'),
+        # Feature('CCSIZSET', cat_dtype, name_extended='Carnegie Classification -- size and setting'),
         Feature('HBCU', cat_dtype, name_extended='Flag for Historically Black College and University'),
         Feature('DISTANCEONLY', cat_dtype, name_extended='Flag for distance-education-only education'),
-        Feature('TUITIONFEE_IN', float, name_extended='In-state tuition and fees'),
-        Feature('TUITIONFEE_OUT', float, name_extended='Out-of-state tuition and fees'),
-        Feature('TUITIONFEE_PROG', float, name_extended='Tuition and fees for program-year institutions'),
+        # Feature('TUITIONFEE_IN', float, name_extended='In-state tuition and fees'),
+        # Feature('TUITIONFEE_OUT', float, name_extended='Out-of-state tuition and fees'),
+        # Feature('TUITIONFEE_PROG', float, name_extended='Tuition and fees for program-year institutions'),
 ])
 
 def preprocess_college_scorecard(df:pd.DataFrame)->pd.DataFrame:

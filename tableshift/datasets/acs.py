@@ -431,6 +431,124 @@ ACS_FOODSTAMPS_FEATURES = FeatureList(features=[
                   "/pums/data_dict/PUMS_Data_Dictionary_2019.pdf"
 )
 
+################################################################################
+# Causal feature lists
+################################################################################
+
+ACS_UNEMPLOYMENT_FEATURES_CAUSAL = FeatureList(features=[
+    Feature('ESR', int, "Employment status (is unemployed)", is_target=True),
+    Feature('SCHL', cat_dtype, "Educational attainment",
+            name_extended="Educational attainment",
+            value_mapping={
+                np.nan: 'NA (less than 3 years old)',
+                1: 'No schooling completed',
+                2: 'Nursery school, preschool',
+                3: 'Kindergarten',
+                4: 'Grade 1',
+                5: 'Grade 2',
+                6: 'Grade 3',
+                7: 'Grade 4',
+                8: 'Grade 5',
+                9: 'Grade 6',
+                10: 'Grade 7',
+                11: 'Grade 8',
+                12: 'Grade 9',
+                13: 'Grade 10',
+                14: 'Grade 11',
+                15: '12th grade - no diploma',
+                16: 'Regular high school diploma',
+                17: 'GED or alternative credential',
+                18: 'Some college, but less than 1 year',
+                19: '1 or more years of college credit, no degree',
+                20: "Associate's degree",
+                21: "Bachelor's degree",
+                22: "Master's degree",
+                23: "Professional degree beyond a bachelor's degree",
+                24: 'Doctorate degree',
+            }),
+    Feature('AGEP', int, "Age", name_extended='age in years'),
+    Feature('SEX', int, "Sex",
+            name_extended='sex',
+            value_mapping={
+                1: "Male", 2: "Female",
+            }),
+    Feature('RAC1P', int, """Recoded detailed race code""",
+            name_extended='race',
+            value_mapping={
+                1: 'White alone',
+                2: 'Black or African American alone',
+                3: 'American Indian alone',
+                4: 'Alaska Native alone',
+                5: 'American Indian and Alaska Native tribes specified; or'
+                   ' American Indian or Alaska Native, not specified and '
+                   'no other races',
+                6: 'Asian alone',
+                7: 'Native Hawaiian and Other Pacific Islander alone',
+                8: 'Some Other Race alone',
+                9: 'Two or More Races'}),
+    Feature('ACS_YEAR', int, 'Derived feature for ACS year.',
+            name_extended='Year of survey'),
+    POBP_FEATURE,
+    DIS_FEATURE,
+    ANC_FEATURE,
+    NATIVITY_FEATURE,
+    DEAR_FEATURE,
+    DEYE_FEATURE,
+    DREM_FEATURE,
+    Feature('DPHY', cat_dtype, "Ambulatory difficulty",
+            name_extended="Ambulatory difficulty",
+            value_mapping={'00': 'N/A (Less than 5 years old)',
+                           '01': 'Yes',
+                           '02': 'No', }),
+],
+    documentation="https://www2.census.gov/programs-surveys/acs/tech_docs"
+                  "/pums/data_dict/PUMS_Data_Dictionary_2019.pdf"
+)
+
+ACS_UNEMPLOYMENT_FEATURES_ANTICAUSAL = FeatureList(features=[
+    Feature('ESR', int, "Employment status (is unemployed)", is_target=True),
+    Feature('SCHL', cat_dtype, "Educational attainment",
+            name_extended="Educational attainment",
+            value_mapping={
+                np.nan: 'NA (less than 3 years old)',
+                1: 'No schooling completed',
+                2: 'Nursery school, preschool',
+                3: 'Kindergarten',
+                4: 'Grade 1',
+                5: 'Grade 2',
+                6: 'Grade 3',
+                7: 'Grade 4',
+                8: 'Grade 5',
+                9: 'Grade 6',
+                10: 'Grade 7',
+                11: 'Grade 8',
+                12: 'Grade 9',
+                13: 'Grade 10',
+                14: 'Grade 11',
+                15: '12th grade - no diploma',
+                16: 'Regular high school diploma',
+                17: 'GED or alternative credential',
+                18: 'Some college, but less than 1 year',
+                19: '1 or more years of college credit, no degree',
+                20: "Associate's degree",
+                21: "Bachelor's degree",
+                22: "Master's degree",
+                23: "Professional degree beyond a bachelor's degree",
+                24: 'Doctorate degree',
+            }),
+    WKHP_FEATURE,
+    Feature('WKW', int, "Weeks worked during past 12 months",
+            name_extended="Weeks worked during past 12 months"),
+    Feature('WRK', cat_dtype, "Worked last week",
+            name_extended="Worked last week",
+            value_mapping={
+                '00': 'N/A (not reported',
+                '01': 'Worked',
+                '02': 'Did not work'}),
+],
+    documentation="https://www2.census.gov/programs-surveys/acs/tech_docs"
+                  "/pums/data_dict/PUMS_Data_Dictionary_2019.pdf"
+)
 
 ################################################################################
 # Preprocessing functions
@@ -583,7 +701,26 @@ ACS_TASK_CONFIGS = frozendict.frozendict({
         'target': 'FS',
         'target_transform': foodstamps_target_transform,
         'threshold': None,
-    })
+    }),
+    # causal features
+    'unemployment_causal': ACSTaskConfig(**{
+        'features_to_use': ACS_UNEMPLOYMENT_FEATURES_CAUSAL,
+        'group_transform': default_acs_group_transform,
+        'postprocess': default_acs_postprocess,
+        'preprocess': unemployment_filter,
+        'target': 'ESR',
+        'target_transform': unemployment_target_transform,
+        'threshold': None,
+    }),
+    'unemployment_anticausal': ACSTaskConfig(**{
+        'features_to_use': ACS_UNEMPLOYMENT_FEATURES_CAUSAL,
+        'group_transform': default_acs_group_transform,
+        'postprocess': default_acs_postprocess,
+        'preprocess': unemployment_filter,
+        'target': 'ESR',
+        'target_transform': unemployment_target_transform,
+        'threshold': None,
+    }),
 })
 
 

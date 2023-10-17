@@ -577,6 +577,7 @@ class Preprocessor:
         passthrough_columns = self.get_passthrough_columns(
             data,
             passthrough_columns,
+            domain_label_colname=domain_label_colname,
             target_colname=target_colname)
 
         # All non-domain label passthrough columns will be cast to their
