@@ -49,7 +49,7 @@ def main(experiment, dset, model, debug: bool):
             evaluation[test_split + "_conf"] = acc_conf
             print(f"training completed! {test_split} accuracy: {acc:.4f}")
             # Open a file in write mode
-            with open(f'tableshift/experiments_vnastl/{experiment}/{model}_eval.json', 'w') as f:
+            with open(f'experiments_vnastl/{experiment}/{model}_eval.json', 'w') as f:
                 # Use json.dump to write the dictionary into the file
                 evaluation["features"] = dset.predictors
                 json.dump(evaluation, f)
@@ -58,7 +58,7 @@ def main(experiment, dset, model, debug: bool):
     else:
         # Case: pytorch estimator; eval is already performed + printed by train().
         print("training completed!")
-        with open(f'tableshift/experiments_vnastl/{experiment}/{model}_eval.json', 'w') as f:
+        with open(f'experiments_vnastl/{experiment}/{model}_eval.json', 'w') as f:
             # Use json.dump to write the dictionary into the file
             evaluation = estimator.fit_metrics
             for test_split in ["id_test","ood_test"]:
@@ -89,27 +89,29 @@ if __name__ == "__main__":
     # main(**vars(args))
 
     # experiments=["college_scorecard","college_scorecard_causal"]
+    # experiments=["college_scorecard_causal"]
     # experiments = ["acsunemployment","acsunemployment_causal", "acsunemployment_anticausal"] 
-    experiments = ["physionet"]
+    # experiments = ["physionet"]
+    experiments = ["physionet_causal", "physionet_anticausal"]
     cache_dir="tmp"
 
-    # for experiment in experiments:
-    #     dset = get_dataset(experiment, cache_dir)
-    #     X, y, _, _ = dset.get_pandas("train")
-    #     models = [
-    #         "ft_transformer",
-    #         "histgbm",
-    #         "mlp",
-    #         "node",
-    #         "saint",
-    #         "tabtransformer",
-    #         "resnet",
-    #         "xgb",
-    #         "aldro",
-    #         "dro",
-    #         ]
-    #     for model in models:
-    #         main(experiment=experiment,dset=dset,model=model,debug=False)
+    for experiment in experiments:
+        dset = get_dataset(experiment, cache_dir)
+        X, y, _, _ = dset.get_pandas("train")
+        models = [
+            "ft_transformer",
+            "histgbm",
+            "mlp",
+            "node",
+            "saint",
+            "tabtransformer",
+            "resnet",
+            "xgb",
+            "aldro",
+            "dro",
+            ]
+        for model in models:
+            main(experiment=experiment,dset=dset,model=model,debug=False)
 
     for experiment in experiments:
         dset = get_dataset(experiment, cache_dir)

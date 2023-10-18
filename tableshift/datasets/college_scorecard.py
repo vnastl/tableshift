@@ -192,9 +192,9 @@ COLLEGE_SCORECARD_FEATURES_CAUSAL = FeatureList(features=[
         # Feature('CCSIZSET', cat_dtype, name_extended='Carnegie Classification -- size and setting'),
         Feature('HBCU', cat_dtype, name_extended='Flag for Historically Black College and University'),
         Feature('DISTANCEONLY', cat_dtype, name_extended='Flag for distance-education-only education'),
-        # Feature('TUITIONFEE_IN', float, name_extended='In-state tuition and fees'),
-        # Feature('TUITIONFEE_OUT', float, name_extended='Out-of-state tuition and fees'),
-        # Feature('TUITIONFEE_PROG', float, name_extended='Tuition and fees for program-year institutions'),
+        Feature('TUITIONFEE_IN', float, name_extended='In-state tuition and fees'),
+        Feature('TUITIONFEE_OUT', float, name_extended='Out-of-state tuition and fees'),
+        Feature('TUITIONFEE_PROG', float, name_extended='Tuition and fees for program-year institutions'),
 ])
 
 def preprocess_college_scorecard(df:pd.DataFrame)->pd.DataFrame:
