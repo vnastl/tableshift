@@ -1,0 +1,94 @@
+{
+  "columns": [
+    {
+      "minWidth": 40,
+      "download": false,
+      "formatter": "rowSelection",
+      "titleFormatter": "rowSelection",
+      "resizable": true,
+      "headerSort": false,
+      "width": 53
+    },
+    {
+      "field": "",
+      "title": "",
+      "minWidth": 40,
+      "resizable": true,
+      "sorter": "number",
+      "headerSort": true,
+      "width": 62
+    },
+    {
+      "field": "id_test",
+      "title": "id_test",
+      "minWidth": 40,
+      "resizable": true,
+      "sorter": "number",
+      "headerSort": true,
+      "width": 161
+    },
+    {
+      "field": "id_test_lb",
+      "title": "id_test_lb",
+      "minWidth": 40,
+      "resizable": true,
+      "sorter": "number",
+      "headerSort": true,
+      "width": 159
+    },
+    {
+      "field": "id_test_ub",
+      "title": "id_test_ub",
+      "minWidth": 40,
+      "resizable": true,
+      "sorter": "number",
+      "headerSort": true,
+      "width": 160
+    },
+    {
+      "field": "ood_test",
+      "title": "ood_test",
+      "minWidth": 40,
+      "resizable": true,
+      "sorter": "number",
+      "headerSort": true,
+      "width": 159
+    },
+    {
+      "field": "ood_test_lb",
+      "title": "ood_test_lb",
+      "minWidth": 40,
+      "resizable": true,
+      "sorter": "number",
+      "headerSort": true,
+      "width": 160
+    },
+    {
+      "field": "ood_test_ub",
+      "title": "ood_test_ub",
+      "minWidth": 40,
+      "resizable": true,
+      "sorter": "number",
+      "headerSort": true,
+      "width": 160
+    },
+    {
+      "field": "features",
+      "title": "features",
+      "minWidth": 40,
+      "resizable": true,
+      "sorter": "string",
+      "headerSort": true,
+      "width": 148
+    },
+    {
+      "field": "model",
+      "title": "model",
+      "minWidth": 40,
+      "resizable": true,
+      "sorter": "string",
+      "headerSort": true,
+      "width": 94
+    }
+  ]
+}

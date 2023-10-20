@@ -1,0 +1,52 @@
+{
+  "fields": [
+    {
+      "name": "",
+      "type": "integer",
+      "format": "default"
+    },
+    {
+      "name": "id_test",
+      "type": "number",
+      "format": "default"
+    },
+    {
+      "name": "id_test_lb",
+      "type": "number",
+      "format": "default"
+    },
+    {
+      "name": "id_test_ub",
+      "type": "number",
+      "format": "default"
+    },
+    {
+      "name": "ood_test",
+      "type": "number",
+      "format": "default"
+    },
+    {
+      "name": "ood_test_lb",
+      "type": "number",
+      "format": "default"
+    },
+    {
+      "name": "ood_test_ub",
+      "type": "number",
+      "format": "default"
+    },
+    {
+      "name": "features",
+      "type": "string",
+      "format": "default"
+    },
+    {
+      "name": "model",
+      "type": "string",
+      "format": "default"
+    }
+  ],
+  "missingValues": [
+    ""
+  ]
+}
