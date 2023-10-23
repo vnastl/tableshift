@@ -54,9 +54,9 @@ if __name__ == "__main__":
                         help="Whether to run in debug mode. If True, various "
                              "truncations/simplifications are performed to "
                              "speed up experiment.")
-    parser.add_argument("--experiment", default="diabetes_readmission",
+    parser.add_argument("--experiment", default="acspubcov",
                         help="Experiment to run. Overridden when debug=True.")
-    parser.add_argument("--model", default="histgbm",
+    parser.add_argument("--model", default="xgb",
                         help="model to use.")
     args = parser.parse_args()
     main(**vars(args))

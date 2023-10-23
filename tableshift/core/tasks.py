@@ -35,9 +35,15 @@ _TASK_REGISTRY = {
     "acsfoodstamps":
         TaskConfig(ACSDataSource,
                    ACS_FOODSTAMPS_FEATURES + ACS_SHARED_FEATURES),
+    "acsfoodstamps_causal":
+        TaskConfig(ACSDataSource,
+                   ACS_FOODSTAMPS_FEATURES_CAUSAL),
     "acspubcov":
         TaskConfig(ACSDataSource,
                    ACS_PUBCOV_FEATURES + ACS_SHARED_FEATURES),
+    "acspubcov_causal":
+        TaskConfig(ACSDataSource,
+                   ACS_PUBCOV_FEATURES_CAUSAL),
     "acsunemployment":
         TaskConfig(ACSDataSource,
                    ACS_UNEMPLOYMENT_FEATURES + ACS_SHARED_FEATURES),

@@ -88,11 +88,11 @@ if __name__ == "__main__":
     # args = parser.parse_args()
     # main(**vars(args))
 
+    experiments=["acspubcov", "acspubcov_causal"]
     # experiments=["college_scorecard","college_scorecard_causal"]
-    # experiments=["college_scorecard_causal"]
     # experiments = ["acsunemployment","acsunemployment_causal", "acsunemployment_anticausal"] 
-    # experiments = ["physionet"]
-    experiments = ["physionet_causal", "physionet_anticausal"]
+    # experiments = ["physionet","physionet_causal", "physionet_anticausal"]
+    # experiments = ["acspubcov"]
     cache_dir="tmp"
 
     for experiment in experiments:
@@ -102,13 +102,13 @@ if __name__ == "__main__":
             "ft_transformer",
             "histgbm",
             "mlp",
-            "node",
             "saint",
             "tabtransformer",
             "resnet",
             "xgb",
             "aldro",
             "dro",
+            "node",
             ]
         for model in models:
             main(experiment=experiment,dset=dset,model=model,debug=False)

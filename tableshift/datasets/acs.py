@@ -550,6 +550,87 @@ ACS_UNEMPLOYMENT_FEATURES_ANTICAUSAL = FeatureList(features=[
                   "/pums/data_dict/PUMS_Data_Dictionary_2019.pdf"
 )
 
+ACS_PUBCOV_FEATURES_CAUSAL = FeatureList(features=[
+    Feature('AGEP', int, "Age", name_extended='age in years'),
+    Feature('SEX', int, "Sex",
+            name_extended='sex',
+            value_mapping={
+                1: "Male", 2: "Female",
+            }),
+    Feature('RAC1P', int, """Recoded detailed race code""",
+            name_extended='race',
+            value_mapping={
+                1: 'White alone',
+                2: 'Black or African American alone',
+                3: 'American Indian alone',
+                4: 'Alaska Native alone',
+                5: 'American Indian and Alaska Native tribes specified; or'
+                   ' American Indian or Alaska Native, not specified and '
+                   'no other races',
+                6: 'Asian alone',
+                7: 'Native Hawaiian and Other Pacific Islander alone',
+                8: 'Some Other Race alone',
+                9: 'Two or More Races'}),
+    DIS_FEATURE,
+    DEAR_FEATURE,
+    DEYE_FEATURE,
+    DREM_FEATURE,
+    ANC_FEATURE,
+    NATIVITY_FEATURE,
+    Feature('PUBCOV', int, """Public health coverage recode =With public 
+    health coverage 0=Without public health coverage""", is_target=True)],
+    )
+
+ACS_FOODSTAMPS_FEATURES_CAUSAL = FeatureList(features=[
+    Feature('FS', int, """Yearly food stamp/Supplemental Nutrition Assistance 
+    Program (SNAP) recipiency (household) b .N/A (vacant) 5 1 .Yes 2 .No""",
+            is_target=True),
+    Feature('DIVISION', cat_dtype,
+            "Division code based on 2010 Census definitions.",
+            name_extended='geographic region',
+            value_mapping={
+                0: 'Puerto Rico',
+                1: 'New England (Northeast region)',
+                2: 'Middle Atlantic (Northeast region)',
+                3: 'East North Central (Midwest region)',
+                4: 'West North Central (Midwest region)',
+                5: 'South Atlantic (South region)',
+                6: 'East South Central (South region)',
+                7: 'West South Central (South Region)',
+                8: 'Mountain (West region)',
+                9: 'Pacific (West region)',
+            }),
+    Feature('AGEP', int, "Age", name_extended='age in years'),
+    Feature('SEX', int, "Sex",
+            name_extended='sex',
+            value_mapping={
+                1: "Male", 2: "Female",
+            }),
+    Feature('RAC1P', int, """Recoded detailed race code""",
+            name_extended='race',
+            value_mapping={
+                1: 'White alone',
+                2: 'Black or African American alone',
+                3: 'American Indian alone',
+                4: 'Alaska Native alone',
+                5: 'American Indian and Alaska Native tribes specified; or'
+                   ' American Indian or Alaska Native, not specified and '
+                   'no other races',
+                6: 'Asian alone',
+                7: 'Native Hawaiian and Other Pacific Islander alone',
+                8: 'Some Other Race alone',
+                9: 'Two or More Races'}),
+    POBP_FEATURE,
+    DIS_FEATURE,
+    ANC_FEATURE,
+    NATIVITY_FEATURE,
+    DEAR_FEATURE,
+    DEYE_FEATURE,
+    DREM_FEATURE,
+],
+    documentation="https://www2.census.gov/programs-surveys/acs/tech_docs"
+                  "/pums/data_dict/PUMS_Data_Dictionary_2019.pdf"
+)
 ################################################################################
 # Preprocessing functions
 ################################################################################
@@ -713,12 +794,30 @@ ACS_TASK_CONFIGS = frozendict.frozendict({
         'threshold': None,
     }),
     'unemployment_anticausal': ACSTaskConfig(**{
-        'features_to_use': ACS_UNEMPLOYMENT_FEATURES_CAUSAL,
+        'features_to_use': [value for value in ACS_FOODSTAMPS_FEATURES + ACS_SHARED_FEATURES if value not in ACS_UNEMPLOYMENT_FEATURES_CAUSAL], #ACS_UNEMPLOYMENT_FEATURES_CAUSAL,
         'group_transform': default_acs_group_transform,
         'postprocess': default_acs_postprocess,
         'preprocess': unemployment_filter,
         'target': 'ESR',
         'target_transform': unemployment_target_transform,
+        'threshold': None,
+    }),
+    'pubcov_causal': ACSTaskConfig(**{
+        'features_to_use': ACS_PUBCOV_FEATURES_CAUSAL,
+        'group_transform': default_acs_group_transform,
+        'postprocess': default_acs_postprocess,
+        'preprocess': folktables.acs.public_coverage_filter,
+        'target': 'PUBCOV',
+        'target_transform': pubcov_target_transform,
+        'threshold': None,
+    }),
+    'foodstamps_causal': ACSTaskConfig(**{
+        'features_to_use': ACS_FOODSTAMPS_FEATURES_CAUSAL,
+        'group_transform': default_acs_group_transform,
+        'postprocess': default_acs_postprocess,
+        'preprocess': foodstamps_filter,
+        'target': 'FS',
+        'target_transform': foodstamps_target_transform,
         'threshold': None,
     }),
 })

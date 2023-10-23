@@ -33,6 +33,16 @@ BENCHMARK_CONFIGS = {
         grouper=Grouper({"RAC1P": [1, ], "SEX": [1, ]}, drop=False),
         preprocessor_config=PreprocessorConfig(),
         tabular_dataset_kwargs={"acs_task": "acsfoodstamps"}),
+    "acsfoodstamps_causal": ExperimentConfig(
+        splitter=DomainSplitter(val_size=DEFAULT_ID_VAL_SIZE,
+                                ood_val_size=DEFAULT_OOD_VAL_SIZE,
+                                random_state=DEFAULT_RANDOM_STATE,
+                                id_test_size=DEFAULT_ID_TEST_SIZE,
+                                domain_split_varname="DIVISION",
+                                domain_split_ood_values=['06']),
+        grouper=Grouper({"RAC1P": [1, ], "SEX": [1, ]}, drop=False),
+        preprocessor_config=PreprocessorConfig(),
+        tabular_dataset_kwargs={"acs_task": "acsfoodstamps"}),
 
     "acsincome": ExperimentConfig(
         splitter=DomainSplitter(val_size=DEFAULT_ID_VAL_SIZE,
@@ -46,6 +56,17 @@ BENCHMARK_CONFIGS = {
         tabular_dataset_kwargs={"acs_task": "acsincome"}),
 
     "acspubcov": ExperimentConfig(
+        splitter=DomainSplitter(val_size=DEFAULT_ID_VAL_SIZE,
+                                ood_val_size=DEFAULT_OOD_VAL_SIZE,
+                                random_state=DEFAULT_RANDOM_STATE,
+                                id_test_size=DEFAULT_ID_TEST_SIZE,
+                                domain_split_varname="DIS",
+                                domain_split_ood_values=['1.0']),
+        grouper=Grouper({"RAC1P": [1, ], "SEX": [1, ]}, drop=False),
+        preprocessor_config=PreprocessorConfig(),
+        tabular_dataset_kwargs={"acs_task": "acspubcov", "name": "acspubcov",
+                                "years": ACS_YEARS}),
+    "acspubcov_causal": ExperimentConfig(
         splitter=DomainSplitter(val_size=DEFAULT_ID_VAL_SIZE,
                                 ood_val_size=DEFAULT_OOD_VAL_SIZE,
                                 random_state=DEFAULT_RANDOM_STATE,

@@ -22,10 +22,12 @@ os.chdir("/Users/vnastl/Seafile/My Library/mpi project causal vs noncausal/table
 if __name__ == '__main__':
     # experiment_name = "college_scorecard"
     # experiments=["college_scorecard","college_scorecard_causal","college_scorecard_causal_no_tuition_fee"]
-    # experiment_name = "acsunemployment"
-    # experiments = ["acsunemployment","acsunemployment_causal", "acsunemployment_anticausal"]
-    experiment_name = "acspubcov"
-    experiments = ["acspubcov","acspubcov_causal"]
+    experiment_name = "acsunemployment"
+    experiments = ["acsunemployment","acsunemployment_causal", "acsunemployment_anticausal"]
+    # experiment_name = "acspubcov"
+    # experiments = ["acspubcov","acspubcov_causal"]
+    # experiment_name = "acsfoodstamps"
+    # experiments = ["acsfoodstamps","acsfoodstamps_causal"]
     # experiment_name = "physionet"
     # experiments = ["physionet"] #,"physionet_causal", "physionet_anticausal"] 
     cache_dir="tmp"
@@ -118,7 +120,16 @@ if __name__ == '__main__':
             yerr=eval_plot['ood_test_ub']-eval_plot['ood_test'], fmt="o",
             color=colormap(i), ecolor=colormap(i), label=str(features))
     plt.legend(title="Feature")
-
+    plt.fill_between([0, eval_all[eval_all['ood_test']==max(eval_all['ood_test'])]['id_test'].values[0]],
+                            [0,0],
+                            [max(eval_all['ood_test']),max(eval_all['ood_test'])],
+                            color=colormap(19), alpha=0.2)
+    plt.fill_between([0, max(eval_all['id_test'])],
+                            [0,0],
+                            [eval_all[eval_all['id_test']==max(eval_all['id_test'])]['ood_test'].values[0],
+                             eval_all[eval_all['id_test']==max(eval_all['id_test'])]['ood_test'].values[0]],
+                            color=colormap(19), alpha=0.2)
+    
     eval_plot = eval_all[eval_all['features']=="constant"]
     plt.fill_between([0, min(eval_plot['id_test'])],0,1,
                         color="tab:grey")
@@ -126,8 +137,8 @@ if __name__ == '__main__':
                         color="tab:grey")
     # Plot the diagonal line
     plt.plot([0, 1], [0, 1], color='black', linestyle='dashed')
-    plt.xlim((eval_constant['id_test']-0.01, max(eval_all['id_test'])+0.01))
-    plt.ylim((eval_constant['ood_test']-0.01,max(eval_all['ood_test'])+0.01))
+    # plt.xlim((eval_constant['id_test']-0.01, max(eval_all['id_test'])+0.01))
+    # plt.ylim((eval_constant['ood_test']-0.01,max(eval_all['ood_test'])+0.01))
     plt.savefig(str(Path(__file__).parents[0]/f"plot_{experiment_name}_causal_vs_all"))
     plt.show()
 
@@ -161,7 +172,8 @@ if __name__ == '__main__':
         plt.fill_between([0, max(eval_plot['id_test'])],
                             [0,0],
                             [max(eval_plot['ood_test']),max(eval_plot['ood_test'])],
-                            color=colormap(20), alpha=0.3)
+                            color=colormap(19), alpha=0.3)
+        
         
         eval_plot = eval_all[eval_all['features']=="constant"]
         plt.fill_between([0, min(eval_plot['id_test'])],0,1,
