@@ -705,9 +705,10 @@ def pubcov_target_transform(y, threshold):
 
 def unemployment_target_transform(y, threshold):
     """Default Public Coverage target transform from folktables."""
+    # No in folktables the employment transform is ==1
     del threshold
-    return y == 3
-
+    # return y == 3
+    return y == 1
 
 def unemployment_filter(data):
     """
@@ -794,7 +795,7 @@ ACS_TASK_CONFIGS = frozendict.frozendict({
         'threshold': None,
     }),
     'unemployment_anticausal': ACSTaskConfig(**{
-        'features_to_use': [value for value in ACS_FOODSTAMPS_FEATURES + ACS_SHARED_FEATURES if value not in ACS_UNEMPLOYMENT_FEATURES_CAUSAL], #ACS_UNEMPLOYMENT_FEATURES_CAUSAL,
+        'features_to_use': ACS_UNEMPLOYMENT_FEATURES_CAUSAL, #[value for value in ACS_FOODSTAMPS_FEATURES + ACS_SHARED_FEATURES if value not in ACS_UNEMPLOYMENT_FEATURES_CAUSAL], 
         'group_transform': default_acs_group_transform,
         'postprocess': default_acs_postprocess,
         'preprocess': unemployment_filter,

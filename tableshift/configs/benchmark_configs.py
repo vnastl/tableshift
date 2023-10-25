@@ -75,7 +75,7 @@ BENCHMARK_CONFIGS = {
                                 domain_split_ood_values=['1.0']),
         grouper=Grouper({"RAC1P": [1, ], "SEX": [1, ]}, drop=False),
         preprocessor_config=PreprocessorConfig(),
-        tabular_dataset_kwargs={"acs_task": "acspubcov", "name": "acspubcov",
+        tabular_dataset_kwargs={"acs_task": "acspubcov_causal", "name": "acspubcov_causal",
                                 "years": ACS_YEARS}),
 
     "acsunemployment": ExperimentConfig(
