@@ -23,20 +23,33 @@ os.chdir("/Users/vnastl/Seafile/My Library/mpi project causal vs noncausal/table
 #%%
 # experiment_name = "college_scorecard"
 # experiments=["college_scorecard","college_scorecard_causal","college_scorecard_causal_no_tuition_fee"]
+# domain_label = 'CCBASIC'
+
+# experiment_name = "acsemployment"
+# experiments = ["acsemployment","acsemployment_causal", "acsemployment_anticausal"]
+# domain_label ='SCHL'
 
 # experiment_name = "acsunemployment"
 # experiments = ["acsunemployment","acsunemployment_causal", "acsunemployment_anticausal"]
+# domain_label ='SCHL'
 
-experiment_name = "acspubcov"
-experiments = ["acspubcov","acspubcov_causal"]
-domain_label = 'DIS'
+# experiment_name = "acspubcov"
+# experiments = ["acspubcov","acspubcov_causal"]
+# domain_label = 'DIS'
 
 # experiment_name = "acsfoodstamps"
 # experiments = ["acsfoodstamps","acsfoodstamps_causal"]
 # domain_label = 'DIVISION'
 
+experiment_name = "anes"
+experiments = ["anes","anes_causal"]
+domain_label = 'VCF0112'
+
 # experiment_name = "physionet"
-# experiments = ["physionet"] #,"physionet_causal", "physionet_anticausal"] 
+# experiments = ["physionet","physionet_causal", "physionet_anticausal"] 
+# domain_label = 'ICULOS'
+
+
 cache_dir="tmp"
 
 eval_all = pd.DataFrame()
@@ -84,6 +97,9 @@ for experiment in experiments:
             if get_feature_selection(experiment) == 'causal':
                 causal_features = eval_json['features']
                 causal_features.remove(domain_label)
+            if get_feature_selection(experiment) == 'causal without tuition' or get_feature_selection(experiment) == 'anticausal':
+                extra_features = eval_json['features']
+                extra_features.remove(domain_label)
             eval_all = pd.concat([eval_all, eval_pd], ignore_index=True)
 #%%
 RESULTS_DIR = Path(__file__).parents[0]
@@ -124,7 +140,7 @@ eval_all.to_csv(str(Path(__file__).parents[0]/f"{experiment_name}_eval.csv"))
 print(eval_all)
 
 #%%
-def do_plot(mymin,mymax,mytext,myname):
+def do_plot(mymin,mymax,mytextx,mytexty,myname,axmin=[0.5,0.5],axmax=[1.0,1.0]):
     plt.title(
         f"Tableshift: {experiment_name}")
     plt.xlabel(f"id accuracy")
@@ -173,23 +189,97 @@ def do_plot(mymin,mymax,mytext,myname):
     # get extra points for the plot
     new_row = pd.DataFrame({'id_test':[mymin,max(points['id_test'])], 'ood_test':[max(points['ood_test']),mymin]},)
     points = pd.concat([points,new_row], ignore_index=True)
+    # dotted = points.to_numpy()
+    # hull = ConvexHull(dotted,incremental=True)
+    # plt.plot(dotted[list(hull.vertices[1:])+[hull.vertices[0]], 0], dotted[list(hull.vertices[1:])+[hull.vertices[0]], 1],
+    #          color="tab:orange",linestyle="dotted")
+    # plt.plot(dotted[hull.vertices, 0][1:], dotted[hull.vertices, 1][1:],color="tab:orange",linestyle="dotted")
     points.sort_values('id_test',inplace=True)
     plt.plot(points['id_test'],points['ood_test'],color="tab:orange",linestyle="dotted")
 
     new_row = pd.DataFrame({'id_test':[mymin], 'ood_test':[mymin]},)
     points = pd.concat([points,new_row], ignore_index=True)
-    points = points.to_numpy()
-    hull = ConvexHull(points)
-    plt.fill(points[hull.vertices, 0], points[hull.vertices, 1], color="tab:orange",alpha=0.3)
+    filled = points.to_numpy()
+    hull = ConvexHull(filled,incremental=True)
+    plt.fill(filled[hull.vertices, 0], filled[hull.vertices, 1], color="tab:orange",alpha=0.3)
     
+    ## Extra set of features
+    if experiment_name == "college_scorecard":
+        eval_plot = eval_all[eval_all['features']=="causal without tuition"]
+        eval_plot.sort_values('id_test',inplace=True)
+        # Calculate the pareto set
+        points = eval_plot[['id_test','ood_test']]
+        mask = paretoset(points, sense=["max", "max"])
+        points = points[mask]
+        markers = eval_plot[mask]
+        errors = plt.errorbar(
+                    x=markers['id_test'],
+                    y=markers['ood_test'],
+                    xerr=markers['id_test_ub']-markers['id_test'],
+                    yerr=markers['ood_test_ub']-markers['ood_test'], fmt="o",
+                    color="tab:pink", ecolor="tab:pink", label="top causal features without tuition")
+        # get extra points for the plot
+        new_row = pd.DataFrame({'id_test':[mymin,max(points['id_test'])], 'ood_test':[max(points['ood_test']),mymin]},)
+        points = pd.concat([points,new_row], ignore_index=True)
+        # dotted = points.to_numpy()
+        # hull = ConvexHull(dotted,incremental=True)
+        # plt.plot(dotted[list(hull.vertices[1:])+[hull.vertices[0]], 0], dotted[list(hull.vertices[1:])+[hull.vertices[0]], 1],
+        #          color="tab:pink",linestyle="dotted")
+        # plt.plot(dotted[hull.vertices, 0][1:], dotted[hull.vertices, 1][1:],color="tab:pink",linestyle="dotted")
+        points.sort_values('id_test',inplace=True)
+        plt.plot(points['id_test'],points['ood_test'],color="tab:pink",linestyle="dotted")
+
+        new_row = pd.DataFrame({'id_test':[mymin], 'ood_test':[mymin]},)
+        points = pd.concat([points,new_row], ignore_index=True)
+        filled = points.to_numpy()
+        hull = ConvexHull(filled,incremental=True)
+        plt.fill(filled[hull.vertices, 0], filled[hull.vertices, 1], color="tab:pink",alpha=0.3)
+    
+    if experiment_name in ["acsemployment", "acsunemployment", "physionet"]:
+        eval_plot = eval_all[eval_all['features']=="anticausal"]
+        eval_plot.sort_values('id_test',inplace=True)
+        # Calculate the pareto set
+        points = eval_plot[['id_test','ood_test']]
+        mask = paretoset(points, sense=["max", "max"])
+        points = points[mask]
+        markers = eval_plot[mask]
+        errors = plt.errorbar(
+                    x=markers['id_test'],
+                    y=markers['ood_test'],
+                    xerr=markers['id_test_ub']-markers['id_test'],
+                    yerr=markers['ood_test_ub']-markers['ood_test'], fmt="o",
+                    color="tab:purple", ecolor="tab:purple", label="top anticausal features")
+        # get extra points for the plot
+        new_row = pd.DataFrame({'id_test':[mymin,max(points['id_test'])], 'ood_test':[max(points['ood_test']),mymin]},)
+        points = pd.concat([points,new_row], ignore_index=True)
+        # dotted = points.to_numpy()
+        # hull = ConvexHull(dotted,incremental=True)
+        # plt.plot(dotted[list(hull.vertices[1:])+[hull.vertices[0]], 0], dotted[list(hull.vertices[1:])+[hull.vertices[0]], 1],
+        #          color="tab:purple",linestyle="dotted")
+        # plt.plot(dotted[hull.vertices, 0][1:], dotted[hull.vertices, 1][1:],color="tab:purple",linestyle="dotted")
+        points.sort_values('id_test',inplace=True)
+        plt.plot(points['id_test'],points['ood_test'],color="tab:purple",linestyle="dotted")
+
+        new_row = pd.DataFrame({'id_test':[mymin], 'ood_test':[mymin]},)
+        points = pd.concat([points,new_row], ignore_index=True)
+        filled = points.to_numpy()
+        hull = ConvexHull(filled,incremental=True)
+        plt.fill(filled[hull.vertices, 0], filled[hull.vertices, 1], color="tab:purple",alpha=0.3)
+
     ## Constant
     eval_plot = eval_all[eval_all['features']=="constant"]
-    errors = plt.errorbar(
-            x=eval_plot['id_test'],
-            y=eval_plot['ood_test'],
-            xerr=eval_plot['id_test_ub']-eval_plot['id_test'],
-            yerr=eval_plot['ood_test_ub']-eval_plot['ood_test'], fmt="D",
-            color="tab:red", ecolor="tab:red", label="constant")
+    plot_constant = plt.plot(
+            eval_plot['id_test'],
+            eval_plot['ood_test'],
+            marker="D",linestyle="None",
+            color="tab:red", 
+            label="constant")
+    # errors = plt.errorbar(
+    #         x=eval_plot['id_test'],
+    #         y=eval_plot['ood_test'],
+    #         xerr=eval_plot['id_test_ub']-eval_plot['id_test'],
+    #         yerr=eval_plot['ood_test_ub']-eval_plot['ood_test'], fmt="D",
+    #         color="tab:red", ecolor="tab:red", label="constant")
     plt.plot([0, eval_plot['id_test'].values[0]],
                 [eval_plot['ood_test'].values[0],eval_plot['ood_test'].values[0]],
                 color="tab:red",linestyle="dotted")
@@ -225,30 +315,156 @@ def do_plot(mymin,mymax,mytext,myname):
     # Plot the diagonal line
     plt.plot([0, 1], [0, 1], color='black')
 
-    plt.xlim((mymin,mymax))
-    plt.ylim((mymin,mymax))
+    plt.xlim((axmin[0],axmax[0]))
+    plt.ylim((axmin[1],axmax[1]))
 
     # Add text below the plot
-    plt.text(mytext, mytext,f'Causal features: {causal_features}')
+    
+    if experiment_name == "acsunemployment" or experiment_name == "physionet":
+        plt.text(mytextx, mytexty,f'Causal features: {causal_features} \n Anticausal features: {extra_features}')
+    else:
+        plt.text(mytextx, mytexty,f'Causal features: {causal_features}')
 
     plt.savefig(str(Path(__file__).parents[0]/myname), bbox_inches='tight')
     plt.show()
 
 # %%
 if experiment_name == "acsfoodstamps":
+    mymin = 0.5
+    mymax = 1
+    mytextx = 0.5
+    mytexty = 0.4
+    myname = f"plot_{experiment_name}"
+
+    do_plot(mymin,mymax,mytextx,mytexty,myname,[mymin,mymin],[mymax,mymax])
+
+elif experiment_name == "acspubcov":
+    mymin = 0.2
+    mymax = 1
+    mytextx = 0.2
+    mytexty = 0.05
+    myname = f"plot_{experiment_name}"
+
+    do_plot(mymin,mymax,mytextx,mytexty,myname,[mymin,mymin],[mymax,mymax])
+
+elif experiment_name == "acsemployment":
+    mymin = 0.45
+    mymax = 1
+    mytextx = 0.45
+    mytexty = 0.32
+    myname = f"plot_folktable_acsemployment"
+
+    do_plot(mymin,mymax,mytextx,mytexty,myname,[mymin,mymin],[mymax,mymax])
+
+elif experiment_name == "acsunemployment":
+    mymin = 0.5
+    mymax = 1
+    mytextx = 0.5
+    mytexty = 0.4
+    myname = f"plot_acsunemployment"
+
+    do_plot(mymin,mymax,mytextx,mytexty,myname,[mymin,mymin],[mymax,mymax])
+
+elif experiment_name == "anes":
+    mymin = 0.5
+    mymax = 1
+    mytextx = 0.5
+    mytexty = 0.4
+    myname = f"plot_{experiment_name}"
+
+    do_plot(mymin,mymax,mytextx,mytexty,myname,[mymin,mymin],[mymax,mymax])
+
+elif experiment_name == "college_scorecard":
+    mymin = 0.5
+    mymax = 1
+    mytextx = 0.5
+    mytexty = 0.4
+    myname = f"plot_{experiment_name}"
+
+    do_plot(mymin,mymax,mytextx,mytexty,myname,[mymin,mymin],[mymax,mymax])
+
+elif experiment_name == "physionet":
+    mymin = 0.5
+    mymax = 1
+    mytextx = 0.5
+    mytexty = 0.4
+    myname = f"plot_{experiment_name}"
+
+    do_plot(mymin,mymax,mytextx,mytexty,myname,[mymin,mymin],[mymax,mymax])
+
+ # %%
+if experiment_name == "acsfoodstamps":
     mymin = 0.75
     mymax = 0.86
-    mytext = 0.73
+    mytextx = 0.75
+    mytexty = 0.73
     myname = f"plot_{experiment_name}_zoom"
 
-    do_plot(mymin,mymax,mytext,myname)
+    do_plot(mymin,mymax,mytextx,mytexty,myname,[mymin,mymin],[mymax,mymax])
 
-# %%
-mymin = 0.5
-mymax = 1
-mytext = 0.4
-myname = f"plot_{experiment_name}"
+elif experiment_name == "acspubcov":
+    mymin = 0.2
+    axminx = 0.58
+    axminy = 0.35
+    mymax = 0.83
+    mytextx = 0.58
+    mytexty = 0.25
+    myname = f"plot_{experiment_name}_zoom"
 
-do_plot(mymin,mymax,mytext,myname)
+    do_plot(mymin,mymax,mytextx,mytexty,myname,[axminx,axminy],[mymax,mymax])
+
+elif experiment_name == "acsemployment":
+    mymin = 0.90
+    axmin = 0.94
+    mymax = 1
+    mytextx = 0.94
+    mytexty = 0.925
+    myname = f"plot_folktable_acsemployment_zoom"
+
+    do_plot(mymin,mymax,mytextx,mytexty,myname,[axmin,axmin],[mymax,mymax])
+
+elif experiment_name == "acsunemployment":
+    mymin = 0.90
+    axminx = 0.96
+    axminy = 0.94
+    mymax = 0.98
+    mytextx = 0.96
+    mytexty = 0.93
+    myname = f"plot_acsunemployment_zoom"
+
+    do_plot(mymin,mymax,mytextx,mytexty,myname,[axminx,axminy],[mymax,mymax])
+
+if experiment_name == "anes":
+    mymin = 0.58
+    mymax = 0.85
+    mytextx = 0.58
+    mytexty = 0.53
+    myname = f"plot_{experiment_name}_zoom"
+
+    do_plot(mymin,mymax,mytextx,mytexty,myname,[mymin,mymin],[mymax,mymax])
+
+elif experiment_name == "college_scorecard":
+    mymin = 0.65
+    axminx = 0.86
+    axminy = 0.65 
+    mymax = 0.96
+    mytextx = 0.86
+    mytexty = 0.58
+    myname = f"plot_{experiment_name}_zoom"
+
+    do_plot(mymin,mymax,mytextx,mytexty,myname,[axminx,axminy],[mymax,mymax])
+
+elif experiment_name == "physionet":
+    mymin = 0.90
+    axminx = 0.985
+    axminy = 0.92
+    axmaxy = 0.93
+    mymax = 0.989
+    mytextx = 0.985
+    mytexty = 0.918
+    myname = f"plot_{experiment_name}_zoom"
+
+    do_plot(mymin,mymax,mytextx,mytexty,myname,[axminx,axminy],[mymax,axmaxy])
+
 
 # %%

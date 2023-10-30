@@ -707,8 +707,8 @@ def unemployment_target_transform(y, threshold):
     """Default Public Coverage target transform from folktables."""
     # No in folktables the employment transform is ==1
     del threshold
-    # return y == 3
-    return y == 1
+    return y == 3
+    # return y == 1
 
 def unemployment_filter(data):
     """

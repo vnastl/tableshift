@@ -57,6 +57,8 @@ _TASK_REGISTRY = {
         TaskConfig(AdultDataSource, ADULT_FEATURES),
     "anes":
         TaskConfig(ANESDataSource, ANES_FEATURES),
+    "anes_causal":
+        TaskConfig(ANESDataSource, ANES_FEATURES_CAUSAL),
     "assistments":
         TaskConfig(AssistmentsDataSource, ASSISTMENTS_FEATURES),
     "brfss_diabetes":

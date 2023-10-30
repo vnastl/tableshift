@@ -88,7 +88,7 @@ if __name__ == "__main__":
     # args = parser.parse_args()
     # main(**vars(args))
 
-    experiments = ["acspubcov_causal"] 
+    experiments = ["anes","anes_causal"]
     # experiments=["acspubcov", "acspubcov_causal"]
     # experiments=["college_scorecard","college_scorecard_causal"]
     # experiments = ["acsunemployment","acsunemployment_causal", "acsunemployment_anticausal"] 
@@ -100,16 +100,16 @@ if __name__ == "__main__":
         dset = get_dataset(experiment, cache_dir)
         X, y, _, _ = dset.get_pandas("train")
         models = [
-            # "ft_transformer",
-            # "histgbm",
-            # "mlp",
-            # "saint",
-            # "tabtransformer",
-            # "resnet",
+            "ft_transformer",
+            "histgbm",
+            "mlp",
+            "saint",
+            "tabtransformer",
+            "resnet",
             "xgb",
-            # "aldro",
-            # "dro",
-            # "node",
+            "aldro",
+            "dro",
+            "node",
             ]
         for model in models:
             main(experiment=experiment,dset=dset,model=model,debug=False)

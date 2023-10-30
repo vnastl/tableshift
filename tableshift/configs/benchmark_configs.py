@@ -131,7 +131,21 @@ BENCHMARK_CONFIGS = {
                                 random_state=DEFAULT_RANDOM_STATE,
                                 id_test_size=DEFAULT_ID_TEST_SIZE,
                                 domain_split_varname='VCF0112',
-                                domain_split_ood_values=['3.0']),
+                                domain_split_ood_values=['3.0','no answer']),
+        # male vs. all others; white non-hispanic vs. others
+        grouper=Grouper({"VCF0104": ["1", ], "VCF0105a": ["1.0", ]},
+                        drop=False),
+        preprocessor_config=PreprocessorConfig(numeric_features="kbins",
+                                               dropna=None),
+        tabular_dataset_kwargs={}),
+
+    "anes_causal": ExperimentConfig(
+        splitter=DomainSplitter(val_size=DEFAULT_ID_VAL_SIZE,
+                                ood_val_size=DEFAULT_OOD_VAL_SIZE,
+                                random_state=DEFAULT_RANDOM_STATE,
+                                id_test_size=DEFAULT_ID_TEST_SIZE,
+                                domain_split_varname='VCF0112',
+                                domain_split_ood_values=['3.0','no answer']),
         # male vs. all others; white non-hispanic vs. others
         grouper=Grouper({"VCF0104": ["1", ], "VCF0105a": ["1.0", ]},
                         drop=False),
@@ -365,7 +379,7 @@ BENCHMARK_CONFIGS = {
         grouper=None,
         preprocessor_config=PreprocessorConfig(numeric_features="kbins",
                                                dropna=None),
-        tabular_dataset_kwargs={"name": "physionet"}),
+        tabular_dataset_kwargs={"name": "physionet_causal"}),
 
     "physionet_anticausal": ExperimentConfig(
         splitter=DomainSplitter(val_size=DEFAULT_ID_VAL_SIZE,
@@ -377,5 +391,5 @@ BENCHMARK_CONFIGS = {
         grouper=None,
         preprocessor_config=PreprocessorConfig(numeric_features="kbins",
                                                dropna=None),
-        tabular_dataset_kwargs={"name": "physionet"}),
+        tabular_dataset_kwargs={"name": "physionet_anticausal"}),
 }

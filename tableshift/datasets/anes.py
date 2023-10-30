@@ -529,7 +529,82 @@ ANES_FEATURES = FeatureList(features=[
                 # (AL, AR, DE, D.C., FL, GA, KY, LA, MD, MS, NC, OK, SC,TN, TX, VA, WV) 4. West (AK, AZ, CA, CO, HI, ID, MT, NV, NM, OR, UT, WA, WY)
                 '3.0': "South",
                 # (AK, AZ, CA, CO, HI, ID, MT, NV, NM, OR, UT, WA, WY)
-                '4.0': 'West', }),
+                '4.0': 'West',}),
+],
+    documentation="https://electionstudies.org/data-center/anes-time-series-cumulative-data-file/")
+
+
+ANES_FEATURES_CAUSAL = FeatureList(features=[
+    Feature('VCF0702', int, "DID RESPONDENT VOTE IN THE NATIONAL "
+                            "ELECTIONS 1. No, did not vote 2. Yes, "
+                            "voted 0. DK; NA; no Post IW; refused to "
+                            "say if voted; Washington D.C. ("
+                            "presidential years only)",
+            is_target=True,
+            name_extended='voted in national election'),
+    Feature("VCF0004", int, name_extended="election year"),
+    Feature("VCF0901b", cat_dtype, """State of interview - state postal 
+    abbreviation, 99. NA; wrong district identified (2000) INAP. question not 
+    used""",
+            name_extended='state'),
+
+    # PARTISANSHIP AND ATTITUDES TOWARDS PARTIES
+
+    # CANDIDATE AND INCUMBENT EVALUATIONS
+
+    # CANDIDATE/INCUMBENT PERFORMANCE EVALUATIONS
+    
+    # ISSUES
+    
+    # IDEOLOGY AND VALUES
+    
+    # SYSTEM SUPPORT
+
+    # REGISTRATION, TURNOUT, AND VOTE CHOICE
+    Feature('VCF0701', cat_dtype, "REGISTERED TO VOTE PRE-ELECTION",
+            name_extended='registered to vote pre-election',
+            value_mapping={
+                '1.0': "No ",
+                '2.0': "Yes",
+                '0.0': "no answer"}),
+
+    # MEDIA
+
+    # PERSONAL AND DEMOGRAPHIC
+    Feature('VCF0101', int, "RESPONDENT - AGE",
+            name_extended='age'),
+    Feature('VCF0104', cat_dtype, name_extended='gender',
+            value_mapping={
+                '1': "Male",
+                '2': "Female",
+                '3': "Other",
+                '0': "no answer"}),
+    Feature('VCF0105a', cat_dtype, """RACE-ETHNICITY SUMMARY, 7 CATEGORIES""",
+            name_extended='race/ethnicity',
+            value_mapping={
+                '1.0': "White non-Hispanic",
+                '2.0': "Black non-Hispanic",
+                '3.0': "Asian or Pacific Islander, non-Hispanic",
+                '4.0': "American Indian or Alaska Native non-Hispanic",
+                '5.0': "Hispanic",
+                '6.0': "Other or multiple races, non-Hispanic",
+                '7.0': "Non-white and non-black",
+                '9.0': "no answer"}),
+    Feature('VCF0112', cat_dtype, """Region - U.S. Census 1. Northeast (CT, 
+    ME, MA, NH, NJ, NY, PA, RI, VT) 2. North Central (IL, IN, IA, KS, MI, MN, 
+    MO, NE, ND, OH, SD, WI) 3. South (AL, AR, DE, D.C., FL, GA, KY, LA, MD, 
+    MS, NC, OK, SC,TN, TX, VA, WV) 4. West (AK, AZ, CA, CO, HI, ID, MT, NV, 
+    NM, OR, UT, WA, WY)""",
+            name_extended='US census region',
+            value_mapping={
+                # (CT, ME, MA, NH, NJ, NY, PA, RI, VT)
+                '1.0': "Northeast",
+                # (IL, IN, IA, KS, MI, MN, MO, NE, ND, OH, SD, WI)
+                '2.0': "North Central",
+                # (AL, AR, DE, D.C., FL, GA, KY, LA, MD, MS, NC, OK, SC,TN, TX, VA, WV) 4. West (AK, AZ, CA, CO, HI, ID, MT, NV, NM, OR, UT, WA, WY)
+                '3.0': "South",
+                # (AK, AZ, CA, CO, HI, ID, MT, NV, NM, OR, UT, WA, WY)
+                '4.0': 'West',}),
 ],
     documentation="https://electionstudies.org/data-center/anes-time-series-cumulative-data-file/")
 

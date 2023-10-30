@@ -468,7 +468,14 @@ class Preprocessor:
         else:
             transformed.columns = [sub_illegal_chars(c) for c in
                                    transformed.columns]
-
+        
+        # bug in anes dataset: some columns are of type object, one is not transformed properly (value is 'no answer')
+        object_cols = transformed.select_dtypes(include=['object']).columns
+        if len(object_cols) > 0:
+            for col in object_cols:
+                transformed[col].replace({'no answer':5.0}, inplace=True)
+            transformed[object_cols] = transformed[object_cols].astype('float')
+        
         return transformed
 
     def _dropna(self, data: pd.DataFrame) -> pd.DataFrame:
