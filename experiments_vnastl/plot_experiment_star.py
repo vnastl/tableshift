@@ -21,9 +21,17 @@ plt.rcParams['savefig.dpi'] = 300
 import os
 os.chdir("/Users/vnastl/Seafile/My Library/mpi project causal vs noncausal/tableshift")
 #%%
+# experiment_name = "anes"
+# experiments = ["anes","anes_causal"]
+# domain_label = 'VCF0112'
+
 # experiment_name = "college_scorecard"
 # experiments=["college_scorecard","college_scorecard_causal","college_scorecard_causal_no_tuition_fee"]
 # domain_label = 'CCBASIC'
+
+experiment_name = "brfss_diabetes"
+experiments = ["brfss_diabetes","brfss_diabetes_causal","brfss_diabetes_anticausal"]
+domain_label = 'PRACE1'
 
 # experiment_name = "acsemployment"
 # experiments = ["acsemployment","acsemployment_causal", "acsemployment_anticausal"]
@@ -40,10 +48,6 @@ os.chdir("/Users/vnastl/Seafile/My Library/mpi project causal vs noncausal/table
 # experiment_name = "acsfoodstamps"
 # experiments = ["acsfoodstamps","acsfoodstamps_causal"]
 # domain_label = 'DIVISION'
-
-experiment_name = "anes"
-experiments = ["anes","anes_causal"]
-domain_label = 'VCF0112'
 
 # experiment_name = "physionet"
 # experiments = ["physionet","physionet_causal", "physionet_anticausal"] 
@@ -334,7 +338,7 @@ if experiment_name == "acsfoodstamps":
     mymax = 1
     mytextx = 0.5
     mytexty = 0.4
-    myname = f"plot_{experiment_name}"
+    myname = f"plots/plot_{experiment_name}"
 
     do_plot(mymin,mymax,mytextx,mytexty,myname,[mymin,mymin],[mymax,mymax])
 
@@ -343,7 +347,7 @@ elif experiment_name == "acspubcov":
     mymax = 1
     mytextx = 0.2
     mytexty = 0.05
-    myname = f"plot_{experiment_name}"
+    myname = f"plots/plot_{experiment_name}"
 
     do_plot(mymin,mymax,mytextx,mytexty,myname,[mymin,mymin],[mymax,mymax])
 
@@ -352,7 +356,7 @@ elif experiment_name == "acsemployment":
     mymax = 1
     mytextx = 0.45
     mytexty = 0.32
-    myname = f"plot_folktable_acsemployment"
+    myname = f"plots/plot_folktable_acsemployment"
 
     do_plot(mymin,mymax,mytextx,mytexty,myname,[mymin,mymin],[mymax,mymax])
 
@@ -361,7 +365,7 @@ elif experiment_name == "acsunemployment":
     mymax = 1
     mytextx = 0.5
     mytexty = 0.4
-    myname = f"plot_acsunemployment"
+    myname = f"plots/plot_acsunemployment"
 
     do_plot(mymin,mymax,mytextx,mytexty,myname,[mymin,mymin],[mymax,mymax])
 
@@ -370,7 +374,7 @@ elif experiment_name == "anes":
     mymax = 1
     mytextx = 0.5
     mytexty = 0.4
-    myname = f"plot_{experiment_name}"
+    myname = f"plots/plot_{experiment_name}"
 
     do_plot(mymin,mymax,mytextx,mytexty,myname,[mymin,mymin],[mymax,mymax])
 
@@ -379,7 +383,16 @@ elif experiment_name == "college_scorecard":
     mymax = 1
     mytextx = 0.5
     mytexty = 0.4
-    myname = f"plot_{experiment_name}"
+    myname = f"plots/plot_{experiment_name}"
+
+    do_plot(mymin,mymax,mytextx,mytexty,myname,[mymin,mymin],[mymax,mymax])
+
+elif experiment_name == "brfss_diabetes":
+    mymin = 0.5
+    mymax = 1
+    mytextx = 0.5
+    mytexty = 0.4
+    myname = f"plots/plot_{experiment_name}"
 
     do_plot(mymin,mymax,mytextx,mytexty,myname,[mymin,mymin],[mymax,mymax])
 
@@ -388,7 +401,7 @@ elif experiment_name == "physionet":
     mymax = 1
     mytextx = 0.5
     mytexty = 0.4
-    myname = f"plot_{experiment_name}"
+    myname = f"plots/plot_{experiment_name}"
 
     do_plot(mymin,mymax,mytextx,mytexty,myname,[mymin,mymin],[mymax,mymax])
 
@@ -398,7 +411,7 @@ if experiment_name == "acsfoodstamps":
     mymax = 0.86
     mytextx = 0.75
     mytexty = 0.73
-    myname = f"plot_{experiment_name}_zoom"
+    myname = f"plots/plot_{experiment_name}_zoom"
 
     do_plot(mymin,mymax,mytextx,mytexty,myname,[mymin,mymin],[mymax,mymax])
 
@@ -409,7 +422,7 @@ elif experiment_name == "acspubcov":
     mymax = 0.83
     mytextx = 0.58
     mytexty = 0.25
-    myname = f"plot_{experiment_name}_zoom"
+    myname = f"plots/plot_{experiment_name}_zoom"
 
     do_plot(mymin,mymax,mytextx,mytexty,myname,[axminx,axminy],[mymax,mymax])
 
@@ -419,7 +432,7 @@ elif experiment_name == "acsemployment":
     mymax = 1
     mytextx = 0.94
     mytexty = 0.925
-    myname = f"plot_folktable_acsemployment_zoom"
+    myname = f"plots/plot_folktable_acsemployment_zoom"
 
     do_plot(mymin,mymax,mytextx,mytexty,myname,[axmin,axmin],[mymax,mymax])
 
@@ -430,7 +443,7 @@ elif experiment_name == "acsunemployment":
     mymax = 0.98
     mytextx = 0.96
     mytexty = 0.93
-    myname = f"plot_acsunemployment_zoom"
+    myname = f"plots/plot_acsunemployment_zoom"
 
     do_plot(mymin,mymax,mytextx,mytexty,myname,[axminx,axminy],[mymax,mymax])
 
@@ -439,7 +452,7 @@ if experiment_name == "anes":
     mymax = 0.85
     mytextx = 0.58
     mytexty = 0.53
-    myname = f"plot_{experiment_name}_zoom"
+    myname = f"plots/plot_{experiment_name}_zoom"
 
     do_plot(mymin,mymax,mytextx,mytexty,myname,[mymin,mymin],[mymax,mymax])
 
@@ -450,7 +463,7 @@ elif experiment_name == "college_scorecard":
     mymax = 0.96
     mytextx = 0.86
     mytexty = 0.58
-    myname = f"plot_{experiment_name}_zoom"
+    myname = f"plots/plot_{experiment_name}_zoom"
 
     do_plot(mymin,mymax,mytextx,mytexty,myname,[axminx,axminy],[mymax,mymax])
 
@@ -462,7 +475,7 @@ elif experiment_name == "physionet":
     mymax = 0.989
     mytextx = 0.985
     mytexty = 0.918
-    myname = f"plot_{experiment_name}_zoom"
+    myname = f"plots/plot_{experiment_name}_zoom"
 
     do_plot(mymin,mymax,mytextx,mytexty,myname,[axminx,axminy],[mymax,axmaxy])
 
