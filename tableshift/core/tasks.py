@@ -243,6 +243,10 @@ _TASK_REGISTRY = {
         TaskConfig(CollegeScorecardDataSource, COLLEGE_SCORECARD_FEATURES),
     'college_scorecard_causal':
         TaskConfig(CollegeScorecardDataSource, COLLEGE_SCORECARD_FEATURES_CAUSAL),
+    'meps':
+        TaskConfig(MEPSDataSource, MEPS_FEATURES),
+    'meps_causal':
+        TaskConfig(MEPSDataSource, MEPS_FEATURES_CAUSAL),
 }
 
 
