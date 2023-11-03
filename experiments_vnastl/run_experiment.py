@@ -88,7 +88,8 @@ if __name__ == "__main__":
     # args = parser.parse_args()
     # main(**vars(args))
 
-    experiments = ["anes","anes_causal"]
+    # experiments = ["assistments","assistments_causal"]
+    # experiments = ["anes","anes_causal"]
     # experiments=["acspubcov", "acspubcov_causal"]
     # experiments=["college_scorecard","college_scorecard_causal"]
     # experiments = ["acsunemployment","acsunemployment_causal", "acsunemployment_anticausal"] 

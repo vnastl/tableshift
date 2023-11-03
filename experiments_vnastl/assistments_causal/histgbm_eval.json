@@ -1,0 +1,1 @@
+{"id_test": 0.8479325945544443, "id_test_conf": [0.846563784796169, 0.8492938350376562], "features": ["hint_count", "school_id", "skill_id", "problem_type", "bottom_hint", "tutor_mode", "position", "type", "first_action"], "ood_test": 0.44333683105981114, "ood_test_conf": [0.42087396343299993, 0.46597432439024783]}

@@ -534,6 +534,216 @@ BRFSS_CROSS_YEAR_FEATURE_MAPPING = {
     )
 }
 
+#########################################################################
+#########################################################################
+# Causal features
+BRFSS_DIABETES_FEATURES_CAUSAL = FeatureList([
+    # Derived feature for year.
+    Feature("IYEAR", float, "Year of BRFSS dataset.",
+            name_extended="Survey year"),
+    ################ Target ################
+    Feature("DIABETES", float,
+            '(Ever told) you have diabetes',
+            name_extended='(Ever told) you have diabetes',
+            is_target=True,
+            na_values=(7, 9),
+            # value_mapping={
+            #     1: 'Yes',
+            #     2: 'Yes but female told only during pregnancy',
+            #     3: 'No',
+            #     4: 'No, prediabetes or borderline diabetes',
+            #     7: 'Don’t know / Not Sure',
+            #     9: 'Refused'
+            # }
+            ),
+    # ################ Demographics/sensitive attributes. ################
+    # Preferred race category; note that ==1 is equivalent to
+    # "White non-Hispanic race group" variable _RACEG21
+    Feature("PRACE1", float, """Preferred race category.""",
+            name_extended="Preferred race category",
+            na_values=(7., 8., 77., 99.),
+            value_mapping={
+                1: 'White',
+                2: 'Black or African American',
+                3: 'American Indian or Alaskan Native',
+                4: 'Asian', 5: 'Native Hawaiian or other Pacific Islander',
+                6: 'Other race',
+                7: 'No preferred race',
+                8: 'Multiracial but preferred race not answered',
+                77: 'Don’t know/Not sure', 9: 'refused', }),
+    Feature("SEX", float, """Indicate sex of respondent.""",
+            name_extended="Sex of respondent",
+            value_mapping={1: "Male", 2: "Female"}),
+    # Below are a set of indicators for known risk factors for diabetes.
+    ################ BMI/Obesity ################
+    # Calculated Body Mass Index (BMI)
+    Feature("BMI5", float, """Computed Body Mass Index (BMI)""",
+            name_extended='Body Mass Index (BMI)',
+            note="""Values: 1 - 9999 1 or greater - Notes: WTKG3/(HTM4*HTM4) 
+            (Has 2 implied decimal places); BLANK: Don’t 
+            know/Refused/Missing."""),
+    # Four-categories of Body Mass Index (BMI)
+    BMI5CAT_FEATURE,
+    ################ Smoking ################
+    *BRFSS_SMOKE_FEATURES,
+    ################ Diet ################
+    *BRFSS_DIET_FEATURES,
+    ################ Alcohol Consumption ################
+    *BRFSS_ALCOHOL_FEATURES,
+    ################ Exercise ################
+    PHYSICAL_ACTIVITY_FEATURE,
+    ################ Education ################
+    # highest grade or year of school completed
+    Feature("EDUCA", cat_dtype,
+            "Highest grade or year of school completed",
+            name_extended="Highest grade or year of school completed",
+            note="""Question: What is the highest grade or year of school you 
+            completed?""",
+            na_values=(9,),
+            value_mapping={
+                1: 'Never attended school or only kindergarten',
+                2: 'Grades 1 through 8 (Elementary)',
+                3: 'Grades 9 through 11 (Some high school)',
+                4: 'Grade 12 or GED (High school graduate)',
+                5: 'College 1 year to 3 years (Some college or technical school)',
+                6: 'College 4 years or more (College graduate)', 9: 'Refused'
+            }),
+])
+
+BRFSS_DIABETES_FEATURES_ANTICAUSAL =  FeatureList([
+    # Derived feature for year.
+    Feature("IYEAR", float, "Year of BRFSS dataset.",
+            name_extended="Survey year"),
+    ################ Target ################
+    Feature("DIABETES", float,
+            '(Ever told) you have diabetes',
+            name_extended='(Ever told) you have diabetes',
+            is_target=True,
+            na_values=(7, 9),
+            # value_mapping={
+            #     1: 'Yes',
+            #     2: 'Yes but female told only during pregnancy',
+            #     3: 'No',
+            #     4: 'No, prediabetes or borderline diabetes',
+            #     7: 'Don’t know / Not Sure',
+            #     9: 'Refused'
+            # }
+            ),
+    # Preferred race category; note that ==1 is equivalent to
+    # "White non-Hispanic race group" variable _RACEG21
+    Feature("PRACE1", float, """Preferred race category.""",
+            name_extended="Preferred race category",
+            na_values=(7., 8., 77., 99.),
+            value_mapping={
+                1: 'White',
+                2: 'Black or African American',
+                3: 'American Indian or Alaskan Native',
+                4: 'Asian', 5: 'Native Hawaiian or other Pacific Islander',
+                6: 'Other race',
+                7: 'No preferred race',
+                8: 'Multiracial but preferred race not answered',
+                77: 'Don’t know/Not sure', 9: 'refused', }),
+
+    # Below are a set of indicators for known risk factors for diabetes.
+    ################ High blood pressure ################
+
+    Feature("HIGH_BLOOD_PRESS", cat_dtype, na_values=(9,),
+            description="Adults who have been told they have high blood "
+                        "pressure by a doctor, nurse, or other health "
+                        "professional.",
+            name_extended="(Ever told) you have high blood pressure",
+            value_mapping={1: 'No', 2: 'Yes',
+                           9: " Don’t know/Not Sure/Refused/Missing"}),
+    ################ High cholesterol ################
+    # Cholesterol check within past five years
+    Feature("CHOL_CHK_PAST_5_YEARS", cat_dtype,
+            "About how long has it been since you last"
+            " had your blood cholesterol checked?",
+            name_extended="Time since last blooc cholesterol check",
+            note="""Aligned version of 'CHOLCHK*' features from 2015-2021; see 
+            _align_chol_chk() below..""",
+            na_values=(9,),
+            value_mapping={
+                1: 'Never',
+                2: 'Within the past year (anytime less than 12 months ago)',
+                3: 'Within the past 2 years (more than 1 year but less than 2 years ago)',
+                4: 'Within the past 5 years (more than 2 years but less than 5 years ago)',
+                5: '5 or more years ago', 7: "Don’t know/Not Sure", 9: 'Refused'
+            }),
+
+    Feature("TOLDHI", cat_dtype,
+            """Have you ever been told by a doctor, nurse or other health 
+            professional that your blood cholesterol is high?""",
+            name_extended="Ever been told you have high blood cholesterol",
+            na_values=(7, 9),
+            value_mapping={
+                1: 'Yes', 2: 'No', 7: "Don’t know/Not Sure", 9: 'Refused',
+            }),
+    ################ Other chronic health conditions ################
+    Feature("CVDSTRK3", cat_dtype,
+            """Ever had a stroke, or been told you had a stroke""",
+            name_extended="Ever had a stroke, or been told you had a stroke",
+            na_values=(7, 9),
+            value_mapping={1: 'Yes', 2: 'No', 7: "Don’t know/Not Sure",
+                           9: 'Refused', }),
+    Feature("MICHD", cat_dtype, """Question: Respondents that have ever 
+    reported having coronary heart disease (CHD) or myocardial infarction ( 
+    MI).""",
+            name_extended="Reports of coronary heart disease (CHD) or "
+                          "myocardial infarction (MI)",
+            value_mapping={
+                1: 'Reported having myocardial infarction or coronary heart '
+                   'disease',
+                2: 'Did not report having myocardial infarction or coronary '
+                   'heart disease',
+            }),
+    ################ Time since last checkup
+    # About how long has it been since you last visited a
+    # doctor for a routine checkup?
+    Feature("CHECKUP1", cat_dtype,
+            """Time since last visit to the doctor for a checkup""",
+            name_extended="Time since last visit to the doctor for a checkup",
+            na_values=(7, 9),
+            value_mapping={
+                1: 'Within past year (anytime < 12 months ago)',
+                2: 'Within past 2 years (1 year but < 2 years ago)',
+                3: 'Within past 5 years (2 years but < 5 years ago)',
+                4: '5 or more years ago',
+                7: "Don’t know/Not sure", 8: 'Never', 9: 'Refuse'},
+            note="""Question: About how long has it been since you last 
+            visited a doctor for a routine checkup? [A routine checkup is a 
+            general physical exam, not an exam for a specific injury, 
+            illness, or condition.] """
+            ),
+    ################ Health care coverage ################
+    # Note: we keep missing values (=9) for this column since they are grouped
+    # with respondents aged over 64; otherwise dropping the observations
+    # with this value would exclude all respondents over 64.
+    Feature("HEALTH_COV", cat_dtype,
+            "Respondents aged 18-64 who have any form of health care coverage",
+            name_extended='Current health care coverage',
+            value_mapping={
+                1: 'Have health care coverage',
+                2: 'Do not have health care coverage',
+                9: "Not aged 18-64, Don’t know/Not Sure, Refused or Missing"
+            }),
+    ################ Mental health ################
+    # for how many days during the past 30
+    # days was your mental health not good?
+    Feature("MENTHLTH", float,
+            """Now thinking about your mental health, which includes stress, 
+            depression, and problems with emotions, for how many days during 
+            the past 30 days was your mental health not good?""",
+            name_extended="Answer to the question 'for how many days during "
+                          "the past 30 days was your mental health not good?'",
+            na_values=(77, 99),
+            note="""Values: 1 - 30: Number of days, 88: None, 77: Don’t 
+            know/Not sure, 99: Refused."""),
+])
+
+#########################################################################
+#########################################################################
+
 # Raw names of the input features used in BRFSS. Useful to
 # subset before preprocessing, since some features contain near-duplicate
 # versions (i.e. calculated and not-calculated versions, differing only by a
@@ -585,10 +795,10 @@ def align_brfss_features(df: pd.DataFrame):
     df["CHOL_CHK_PAST_5_YEARS"] = df.apply(_align_chol_chk, axis=1)
     return df
 
-
 def brfss_shared_preprocessing(df: pd.DataFrame) -> pd.DataFrame:
     """Shared preprocessing function for BRFSS data tasks."""
-    df = df[_BRFSS_INPUT_FEATURES]
+    TEMP_BRFSS_INPUT_FEATURES = list(set(_BRFSS_INPUT_FEATURES) & set(df.columns))
+    df = df[TEMP_BRFSS_INPUT_FEATURES]
 
     # Sensitive columns
     # df["_PRACE1"] = (df["_PRACE1"] == 1).astype(int)
@@ -596,18 +806,23 @@ def brfss_shared_preprocessing(df: pd.DataFrame) -> pd.DataFrame:
 
     # PHYSHLTH, POORHLTH, MENTHLTH are measured in days, but need to
     # map 88 to 0 because it means zero (i.e. zero bad health days)
-    df["PHYSHLTH"] = df["PHYSHLTH"].replace({88: 0})
-    df["MENTHLTH"] = df["MENTHLTH"].replace({88: 0})
+    if "PHYSHLTH" in df.columns:
+        df["PHYSHLTH"] = df["PHYSHLTH"].replace({88: 0})
+    if "MENTHLTH" in df.columns:
+        df["MENTHLTH"] = df["MENTHLTH"].replace({88: 0})
 
     # Drop rows where drinks per week is unknown/refused/missing;
     # this uses a different missingness code from other variables.
-    df = df[~(df["DRNK_PER_WEEK"] == 99900)]
+    if "DRNK_PER_WEEK" in df.columns:
+        df = df[~(df["DRNK_PER_WEEK"] == 99900)]
 
     # Some questions are not asked for various reasons
     # (see notes under "BLANK" for that question in data dictionary);
     # create an indicator for these due to large fraction of missingness.
-    df["SMOKDAY2"] = df["SMOKDAY2"].fillna("NOTASKED_MISSING").astype(str)
-    df["TOLDHI"] = df["TOLDHI"].fillna("NOTASKED_MISSING").astype(str)
+    if "SMOKDAY2" in df.columns:
+        df["SMOKDAY2"] = df["SMOKDAY2"].fillna("NOTASKED_MISSING").astype(str)
+    if "TOLDHI" in df.columns:
+        df["TOLDHI"] = df["TOLDHI"].fillna("NOTASKED_MISSING").astype(str)
 
     # Remove leading underscores from column names
     renames = {c: re.sub("^_", "", c) for c in df.columns if c.startswith("_")}

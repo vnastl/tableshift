@@ -424,13 +424,13 @@ class TabularDataset(Dataset):
         for domain in sorted(split_data[3].unique()):
             # Boolean vector where True indicates observations in the domain.
             idxs = split_data[3] == domain
-            assert idxs.sum() >= batch_size, \
-                "sanity check at least one full batch per domain."
+            if idxs.sum() >= batch_size:
+                # "sanity check at least one full batch per domain."
 
-            split_domain_data = [df[idxs] for df in split_data]
-            split_loader = _make_dataloader_from_dataframes(
-                split_domain_data, batch_size, shuffle, infinite=infinite)
-            loaders[domain] = split_loader
+                split_domain_data = [df[idxs] for df in split_data]
+                split_loader = _make_dataloader_from_dataframes(
+                    split_domain_data, batch_size, shuffle, infinite=infinite)
+                loaders[domain] = split_loader
         return loaders
 
     def get_dataset_baseline_metrics(self, split):

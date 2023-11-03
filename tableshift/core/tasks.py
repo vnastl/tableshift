@@ -8,11 +8,11 @@ the tableshift benchmark.
 
 from dataclasses import dataclass
 from typing import Any
+
 from .data_source import *
 from .features import FeatureList
 
 from tableshift.datasets import *
-
 
 @dataclass
 class TaskConfig:
@@ -61,8 +61,14 @@ _TASK_REGISTRY = {
         TaskConfig(ANESDataSource, ANES_FEATURES_CAUSAL),
     "assistments":
         TaskConfig(AssistmentsDataSource, ASSISTMENTS_FEATURES),
+    "assistments_causal":
+        TaskConfig(AssistmentsDataSource, ASSISTMENTS_FEATURES_CAUSAL),
     "brfss_diabetes":
         TaskConfig(BRFSSDataSource, BRFSS_DIABETES_FEATURES),
+    "brfss_diabetes_causal":
+        TaskConfig(BRFSSDataSource, BRFSS_DIABETES_FEATURES_CAUSAL),
+    "brfss_diabetes_anticausal":
+        TaskConfig(BRFSSDataSource, BRFSS_DIABETES_FEATURES_ANTICAUSAL),
     "brfss_blood_pressure":
         TaskConfig(BRFSSDataSource, BRFSS_BLOOD_PRESSURE_FEATURES),
     "communities_and_crime":
