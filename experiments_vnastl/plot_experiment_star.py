@@ -21,17 +21,24 @@ plt.rcParams['savefig.dpi'] = 300
 import os
 os.chdir("/Users/vnastl/Seafile/My Library/mpi project causal vs noncausal/tableshift")
 #%%
+# To add anticausal
+anticausal = ["acsemployment", "acsunemployment", "physionet", "brfss_diabetes"]
+
 # experiment_name = "anes"
 # experiments = ["anes","anes_causal"]
 # domain_label = 'VCF0112'
+
+# experiment_name = "assistments"
+# experiments = ["assistments","assistments_causal"]
+# domain_label = 'school_id'
 
 # experiment_name = "college_scorecard"
 # experiments=["college_scorecard","college_scorecard_causal","college_scorecard_causal_no_tuition_fee"]
 # domain_label = 'CCBASIC'
 
-experiment_name = "brfss_diabetes"
-experiments = ["brfss_diabetes","brfss_diabetes_causal","brfss_diabetes_anticausal"]
-domain_label = 'PRACE1'
+# experiment_name = "brfss_diabetes"
+# experiments = ["brfss_diabetes","brfss_diabetes_causal","brfss_diabetes_anticausal"]
+# domain_label = 'PRACE1'
 
 # experiment_name = "acsemployment"
 # experiments = ["acsemployment","acsemployment_causal", "acsemployment_anticausal"]
@@ -48,6 +55,10 @@ domain_label = 'PRACE1'
 # experiment_name = "acsfoodstamps"
 # experiments = ["acsfoodstamps","acsfoodstamps_causal"]
 # domain_label = 'DIVISION'
+
+experiment_name = "meps"
+experiments = ["meps", "meps_causal"]
+domain_label = 'INSCOV19'
 
 # experiment_name = "physionet"
 # experiments = ["physionet","physionet_causal", "physionet_anticausal"] 
@@ -239,7 +250,7 @@ def do_plot(mymin,mymax,mytextx,mytexty,myname,axmin=[0.5,0.5],axmax=[1.0,1.0]):
         hull = ConvexHull(filled,incremental=True)
         plt.fill(filled[hull.vertices, 0], filled[hull.vertices, 1], color="tab:pink",alpha=0.3)
     
-    if experiment_name in ["acsemployment", "acsunemployment", "physionet"]:
+    if experiment_name in anticausal:
         eval_plot = eval_all[eval_all['features']=="anticausal"]
         eval_plot.sort_values('id_test',inplace=True)
         # Calculate the pareto set
@@ -324,7 +335,7 @@ def do_plot(mymin,mymax,mytextx,mytexty,myname,axmin=[0.5,0.5],axmax=[1.0,1.0]):
 
     # Add text below the plot
     
-    if experiment_name == "acsunemployment" or experiment_name == "physionet":
+    if experiment_name in anticausal:
         plt.text(mytextx, mytexty,f'Causal features: {causal_features} \n Anticausal features: {extra_features}')
     else:
         plt.text(mytextx, mytexty,f'Causal features: {causal_features}')
@@ -378,6 +389,15 @@ elif experiment_name == "anes":
 
     do_plot(mymin,mymax,mytextx,mytexty,myname,[mymin,mymin],[mymax,mymax])
 
+elif experiment_name == "assistments":
+    mymin = 0.4
+    mymax = 1
+    mytextx = 0.4
+    mytexty = 0.3
+    myname = f"plots/plot_{experiment_name}"
+
+    do_plot(mymin,mymax,mytextx,mytexty,myname,[mymin,mymin],[mymax,mymax])
+
 elif experiment_name == "college_scorecard":
     mymin = 0.5
     mymax = 1
@@ -396,6 +416,15 @@ elif experiment_name == "brfss_diabetes":
 
     do_plot(mymin,mymax,mytextx,mytexty,myname,[mymin,mymin],[mymax,mymax])
 
+elif experiment_name == "meps":
+    mymin = 0.5
+    mymax = 1
+    mytextx = 0.5
+    mytexty = 0.4
+    myname = f"plots/plot_{experiment_name}"
+
+    do_plot(mymin,mymax,mytextx,mytexty,myname,[mymin,mymin],[mymax,mymax])
+
 elif experiment_name == "physionet":
     mymin = 0.5
     mymax = 1
@@ -405,7 +434,7 @@ elif experiment_name == "physionet":
 
     do_plot(mymin,mymax,mytextx,mytexty,myname,[mymin,mymin],[mymax,mymax])
 
- # %%
+ # %% ZOOM
 if experiment_name == "acsfoodstamps":
     mymin = 0.75
     mymax = 0.86
@@ -456,6 +485,17 @@ if experiment_name == "anes":
 
     do_plot(mymin,mymax,mytextx,mytexty,myname,[mymin,mymin],[mymax,mymax])
 
+elif experiment_name == "assistments":
+    mymin = 0.4
+    axminx = 0.68
+    axminy = 0.43 
+    mymax = 0.96
+    mytextx = 0.68
+    mytexty = 0.35
+    myname = f"plots/plot_{experiment_name}_zoom"
+
+    do_plot(mymin,mymax,mytextx,mytexty,myname,[axminx,axminy],[mymax,mymax])
+
 elif experiment_name == "college_scorecard":
     mymin = 0.65
     axminx = 0.86
@@ -463,6 +503,17 @@ elif experiment_name == "college_scorecard":
     mymax = 0.96
     mytextx = 0.86
     mytexty = 0.58
+    myname = f"plots/plot_{experiment_name}_zoom"
+
+    do_plot(mymin,mymax,mytextx,mytexty,myname,[axminx,axminy],[mymax,mymax])
+
+elif experiment_name == "brfss_diabetes":
+    mymin = 0.81
+    axminx = 0.87
+    axminy = 0.81
+    mymax = 0.88
+    mytextx = 0.87
+    mytexty = 0.79
     myname = f"plots/plot_{experiment_name}_zoom"
 
     do_plot(mymin,mymax,mytextx,mytexty,myname,[axminx,axminy],[mymax,mymax])

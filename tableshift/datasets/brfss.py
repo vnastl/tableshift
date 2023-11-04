@@ -587,7 +587,7 @@ BRFSS_DIABETES_FEATURES_CAUSAL = FeatureList([
     ################ Smoking ################
     *BRFSS_SMOKE_FEATURES,
     ################ Diet ################
-    *BRFSS_DIET_FEATURES,
+    # *BRFSS_DIET_FEATURES,
     ################ Alcohol Consumption ################
     *BRFSS_ALCOHOL_FEATURES,
     ################ Exercise ################
