@@ -12,7 +12,9 @@ experiments = [
                 # "physionet",
                 # "acsfoodstamps",
                 # "assistments",
-                "brfss_diabetes",
+                # "brfss_diabetes",
+                "acsincome",
+                "meps"
                 ]
 cache_dir="tmp"
 

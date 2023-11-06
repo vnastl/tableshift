@@ -32,6 +32,9 @@ _TASK_REGISTRY = {
     "acsincome":
         TaskConfig(ACSDataSource,
                    ACS_INCOME_FEATURES + ACS_SHARED_FEATURES),
+    "acsincome_causal":
+        TaskConfig(ACSDataSource,
+                   ACS_INCOME_FEATURES_CAUSAL),
     "acsfoodstamps":
         TaskConfig(ACSDataSource,
                    ACS_FOODSTAMPS_FEATURES + ACS_SHARED_FEATURES),
@@ -71,6 +74,8 @@ _TASK_REGISTRY = {
         TaskConfig(BRFSSDataSource, BRFSS_DIABETES_FEATURES_ANTICAUSAL),
     "brfss_blood_pressure":
         TaskConfig(BRFSSDataSource, BRFSS_BLOOD_PRESSURE_FEATURES),
+    "brfss_blood_pressure_causal":
+        TaskConfig(BRFSSDataSource, BRFSS_BLOOD_PRESSURE_FEATURES_CAUSAL),
     "communities_and_crime":
         TaskConfig(CommunitiesAndCrimeDataSource, CANDC_FEATURES),
     "compas":
@@ -78,6 +83,9 @@ _TASK_REGISTRY = {
     "diabetes_readmission":
         TaskConfig(DiabetesReadmissionDataSource,
                    DIABETES_READMISSION_FEATURES),
+    "diabetes_readmission_causal":
+        TaskConfig(DiabetesReadmissionDataSource,
+                   DIABETES_READMISSION_FEATURES_CAUSAL),
     "german":
         TaskConfig(GermanDataSource, GERMAN_FEATURES),
     "heloc":
@@ -108,10 +116,14 @@ _TASK_REGISTRY = {
         TaskConfig(MetaMIMICDataSource, METAMIMIC_RESPIRATORY_FEATURES),
     "mimic_extract_los_3":
         TaskConfig(MIMICExtractDataSource, MIMIC_EXTRACT_LOS_3_FEATURES),
+    "mimic_extract_los_3_causal":
+        TaskConfig(MIMICExtractDataSource, MIMIC_EXTRACT_LOS_3_FEATURES_CAUSAL),
     "mimic_extract_los_3_selected":
         TaskConfig(MIMICExtractDataSource, MIMIC_EXTRACT_LOS_3_SELECTED_FEATURES),
     "mimic_extract_mort_hosp":
         TaskConfig(MIMICExtractDataSource, MIMIC_EXTRACT_MORT_HOSP_FEATURES),
+    "mimic_extract_mort_hosp_causal":
+        TaskConfig(MIMICExtractDataSource, MIMIC_EXTRACT_MORT_HOSP_FEATURES_CAUSAL),
     "mimic_extract_mort_hosp_selected":
         TaskConfig(MIMICExtractDataSource, MIMIC_EXTRACT_MORT_HOSP_SELECTED_FEATURES),
     "mooc":
@@ -124,6 +136,8 @@ _TASK_REGISTRY = {
         TaskConfig(NHANESDataSource,
                    NHANES_SHARED_FEATURES +
                    NHANES_LEAD_FEATURES),
+    "nhanes_lead_causal":
+        TaskConfig(NHANESDataSource, NHANES_LEAD_FEATURES_CAUSAL),
     "physionet":
         TaskConfig(PhysioNetDataSource, PHYSIONET_FEATURES),
     "physionet_causal":

@@ -280,6 +280,56 @@ DIABETES_READMISSION_FEATURES = FeatureList(features=[
             is_target=True),
 ], documentation="http://www.hindawi.com/journals/bmri/2014/781670/")
 
+DIABETES_READMISSION_FEATURES_CAUSAL = FeatureList(features=[
+    Feature('admission_source_id', int, """Integer identifier corresponding 
+    to 21 distinct values.""",
+            name_extended="Admission source",
+            value_mapping={
+                1: 'Physician Referral', 2: 'Clinic Referral ',
+                3: 'HMO Referral', 4: 'Transfer from a hospital',
+                5: 'Transfer from a Skilled Nursing Facility (SNF)',
+                6: 'Transfer from another health care facility',
+                7: 'Emergency Room',
+                8: 'Court/Law Enforcement',
+                9: 'Not Available',
+                10: 'Transfer from critial access hospital',
+                11: 'Normal Delivery',
+                12: 'Premature Delivery',
+                13: 'Sick Baby', 14: 'Extramural Birth', 15: 'Not Available',
+                17: 'NULL',
+                18: 'Transfer From Another Home Health Agency',
+                19: 'Readmission to Same Home Health Agency',
+                20: 'Not Mapped', 21: 'Unknown/Invalid',
+                22: 'Transfer from hospital inpt/same fac reslt in a sep claim',
+                23: 'Born inside this hospital',
+                24: 'Born outside this hospital',
+                25: 'Transfer from Ambulatory Surgery Center',
+                26: 'Transfer from Hospice',
+            }),
+    Feature('race', cat_dtype, """Nominal. Values: Caucasian, Asian, African 
+    American, Hispanic, and other"""),
+    Feature('gender', cat_dtype, """Nominal. Values: male, female, and 
+    unknown/invalid."""),
+    Feature('age', cat_dtype, """Nominal. Grouped in 10-year intervals: [0, 
+    10), [10, 20), . . ., [90, 100)"""),
+    Feature('payer_code', cat_dtype, "Integer identifier corresponding to 23 "
+                                     "distinct values, for example, "
+                                     "Blue Cross\Blue Shield, Medicare, "
+                                     "and self-pay",
+            name_extended="Payer code"),
+    Feature('medical_specialty', cat_dtype, "Specialty of the admitting "
+                                            "physician, corresponding to 84 "
+                                            "distinct values, for example, "
+                                            "cardiology, internal medicine, "
+                                            "family/general practice, "
+                                            "and surgeon.",
+            name_extended="Medical specialty of the admitting physician"),
+    # Converted to binary (readmit vs. no readmit).
+    Feature('readmitted', float, "30 days, '>30' if the patient was "
+                                 "readmitted in more than 30 days, and 'No' "
+                                 "for no record of readmission.",
+            is_target=True),
+], documentation="http://www.hindawi.com/journals/bmri/2014/781670/")
 
 def preprocess_diabetes_readmission(df: pd.DataFrame):
     # Drop 2273 obs with missing race (2.2336% of total data)

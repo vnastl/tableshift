@@ -88,17 +88,23 @@ if __name__ == "__main__":
     # args = parser.parse_args()
     # main(**vars(args))
 
-    # experiments = ["meps","meps_causal"]
-    # experiments = ["brfss_diabetes_causal"]
-    # experiments = ["brfss_diabetes","brfss_diabetes_causal"]
-    experiments = ["acsincome", "acsincome_causal"]
-    # experiments = ["assistments","assistments_causal"]
-    # experiments = ["anes","anes_causal"]
+    
+    
+    # experiments = ["acsincome", ] #"acsincome_causal"
     # experiments=["acspubcov", "acspubcov_causal"]
-    # experiments=["college_scorecard","college_scorecard_causal"]
     # experiments = ["acsunemployment","acsunemployment_causal", "acsunemployment_anticausal"] 
-    # experiments = ["physionet","physionet_causal", "physionet_anticausal"]
     # experiments=["acsfoodstamps", "acsfoodstamps_causal"]
+    # experiments = ["anes","anes_causal"]
+    # experiments = ["assistments","assistments_causal"]
+    # experiments = ["brfss_diabetes_causal","brfss_diabetes_anticausal","brfss_diabetes"]
+    experiments = ["brfss_blood_pressure_causal","brfss_blood_pressure"]
+    # experiments=["college_scorecard","college_scorecard_causal"]
+    # experiments = ["nhanes_lead", "nhanes_lead_causal"]
+    # experiments = ["diabetes_readmission", "diabetes_readmission_causal"]
+    # experiments = ["meps","meps_causal"]
+    # experiments = ["mimic_extract_los_3_causal"] #, "mimic_extract_mort_hosp", "mimic_extract_mort_hosp_causal"] #"mimic_extract_los_3",
+    # experiments = ["physionet","physionet_causal", "physionet_anticausal"]
+    
     cache_dir="tmp"
 
     for experiment in experiments:

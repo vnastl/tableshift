@@ -54,6 +54,17 @@ BENCHMARK_CONFIGS = {
         grouper=Grouper({"RAC1P": [1, ], "SEX": [1, ]}, drop=False),
         preprocessor_config=PreprocessorConfig(),
         tabular_dataset_kwargs={"acs_task": "acsincome"}),
+    
+    "acsincome_causal": ExperimentConfig(
+        splitter=DomainSplitter(val_size=DEFAULT_ID_VAL_SIZE,
+                                ood_val_size=DEFAULT_OOD_VAL_SIZE,
+                                random_state=DEFAULT_RANDOM_STATE,
+                                id_test_size=DEFAULT_ID_TEST_SIZE,
+                                domain_split_varname="DIVISION",
+                                domain_split_ood_values=['01']),
+        grouper=Grouper({"RAC1P": [1, ], "SEX": [1, ]}, drop=False),
+        preprocessor_config=PreprocessorConfig(),
+        tabular_dataset_kwargs={"acs_task": "acsincome"}),
 
     "acspubcov": ExperimentConfig(
         splitter=DomainSplitter(val_size=DEFAULT_ID_VAL_SIZE,
@@ -167,6 +178,21 @@ BENCHMARK_CONFIGS = {
                                 "task": "blood_pressure",
                                 "years": BRFSS_YEARS},
     ),
+    "brfss_blood_pressure_causal": ExperimentConfig(
+        splitter=DomainSplitter(val_size=DEFAULT_ID_VAL_SIZE,
+                                ood_val_size=DEFAULT_OOD_VAL_SIZE,
+                                random_state=DEFAULT_RANDOM_STATE,
+                                id_test_size=DEFAULT_ID_TEST_SIZE,
+                                domain_split_varname="BMI5CAT",
+                                # OOD values: [1 underweight, 2 normal weight], [3 overweight, 4 obese]
+                                domain_split_ood_values=['3.0', '4.0']),
+        grouper=Grouper({"PRACE1": [1, ], "SEX": [1, ]}, drop=False),
+        preprocessor_config=PreprocessorConfig(passthrough_columns=["IYEAR"]),
+        tabular_dataset_kwargs={"name": "brfss_blood_pressure_causal",
+                                "task": "blood_pressure",
+                                "years": BRFSS_YEARS},
+    ),
+
 
     # "White nonhispanic" (in-domain) vs. all other race/ethnicity codes (OOD)
     "brfss_diabetes": ExperimentConfig(
@@ -224,6 +250,21 @@ BENCHMARK_CONFIGS = {
         # This is due to high cardinality of 'diag_*' features.
         preprocessor_config=PreprocessorConfig(min_frequency=0.01),
         tabular_dataset_kwargs={}),
+    "diabetes_readmission_causal": ExperimentConfig(
+        splitter=DomainSplitter(val_size=DEFAULT_ID_VAL_SIZE,
+                                ood_val_size=DEFAULT_OOD_VAL_SIZE,
+                                random_state=DEFAULT_RANDOM_STATE,
+                                id_test_size=DEFAULT_ID_TEST_SIZE,
+                                domain_split_varname='admission_source_id',
+                                domain_split_ood_values=[7, ]),
+        # male vs. all others; white non-hispanic vs. others
+        grouper=Grouper({"race": ["Caucasian", ], "gender": ["Male", ]},
+                        drop=False),
+        # Note: using min_frequency=0.01 reduces data
+        # dimensionality from ~2400 -> 169 columns.
+        # This is due to high cardinality of 'diag_*' features.
+        preprocessor_config=PreprocessorConfig(min_frequency=0.01),
+        tabular_dataset_kwargs={}),
 
     "heloc": ExperimentConfig(
         splitter=DomainSplitter(val_size=DEFAULT_ID_VAL_SIZE,
@@ -251,6 +292,20 @@ BENCHMARK_CONFIGS = {
         tabular_dataset_kwargs={"task": "los_3",
                                 "name": "mimic_extract_los_3"}),
 
+    "mimic_extract_los_3_causal": ExperimentConfig(
+        splitter=DomainSplitter(val_size=DEFAULT_ID_VAL_SIZE,
+                                ood_val_size=DEFAULT_OOD_VAL_SIZE,
+                                random_state=DEFAULT_RANDOM_STATE,
+                                id_test_size=DEFAULT_ID_TEST_SIZE,
+                                domain_split_varname="insurance",
+                                domain_split_ood_values=["Medicare"]),
+
+        grouper=Grouper({"gender": ['M'], }, drop=False),
+        preprocessor_config=PreprocessorConfig(
+            passthrough_columns=_MIMIC_EXTRACT_PASSTHROUGH_COLUMNS),
+        tabular_dataset_kwargs={"task": "los_3",
+                                "name": "mimic_extract_los_3_causal"}),
+
     "mimic_extract_mort_hosp": ExperimentConfig(
         splitter=DomainSplitter(val_size=DEFAULT_ID_VAL_SIZE,
                                 ood_val_size=DEFAULT_OOD_VAL_SIZE,
@@ -264,6 +319,19 @@ BENCHMARK_CONFIGS = {
             passthrough_columns=_MIMIC_EXTRACT_PASSTHROUGH_COLUMNS),
         tabular_dataset_kwargs={"task": "mort_hosp",
                                 "name": "mimic_extract_mort_hosp"}),
+    "mimic_extract_mort_hosp_causal": ExperimentConfig(
+        splitter=DomainSplitter(val_size=DEFAULT_ID_VAL_SIZE,
+                                ood_val_size=DEFAULT_OOD_VAL_SIZE,
+                                random_state=DEFAULT_RANDOM_STATE,
+                                id_test_size=DEFAULT_ID_TEST_SIZE,
+                                domain_split_varname="insurance",
+                                domain_split_ood_values=["Medicare",
+                                                         "Medicaid"]),
+        grouper=Grouper({"gender": ['M'], }, drop=False),
+        preprocessor_config=PreprocessorConfig(
+            passthrough_columns=_MIMIC_EXTRACT_PASSTHROUGH_COLUMNS),
+        tabular_dataset_kwargs={"task": "mort_hosp",
+                                "name": "mimic_extract_mort_hosp_causal"}),
 
     "nhanes_cholesterol": ExperimentConfig(
         splitter=DomainSplitter(val_size=DEFAULT_ID_VAL_SIZE,
@@ -390,6 +458,20 @@ BENCHMARK_CONFIGS = {
     ),
 
     "nhanes_lead": ExperimentConfig(
+        splitter=DomainSplitter(val_size=DEFAULT_ID_VAL_SIZE,
+                                ood_val_size=DEFAULT_OOD_VAL_SIZE,
+                                random_state=DEFAULT_RANDOM_STATE,
+                                id_test_size=DEFAULT_ID_TEST_SIZE,
+                                domain_split_varname='INDFMPIRBelowCutoff',
+                                domain_split_ood_values=[1.]),
+        # Race (non. hispanic white vs. all others; male vs. all others)
+        grouper=Grouper({"RIDRETH_merged": [3, ], "RIAGENDR": ["1.0", ]},
+                        drop=False),
+        preprocessor_config=PreprocessorConfig(
+            passthrough_columns=["nhanes_year"],
+            numeric_features="kbins"),
+        tabular_dataset_kwargs={"nhanes_task": "lead", "years": NHANES_YEARS}),
+    "nhanes_lead_causal": ExperimentConfig(
         splitter=DomainSplitter(val_size=DEFAULT_ID_VAL_SIZE,
                                 ood_val_size=DEFAULT_OOD_VAL_SIZE,
                                 random_state=DEFAULT_RANDOM_STATE,

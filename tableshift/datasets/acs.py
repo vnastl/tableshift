@@ -631,6 +631,50 @@ ACS_FOODSTAMPS_FEATURES_CAUSAL = FeatureList(features=[
     documentation="https://www2.census.gov/programs-surveys/acs/tech_docs"
                   "/pums/data_dict/PUMS_Data_Dictionary_2019.pdf"
 )
+
+ACS_INCOME_FEATURES_CAUSAL = FeatureList([
+    Feature('DIVISION', cat_dtype,
+            "Division code based on 2010 Census definitions.",
+            name_extended='geographic region',
+            value_mapping={
+                0: 'Puerto Rico',
+                1: 'New England (Northeast region)',
+                2: 'Middle Atlantic (Northeast region)',
+                3: 'East North Central (Midwest region)',
+                4: 'West North Central (Midwest region)',
+                5: 'South Atlantic (South region)',
+                6: 'East South Central (South region)',
+                7: 'West South Central (South Region)',
+                8: 'Mountain (West region)',
+                9: 'Pacific (West region)',
+            }),
+    Feature('AGEP', int, "Age", name_extended='age in years'),
+    Feature('SEX', int, "Sex",
+            name_extended='sex',
+            value_mapping={
+                1: "Male", 2: "Female",
+            }),
+    Feature('RAC1P', int, """Recoded detailed race code""",
+            name_extended='race',
+            value_mapping={
+                1: 'White alone',
+                2: 'Black or African American alone',
+                3: 'American Indian alone',
+                4: 'Alaska Native alone',
+                5: 'American Indian and Alaska Native tribes specified; or'
+                   ' American Indian or Alaska Native, not specified and '
+                   'no other races',
+                6: 'Asian alone',
+                7: 'Native Hawaiian and Other Pacific Islander alone',
+                8: 'Some Other Race alone',
+                9: 'Two or More Races'}),
+    POBP_FEATURE,
+    Feature('PINCP', float, """Total person's income >= threshold.""",
+            is_target=True),
+],
+    documentation="https://www2.census.gov/programs-surveys/acs/tech_docs/pums/data_dict/PUMS_Data_Dictionary_2014-2018.pdf")
+
+
 ################################################################################
 # Preprocessing functions
 ################################################################################
