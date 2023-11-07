@@ -272,6 +272,57 @@ NHANES_SHARED_FEATURES = FeatureList(features=[
 
 ], documentation="https://wwwn.cdc.gov/Nchs/Nhanes/")
 
+NHANES_LEAD_FEATURES_CAUSAL = FeatureList(features=[
+    # Derived feature for survey year
+    Feature("nhanes_year", int, "Derived feature for year.",
+            name_extended='year'),
+
+    Feature('DMDBORN4', cat_dtype, """In what country {were you/was SP} born? 
+    1	Born in 50 US states or Washington, DC 2 Others""",
+            na_values=(77, 99, "."),
+            name_extended="country of birth",
+            value_mapping={"1.0": "born in 50 US states or Washington, DC",
+                           "2.0": "not born in 50 US states or Washington, DC"}),
+
+    Feature('RIDAGEYR', float, """Age in years of the participant at the time 
+    of screening. Individuals 80 and over are topcoded at 80 years of age.""",
+            name_extended="age in years"),
+
+    Feature('RIAGENDR', cat_dtype, "Gender of the participant.",
+            name_extended="gender"),
+
+    Feature('RIDRETH_merged', int, """Derived feature. This feature uses 
+    'RIDRETH3' (Recode of reported race and Hispanic origin information, 
+    with Non-Hispanic Asian Category) from years where it is available, 
+    and otherwise 'RIDRETH1' (Recode of reported race and Hispanic origin 
+    information). 'RIDRETH3' contains a superset of the values in 'RIDRETH1' 
+    but the shared values are coded identically; 'RIDRETH3' was only added to 
+    NHANES in 2011-2012 data year. See _merge_ridreth_features( ) below, 
+    and the NHANES documentation, e.g. 
+    https://wwwn.cdc.gov/Nchs/Nhanes/2017-2018/DEMO_J.htm#RIDRETH1 .""",
+            name_extended="race and hispanic origin",
+            value_mapping={
+                1.: "Mexican American",
+                2.: "Other Hispanic",
+                3.: "Non-Hispanic White",
+                4.: "Non-Hispanic Black",
+                5.: "Other Race - Including Multi-Racial",
+                6.: "Non-Hispanic Asian",
+                7.: "Other Race - Including Multi-Racial"
+            }),
+    # A ratio of family income to poverty guidelines.
+    Feature('INDFMPIRBelowCutoff', float,
+            'Binary indicator for whether family PIR (poverty-income ratio)'
+            'is <= 1.3. The threshold of 1.3 is selected based on the '
+            'categorization in NHANES, where PIR <= 1.3 is the lowest level ('
+            'see INDFMMPC feature).',
+            name_extended='Binary indicator for whether family PIR ('
+                          'poverty-income ratio) is <= 1.3.',
+            value_mapping={1.: 'yes', 0.: 'no'}),
+
+    Feature("LBXBPB", float, "Blood lead (ug/dL)", is_target=True,
+            na_values=(".",)),
+], documentation="https://wwwn.cdc.gov/Nchs/Nhanes/")
 
 def _postprocess_nhanes(df: pd.DataFrame,
                         feature_list: FeatureList) -> pd.DataFrame:

@@ -96,15 +96,17 @@ if __name__ == "__main__":
     # experiments=["acsfoodstamps", "acsfoodstamps_causal"]
     # experiments = ["anes","anes_causal"]
     # experiments = ["assistments","assistments_causal"]
-    # experiments = ["brfss_diabetes_causal","brfss_diabetes_anticausal","brfss_diabetes"]
-    experiments = ["brfss_blood_pressure_causal","brfss_blood_pressure"]
+    # experiments = ["brfss_diabetes_causal","brfss_diabetes_anticausal"] #,"brfss_diabetes"]
+    # experiments = ["brfss_blood_pressure_causal","brfss_blood_pressure"]
     # experiments=["college_scorecard","college_scorecard_causal"]
     # experiments = ["nhanes_lead", "nhanes_lead_causal"]
     # experiments = ["diabetes_readmission", "diabetes_readmission_causal"]
-    # experiments = ["meps","meps_causal"]
-    # experiments = ["mimic_extract_los_3_causal"] #, "mimic_extract_mort_hosp", "mimic_extract_mort_hosp_causal"] #"mimic_extract_los_3",
+    experiments = ["meps","meps_causal"]
+    # experiments = ["mimic_extract_los_3","mimic_extract_los_3_causal"] 
+    # experiments = ["mimic_extract_mort_hosp","mimic_extract_mort_hosp_causal"]
     # experiments = ["physionet","physionet_causal", "physionet_anticausal"]
-    
+    # experiments = ["sipp","sipp_causal"]
+
     cache_dir="tmp"
 
     for experiment in experiments:
@@ -124,7 +126,7 @@ if __name__ == "__main__":
             ]
         for model in models:
             main(experiment=experiment,dset=dset,model=model,debug=False)
-
+ 
     for experiment in experiments:
         dset = get_dataset(experiment, cache_dir)
         X, y, _, _ = dset.get_pandas("train")

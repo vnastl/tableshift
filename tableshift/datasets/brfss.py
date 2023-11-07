@@ -629,6 +629,11 @@ BRFSS_DIABETES_FEATURES_ANTICAUSAL =  FeatureList([
             #     9: 'Refused'
             # }
             ),
+    ################ BMI/Obesity ################
+    # Calculated Body Mass Index (BMI)
+    # Four-categories of Body Mass Index (BMI)
+    # BMI5CAT_FEATURE,
+
     # Preferred race category; note that ==1 is equivalent to
     # "White non-Hispanic race group" variable _RACEG21
     Feature("PRACE1", float, """Preferred race category.""",

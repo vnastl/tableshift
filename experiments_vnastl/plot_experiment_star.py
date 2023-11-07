@@ -43,6 +43,7 @@ dic_experiments = {
     "mimic_extract_mort_hosp": ["mimic_extract_mort_hosp","mimic_extract_mort_hosp_causal"],
     "nhanes_lead": ["nhanes_lead", "nhanes_lead_causal"],
     "physionet":["physionet","physionet_causal", "physionet_anticausal"],
+    "sipp": ["sipp", "sipp_causal"],
 }
 anticausal = ["acsemployment", "acsunemployment", "physionet", "brfss_diabetes"]
 
@@ -62,7 +63,8 @@ dic_domain_label = {
     "mimic_extract_los_3": 'insurance',
     "mimic_extract_mort_hosp": 'insurance',
     "nhanes_lead": 'INDFMPIRBelowCutoff',
-    "physionet": 'ICULOS'
+    "physionet": 'ICULOS',
+    "sipp": 'CITIZENSHIP_STATUS',
 }
 
 def get_results(experiment_name):
@@ -240,7 +242,7 @@ def do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,axmin=[0.5,0.5],a
                     x=markers['id_test'],
                     y=markers['ood_test'],
                     xerr=markers['id_test_ub']-markers['id_test'],
-                    yerr=markers['ood_test_ub']-markers['ood_test'], fmt="o",
+                    yerr=markers['ood_test_ub']-markers['ood_test'], fmt="^",
                     color="tab:pink", ecolor="tab:pink", label="top causal features without tuition")
         # get extra points for the plot
         new_row = pd.DataFrame({'id_test':[mymin,max(points['id_test'])], 'ood_test':[max(points['ood_test']),mymin]},)
@@ -255,9 +257,10 @@ def do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,axmin=[0.5,0.5],a
 
         new_row = pd.DataFrame({'id_test':[mymin], 'ood_test':[mymin]},)
         points = pd.concat([points,new_row], ignore_index=True)
-        filled = points.to_numpy()
-        hull = ConvexHull(filled,incremental=True)
-        plt.fill(filled[hull.vertices, 0], filled[hull.vertices, 1], color="tab:pink",alpha=0.3)
+        filled = points #.to_numpy()
+        # hull = ConvexHull(filled,incremental=True)
+        # plt.fill(filled[hull.vertices, 0], filled[hull.vertices, 1], color="tab:orange",alpha=0.3)
+        plt.fill(filled['id_test'],filled['ood_test'], color="tab:pink",alpha=0.3)
     
     if experiment_name in anticausal:
         eval_plot = eval_all[eval_all['features']=="anticausal"]
@@ -271,7 +274,7 @@ def do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,axmin=[0.5,0.5],a
                     x=markers['id_test'],
                     y=markers['ood_test'],
                     xerr=markers['id_test_ub']-markers['id_test'],
-                    yerr=markers['ood_test_ub']-markers['ood_test'], fmt="o",
+                    yerr=markers['ood_test_ub']-markers['ood_test'], fmt="^",
                     color="tab:purple", ecolor="tab:purple", label="top anticausal features")
         # get extra points for the plot
         new_row = pd.DataFrame({'id_test':[mymin,max(points['id_test'])], 'ood_test':[max(points['ood_test']),mymin]},)
@@ -286,9 +289,10 @@ def do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,axmin=[0.5,0.5],a
 
         new_row = pd.DataFrame({'id_test':[mymin], 'ood_test':[mymin]},)
         points = pd.concat([points,new_row], ignore_index=True)
-        filled = points.to_numpy()
-        hull = ConvexHull(filled,incremental=True)
-        plt.fill(filled[hull.vertices, 0], filled[hull.vertices, 1], color="tab:purple",alpha=0.3)
+        filled = points #.to_numpy()
+        # hull = ConvexHull(filled,incremental=True)
+        # plt.fill(filled[hull.vertices, 0], filled[hull.vertices, 1], color="tab:orange",alpha=0.3)
+        plt.fill(filled['id_test'],filled['ood_test'], color="tab:purple",alpha=0.3)
 
     ## Constant
     eval_plot = eval_all[eval_all['features']=="constant"]
@@ -296,7 +300,7 @@ def do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,axmin=[0.5,0.5],a
             eval_plot['id_test'],
             eval_plot['ood_test'],
             marker="D",linestyle="None",
-            color="tab:red", 
+            color="tab:red",
             label="constant")
     # errors = plt.errorbar(
     #         x=eval_plot['id_test'],
@@ -501,6 +505,15 @@ def plot_experiment(experiment_name):
 
         do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,[mymin,mymin],[mymax,mymax])
 
+    elif experiment_name == "sipp":
+        mymin = 0.5
+        mymax = 1
+        mytextx = 0.5
+        mytexty = 0.4
+        myname = f"plots/plot_{experiment_name}"
+
+        do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,[mymin,mymin],[mymax,mymax])
+
 # %% ZOOM
 def plot_experiment_zoom(experiment_name):
     if experiment_name == "acsemployment":
@@ -574,10 +587,10 @@ def plot_experiment_zoom(experiment_name):
         do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,[axminx,axminy],[mymax,mymax])
 
     elif experiment_name == "brfss_blood_pressure":
-        mymin = 0.5
-        mymax = 1
-        mytextx = 0.5
-        mytexty = 0.4
+        mymin = 0.55
+        mymax = 0.68
+        mytextx = 0.55
+        mytexty = 0.5
         myname = f"plots/plot_{experiment_name}_zoom"
 
         do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,[mymin,mymin],[mymax,mymax])
@@ -643,10 +656,10 @@ def plot_experiment_zoom(experiment_name):
         do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,[mymin,mymin],[mymax,mymax])
 
     elif experiment_name == "nhanes_lead":
-        mymin = 0.5
-        mymax = 1
-        mytextx = 0.5
-        mytexty = 0.4
+        mymin = 0.91
+        mymax = 0.98
+        mytextx = 0.90
+        mytexty = 0.9
         myname = f"plots/plot_{experiment_name}_zoom"
 
         do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,[mymin,mymin],[mymax,mymax])
@@ -662,6 +675,15 @@ def plot_experiment_zoom(experiment_name):
         myname = f"plots/plot_{experiment_name}_zoom"
 
         do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,[axminx,axminy],[mymax,axmaxy])
+    
+    elif experiment_name == "sipp":
+        mymin = 0.4
+        mymax = 0.95
+        mytextx = 0.4
+        mytexty = 0.3
+        myname = f"plots/plot_{experiment_name}_zoom"
+
+        do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,[mymin,mymin],[mymax,mymax])
 
 
 # %%
@@ -673,14 +695,17 @@ def plot_experiment_zoom(experiment_name):
 #                          "acsunemployment", # old
 #                          "anes",
 #                          "assistments",
+#                          "brfss_blood_pressure",
+#                          "brfss_diabetes"
 #                          "college_scorecard", # old
 #                          "diabetes_readmission",
 #                          "meps",
+#                          "nhanes_lead"
 #                          "physionet", # old 
+#                          "sipp"
 #                          ]
+completed_experiments = ["meps",]
 
-# for experiment_name in completed_experiments:
-#     plot_experiment(experiment_name)
-#     plot_experiment_zoom(experiment_name)
-
-plot_experiment_zoom("acsincome")
+for experiment_name in completed_experiments:
+    plot_experiment(experiment_name)
+    plot_experiment_zoom(experiment_name)
