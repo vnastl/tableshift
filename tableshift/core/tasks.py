@@ -261,6 +261,10 @@ _TASK_REGISTRY = {
         TaskConfig(MEPSDataSource, MEPS_FEATURES),
     'meps_causal':
         TaskConfig(MEPSDataSource, MEPS_FEATURES_CAUSAL),
+    'sipp':
+        TaskConfig(SIPPDataSource, SIPP_FEATURES),
+    'sipp_causal':
+        TaskConfig(SIPPDataSource, SIPP_FEATURES_CAUSAL),
 }
 
 

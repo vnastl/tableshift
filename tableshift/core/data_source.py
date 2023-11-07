@@ -47,6 +47,7 @@ from tableshift.datasets.physionet import preprocess_physionet
 from tableshift.datasets.uci import WINE_CULTIVARS_FEATURES, ABALONE_FEATURES, \
     preprocess_abalone
 from tableshift.datasets.meps import preprocess_meps
+from tableshift.datasets.sipp import preprocess_sipp
 
 from tableshift.datasets.utils import apply_column_missingness_threshold
 
@@ -1398,6 +1399,22 @@ class MEPSDataSource(OfflineDataSource):
             preprocess_fn=preprocess_meps,
             resources=(os.path.join("meps",
                                     "h216.csv"),),
+            **kwargs):
+        super().__init__(resources=resources,
+                         preprocess_fn=preprocess_fn,
+                         **kwargs)
+
+    def _load_data(self) -> pd.DataFrame:
+        fp = os.path.join(self.cache_dir, self.resources[0])
+        df = pd.read_csv(fp, low_memory=False, na_values=(' '))
+        return df
+    
+class SIPPDataSource(OfflineDataSource):
+    def __init__(
+            self,
+            preprocess_fn=preprocess_sipp,
+            resources=(os.path.join("sipp",
+                                    "sipp_2014.csv"),),
             **kwargs):
         super().__init__(resources=resources,
                          preprocess_fn=preprocess_fn,
