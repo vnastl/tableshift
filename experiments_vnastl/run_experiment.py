@@ -101,9 +101,9 @@ if __name__ == "__main__":
     # experiments=["college_scorecard","college_scorecard_causal"]
     # experiments = ["nhanes_lead", "nhanes_lead_causal"]
     # experiments = ["diabetes_readmission", "diabetes_readmission_causal"]
-    experiments = ["meps","meps_causal"]
+    # experiments = ["meps","meps_causal"]
     # experiments = ["mimic_extract_los_3","mimic_extract_los_3_causal"] 
-    # experiments = ["mimic_extract_mort_hosp","mimic_extract_mort_hosp_causal"]
+    experiments = ["mimic_extract_mort_hosp","mimic_extract_mort_hosp_causal"]
     # experiments = ["physionet","physionet_causal", "physionet_anticausal"]
     # experiments = ["sipp","sipp_causal"]
 
@@ -113,10 +113,10 @@ if __name__ == "__main__":
         dset = get_dataset(experiment, cache_dir)
         X, y, _, _ = dset.get_pandas("train")
         models = [
-            "ft_transformer",
-            "histgbm",
-            "mlp",
-            "saint",
+            # "ft_transformer",
+            # "histgbm",
+            # "mlp",
+            # "saint",
             "tabtransformer",
             "resnet",
             "xgb",

@@ -9,7 +9,8 @@ from tableshift.configs.experiment_defaults import DEFAULT_ID_TEST_SIZE, \
     DEFAULT_OOD_VAL_SIZE, DEFAULT_ID_VAL_SIZE, DEFAULT_RANDOM_STATE
 from tableshift.core import Grouper, PreprocessorConfig, DomainSplitter
 from tableshift.datasets import BRFSS_YEARS, ACS_YEARS, NHANES_YEARS
-from tableshift.datasets.mimic_extract import MIMIC_EXTRACT_STATIC_FEATURES
+from tableshift.datasets.mimic_extract import MIMIC_EXTRACT_STATIC_FEATURES, \
+    MIMIC_EXTRACT_LOS_3_FEATURES_CAUSAL, MIMIC_EXTRACT_MORT_HOSP_FEATURES_CAUSAL
 from tableshift.datasets.mimic_extract_feature_lists import \
     MIMIC_EXTRACT_SHARED_FEATURES
 
@@ -302,7 +303,8 @@ BENCHMARK_CONFIGS = {
 
         grouper=Grouper({"gender": ['M'], }, drop=False),
         preprocessor_config=PreprocessorConfig(
-            passthrough_columns=_MIMIC_EXTRACT_PASSTHROUGH_COLUMNS),
+            passthrough_columns=[f for f in _MIMIC_EXTRACT_PASSTHROUGH_COLUMNS
+                                 if f in MIMIC_EXTRACT_LOS_3_FEATURES_CAUSAL.names]),
         tabular_dataset_kwargs={"task": "los_3",
                                 "name": "mimic_extract_los_3_causal"}),
 
@@ -329,7 +331,8 @@ BENCHMARK_CONFIGS = {
                                                          "Medicaid"]),
         grouper=Grouper({"gender": ['M'], }, drop=False),
         preprocessor_config=PreprocessorConfig(
-            passthrough_columns=_MIMIC_EXTRACT_PASSTHROUGH_COLUMNS),
+            passthrough_columns=[f for f in _MIMIC_EXTRACT_PASSTHROUGH_COLUMNS
+                                 if f in MIMIC_EXTRACT_MORT_HOSP_FEATURES_CAUSAL.names]),
         tabular_dataset_kwargs={"task": "mort_hosp",
                                 "name": "mimic_extract_mort_hosp_causal"}),
 
