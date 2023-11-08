@@ -53,7 +53,7 @@ dic_domain_label = {
     "acsincome": 'DIVISION',
     "acspubcov": 'DIS',
     "acsunemployment": 'SCHL',
-    "anes": 'VCF0112',
+    "anes": 'VCF0112', # region
     "assistments": 'school_id',
     "brfss_blood_pressure":'BMI5CAT',
     "brfss_diabetes": 'PRACE1',
@@ -63,7 +63,7 @@ dic_domain_label = {
     "mimic_extract_los_3": 'insurance',
     "mimic_extract_mort_hosp": 'insurance',
     "nhanes_lead": 'INDFMPIRBelowCutoff',
-    "physionet": 'ICULOS',
+    "physionet": 'ICULOS', # ICU length of stay
     "sipp": 'CITIZENSHIP_STATUS',
 }
 
@@ -350,10 +350,13 @@ def do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,axmin=[0.5,0.5],a
     
     if experiment_name in anticausal:
         plt.text(mytextx, mytexty,f'Causal features: {causal_features} \n Anticausal features: {extra_features}')
+        print(f'Causal features: {causal_features} \n Anticausal features: {extra_features}')
     elif experiment_name == 'college_scorecard':
         plt.text(mytextx, mytexty,f'Causal features: {causal_features} \n Causal features without tuition: {extra_features}')
+        print(f'Causal features: {causal_features} \n Causal features without tuition: {extra_features}')
     else:
         plt.text(mytextx, mytexty,f'Causal features: {causal_features}')
+        print(f'Causal features: {causal_features}')
 
     plt.savefig(str(Path(__file__).parents[0]/myname), bbox_inches='tight')
     plt.show()
@@ -639,18 +642,18 @@ def plot_experiment_zoom(experiment_name):
 
     elif experiment_name == "mimic_extract_los_3":
         mymin = 0.5
-        mymax = 1
+        mymax = 0.71
         mytextx = 0.5
-        mytexty = 0.4
+        mytexty = 0.45
         myname = f"plots/plot_{experiment_name}_zoom"
 
         do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,[mymin,mymin],[mymax,mymax])
 
     elif experiment_name == "mimic_extract_mort_hosp":
-        mymin = 0.5
-        mymax = 1
-        mytextx = 0.5
-        mytexty = 0.4
+        mymin = 0.85
+        mymax = 0.95
+        mytextx = 0.85
+        mytexty = 0.93
         myname = f"plots/plot_{experiment_name}_zoom"
 
         do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,[mymin,mymin],[mymax,mymax])
@@ -704,7 +707,7 @@ def plot_experiment_zoom(experiment_name):
 #                          "physionet", # old 
 #                          "sipp"
 #                          ]
-completed_experiments = ["meps",]
+completed_experiments = ["mimic_extract_mort_hosp","mimic_extract_los_3"]
 
 for experiment_name in completed_experiments:
     plot_experiment(experiment_name)

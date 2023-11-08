@@ -53,6 +53,19 @@ MIMIC_EXTRACT_MORT_HOSP_SELECTED_FEATURES = FeatureList(features=[
     Feature('mort_hosp', int, is_target=True)
 ])
 
+MIMIC_EXTRACT_LOS_3_FEATURES_CAUSAL = FeatureList(features=[
+    *MIMIC_EXTRACT_STATIC_FEATURES,
+    Feature('los_3', int, is_target=True),
+    Feature('height_time_since_measured_1', int),  # importance: 0.0015
+    Feature('weight_time_since_measured_17', int),  # importance: 0.0015
+])
+
+MIMIC_EXTRACT_MORT_HOSP_FEATURES_CAUSAL = FeatureList(features=[
+    *MIMIC_EXTRACT_STATIC_FEATURES,
+    Feature('height_time_since_measured_1', int),  # importance: 0.0015
+    Feature('weight_time_since_measured_17', int),  # importance: 0.0015
+    Feature('mort_hosp', int, is_target=True)
+])
 
 def simple_imputer(df: pd.DataFrame) -> pd.DataFrame:
     """Via https://github.com/MLforHealth/MIMIC_Extract/blob/
