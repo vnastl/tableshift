@@ -90,7 +90,7 @@ if __name__ == "__main__":
 
     
     
-    # experiments = ["acsincome", ] #"acsincome_causal"
+    # experiments = ["acsincome_causal", ] #"acsincome"
     # experiments=["acspubcov", "acspubcov_causal"]
     # experiments = ["acsunemployment","acsunemployment_causal", "acsunemployment_anticausal"] 
     # experiments=["acsfoodstamps", "acsfoodstamps_causal"]
