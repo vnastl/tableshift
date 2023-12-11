@@ -44,41 +44,41 @@ TASKS = (
     "acsunemployment_causal",
     "acsunemployment_arguablycausal",
 
-    "anes",
-    "anes_causal",
+    # "anes",
+    # "anes_causal",
 
-    "assistments",
-    "assistments_causal",
+    # "assistments",
+    # "assistments_causal",
 
-    "brfss_diabetes",
-    "brfss_diabetes_causal",
+    # "brfss_diabetes",
+    # "brfss_diabetes_causal",
 
-    "brfss_blood_pressure",
-    "brfss_blood_pressure_causal",
+    # "brfss_blood_pressure",
+    # "brfss_blood_pressure_causal",
 
-    "college_scorecard",
-    "college_scorecard_causal",
+    # "college_scorecard",
+    # "college_scorecard_causal",
 
-    "nhanes_lead", 
-    "nhanes_lead_causal",
+    # "nhanes_lead", 
+    # "nhanes_lead_causal",
 
-    "diabetes_readmission", 
-    "diabetes_readmission_causal",
+    # "diabetes_readmission", 
+    # "diabetes_readmission_causal",
 
-    "mimic_extract_los_3",
-    "mimic_extract_los_3_causal",
+    # "mimic_extract_los_3",
+    # "mimic_extract_los_3_causal",
 
-    "mimic_extract_mort_hosp",
-    "mimic_extract_mort_hosp_causal",
+    # "mimic_extract_mort_hosp",
+    # "mimic_extract_mort_hosp_causal",
 
-    "physionet", 
-    "physionet_causal",
+    # "physionet", 
+    # "physionet_causal",
 
-    "sipp", 
-    "sipp_causal",
+    # "sipp", 
+    # "sipp_causal",
 
-    "meps", 
-    "meps_causal",
+    # "meps", 
+    # "meps_causal",
 )
 
 
