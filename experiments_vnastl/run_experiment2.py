@@ -49,7 +49,7 @@ def main(experiment, dset, model, debug: bool):
             evaluation[test_split + "_conf"] = acc_conf
             print(f"training completed! {test_split} accuracy: {acc:.4f}")
             # Open a file in write mode
-            with open(f'experiments_vnastl/{experiment}/{model}_eval.json', 'w') as f:
+            with open(f'experiments_vnastl/{experiment}2/{model}_eval.json', 'w') as f:
                # Use json.dump to write the dictionary into the file
                 evaluation["features"] = dset.predictors
                 json.dump(evaluation, f)
@@ -58,7 +58,7 @@ def main(experiment, dset, model, debug: bool):
     else:
         # Case: pytorch estimator; eval is already performed + printed by train().
         print("training completed!")
-        with open(f'experiments_vnastl/{experiment}/{model}_eval.json', 'w') as f:
+        with open(f'experiments_vnastl/{experiment}2/{model}_eval.json', 'w') as f:
             # Use json.dump to write the dictionary into the file
             evaluation = estimator.fit_metrics
             for test_split in ["id_test","ood_test"]:
@@ -88,14 +88,25 @@ if __name__ == "__main__":
     # args = parser.parse_args()
     # main(**vars(args))
 
-    # experiments = ["meps"]
-    experiments = ["assistments_causal"]
-    # experiments = ["anes","anes_causal"]
+    
+    
+    # experiments = ["acsincome_causal", ] #"acsincome"
     # experiments=["acspubcov", "acspubcov_causal"]
+    experiments = ["acsunemployment_causal"] #"acsunemployment", "acsunemployment_anticausal"] 
+    experiments=["acsfoodstamps_causal"] #"acsfoodstamps", 
+    # experiments = ["anes","anes_causal"]
+    # experiments = ["assistments","assistments_causal"]
+    # experiments = ["brfss_diabetes_causal","brfss_diabetes_anticausal"] #,"brfss_diabetes"]
+    # experiments = ["brfss_blood_pressure_causal","brfss_blood_pressure"]
     # experiments=["college_scorecard","college_scorecard_causal"]
-    # experiments = ["acsunemployment","acsunemployment_causal", "acsunemployment_anticausal"] 
+    # experiments = ["nhanes_lead", "nhanes_lead_causal"]
+    # experiments = ["diabetes_readmission", "diabetes_readmission_causal"]
+    # experiments = ["meps","meps_causal"]
+    # experiments = ["mimic_extract_los_3","mimic_extract_los_3_causal"] 
+    # experiments = ["mimic_extract_mort_hosp","mimic_extract_mort_hosp_causal"]
     # experiments = ["physionet","physionet_causal", "physionet_anticausal"]
-    # experiments=["acsfoodstamps", "acsfoodstamps_causal"]
+    # experiments = ["sipp","sipp_causal"]
+
     cache_dir="tmp"
 
     for experiment in experiments:
@@ -112,14 +123,14 @@ if __name__ == "__main__":
             "aldro",
             "dro",
             "node",
-            ]
-        for model in models:
-            main(experiment=experiment,dset=dset,model=model,debug=False)
-
-    for experiment in experiments:
-        dset = get_dataset(experiment, cache_dir)
-        X, y, _, _ = dset.get_pandas("train")
-        models = [
+    #         ]
+    #     for model in models:
+    #         main(experiment=experiment,dset=dset,model=model,debug=False)
+ 
+    # for experiment in experiments:
+    #     dset = get_dataset(experiment, cache_dir)
+    #     X, y, _, _ = dset.get_pandas("train")
+    #     models = [
             "group_dro",
             "label_group_dro",
             "irm",

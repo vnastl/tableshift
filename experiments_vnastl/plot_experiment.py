@@ -9,6 +9,9 @@ import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
 from matplotlib import cm
 from matplotlib.colors import ListedColormap
+import seaborn as sns
+sns.set_context("talk")
+
 
 from tableshift import get_dataset
 from  statsmodels.stats.proportion import proportion_confint
@@ -133,18 +136,18 @@ def get_results(experiment_name):
                 if 'causal' not in feature_selection: 
                     feature_selection.append('causal') 
                 return 'causal'
-            elif experiment.endswith('_causal2'):
-                if 'causal2' not in feature_selection: 
-                    feature_selection.append('causal2')
-                return 'causal2'
-            elif experiment.endswith('_causal_no_tuition_fee'):
-                if 'causal without tuition' not in feature_selection: 
-                    feature_selection.append('causal without tuition')
-                return 'causal without tuition'
-            elif experiment.endswith('_anticausal'):
-                if 'anticausal' not in feature_selection: 
-                    feature_selection.append('anticausal')
-                return 'anticausal'
+            # elif experiment.endswith('_causal2'):
+            #     if 'causal2' not in feature_selection: 
+            #         feature_selection.append('causal2')
+            #     return 'causal2'
+            # elif experiment.endswith('_causal_no_tuition_fee'):
+            #     if 'causal without tuition' not in feature_selection: 
+            #         feature_selection.append('causal without tuition')
+            #     return 'causal without tuition'
+            # elif experiment.endswith('_anticausal'):
+            #     if 'anticausal' not in feature_selection: 
+            #         feature_selection.append('anticausal')
+            #     return 'anticausal'
             else:
                 if 'all' not in feature_selection: 
                     feature_selection.append('all')
@@ -220,8 +223,8 @@ def do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,axmin=[0.5,0.5],a
 
     plt.title(
         f"Tableshift: {experiment_name}")
-    plt.xlabel(f"in-domain accuracy ({dic_id_domain[experiment_name]})")
-    plt.ylabel(f"out-of-domain accuracy ({dic_ood_domain[experiment_name]})")
+    plt.xlabel(f"in-domain accuracy\n({dic_id_domain[experiment_name]})")
+    plt.ylabel(f"out-of-domain accuracy\n({dic_ood_domain[experiment_name]})")
     ## All features
     eval_plot = eval_all[eval_all['features']=="all"]
     eval_plot.sort_values('id_test',inplace=True)
@@ -741,18 +744,18 @@ def plot_experiment_zoom(experiment_name):
 completed_experiments = [
                         # "acsemployment", # old
                         #  "acsfoodstamps", # old
-                        #  "acsincome",
+                         "acsincome",
                         #  "acspubcov", # old
                         #  "acsunemployment", # old
-                        #  "anes",
+                         "anes",
                         #  "assistments",
                         #  "brfss_blood_pressure",
                         #  "brfss_diabetes",
                         #  "college_scorecard", # old
                         #  "diabetes_readmission",
-                         "meps"
+                        #  "meps"
                         #  "mimic_extract_mort_hosp",
-                        #  "mimic_extract_los_3",
+                         "mimic_extract_los_3",
                         #  "nhanes_lead",
                         #  "physionet", # old 
                         #  "sipp",
