@@ -218,8 +218,8 @@ if __name__ == '__main__':
                 f"--cache_dir {str(DATA_DIR)} "
                 f"--experiment {exp_obj.name} "
                 f"--model {exp_obj.model} "
-                f"--save-dir {str(EXP_RESULTS_DIR)} "
-                f"{'--verbose' if VERBOSE else ''} "
+                f"--save_dir {str(EXP_RESULTS_DIR)} "
+                # f"{'--verbose' if VERBOSE else ''} "
             ),
             "output": f"{cluster_job_out_name}.out",
             "error": f"{cluster_job_err_name}.err",
