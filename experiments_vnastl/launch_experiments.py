@@ -88,7 +88,7 @@ if __name__ == '__main__':
     DATA_DIR = ROOT_DIR / "fast/vnastl/data"  # TODO check again if it is in fact the fast driver
 
     # Make sure results dir exists
-    RESULTS_DIR = ROOT_DIR / "vnastl/tableshift/experiment_vnastl"
+    RESULTS_DIR = ROOT_DIR / "vnastl/tableshift/experiments_vnastl"
     RESULTS_DIR.mkdir(exist_ok=True, parents=False)
 
     # Directory to save cluster logs and job stdout/stderr
@@ -214,7 +214,7 @@ if __name__ == '__main__':
             "executable": "/home/vnastl/miniconda3/envs/tableshift/bin/python3",  # correct env for the python executable
             # "arguments": "foo.py",    # NOTE: used for testing
             "arguments": (
-                "vnastl/tableshift/experiment_vnastl/run_experiment_on_cluster.py "
+                "vnastl/tableshift/experiments_vnastl/run_experiment_on_cluster.py "
                 f"--cache_dir {str(DATA_DIR)} "
                 f"--experiment {exp_obj.name} "
                 f"--model {exp_obj.model} "
