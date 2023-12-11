@@ -23,7 +23,12 @@ logging.basicConfig(
     datefmt='%Y-%m-%d %H:%M:%S')
 
 
-def main(experiment, dset, model, save_dir, debug: bool):
+def main(experiment, model, cache_dir, save_dir, debug: bool):
+    cache_dir = Path(cache_dir)
+    save_dir = Path(save_dir)
+    save_dir.mkdir(exist_ok=True,parents=False)
+    
+    dset = get_dataset(experiment, str(cache_dir))
     if debug:
         print("[INFO] running in debug mode.")
         experiment = "_debug"
@@ -79,64 +84,18 @@ def main(experiment, dset, model, save_dir, debug: bool):
     return
 
 if __name__ == "__main__":
-    # parser = argparse.ArgumentParser()
-    # parser.add_argument("--cache_dir", default="tmp",
-    #                     help="Directory to cache raw data files to.")
-    # parser.add_argument("--debug", action="store_true", default=False,
-    #                     help="Whether to run in debug mode. If True, various "
-    #                          "truncations/simplifications are performed to "
-    #                          "speed up experiment.")
-    # parser.add_argument("--experiment", default="diabetes_readmission",
-    #                     help="Experiment to run. Overridden when debug=True.")
-    # parser.add_argument("--model", default="histgbm",
-    #                     help="model to use.")
-    # args = parser.parse_args()
-    # main(**vars(args))
-
-    
-    
-    # experiments = ["acsincome_causal", ] #"acsincome"
-    # experiments=["acspubcov", "acspubcov_causal"]
-    # experiments = ["acsunemployment","acsunemployment_causal", "acsunemployment_anticausal"] 
-    # experiments=["acsfoodstamps", "acsfoodstamps_causal"]
-    # experiments = ["anes","anes_causal"]
-    # experiments = ["assistments","assistments_causal"]
-    # experiments = ["brfss_diabetes_causal","brfss_diabetes_anticausal"] #,"brfss_diabetes"]
-    # experiments = ["brfss_blood_pressure_causal","brfss_blood_pressure"]
-    # experiments=["college_scorecard","college_scorecard_causal"]
-    # experiments = ["nhanes_lead", "nhanes_lead_causal"]
-    experiments = ["diabetes_readmission"] #, "diabetes_readmission_causal"]
-    # experiments = ["meps","meps_causal"]
-    # experiments = ["mimic_extract_los_3","mimic_extract_los_3_causal"] 
-    # experiments = ["mimic_extract_mort_hosp","mimic_extract_mort_hosp_causal"]
-    # experiments = ["physionet","physionet_causal", "physionet_anticausal"]
-    # experiments = ["sipp","sipp_causal"]
-
-    cache_dir=Path("tmp")
-    save_dir = Path("experiments_vnastl")
-    for experiment in experiments:
-        dset = get_dataset(experiment, str(cache_dir))
-        # X, y, _, _ = dset.get_pandas("train")
-        models = [
-            # "ft_transformer",
-            "histgbm",
-            # "mlp",
-            # "saint",
-            # "tabtransformer",
-            # "resnet",
-            # "xgb",
-            # "aldro",
-            # "dro",
-            # "node",
-            # "group_dro",
-            # "label_group_dro",
-            # "irm",
-            # "vrex",
-            # "mixup",
-            # "dann",
-            # "mmd",
-            # "lightgbm",
-            # "deepcoral"
-            ]
-        for model in models:
-            main(experiment=experiment,dset=dset,model=model,save_dir=save_dir,debug=False)
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--cache_dir", default="tmp",
+                        help="Directory to cache raw data files to.")
+    parser.add_argument("--save_dir", default="tmp",
+                        help="Directory to save result files to.")
+    parser.add_argument("--debug", action="store_true", default=False,
+                        help="Whether to run in debug mode. If True, various "
+                             "truncations/simplifications are performed to "
+                             "speed up experiment.")
+    parser.add_argument("--experiment", default="diabetes_readmission",
+                        help="Experiment to run. Overridden when debug=True.")
+    parser.add_argument("--model", default="histgbm",
+                        help="model to use.")
+    args = parser.parse_args()
+    main(**vars(args))
