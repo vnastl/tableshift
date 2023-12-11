@@ -92,7 +92,7 @@ if __name__ == '__main__':
     RESULTS_DIR.mkdir(exist_ok=True, parents=False)
 
     # Directory to save cluster logs and job stdout/stderr
-    CLUSTER_LOGS_SAVE_DIR = RESULTS_DIR / "cluster-logs"
+    CLUSTER_LOGS_SAVE_DIR = DATA_DIR / "cluster-logs"
     CLUSTER_LOGS_SAVE_DIR.mkdir(exist_ok=True)
 
     CLUSTER_LOGS_SAVE_ERR_DIR = CLUSTER_LOGS_SAVE_DIR / "error"
@@ -206,7 +206,7 @@ if __name__ == '__main__':
             / f"{exp_obj.name}_$(Cluster).$(Process)"
         )
 
-        EXP_RESULTS_DIR = RESULTS_DIR / task / exp_obj.population_type
+        EXP_RESULTS_DIR = RESULTS_DIR
         EXP_RESULTS_DIR.mkdir(exist_ok=True, parents=False)
 
         # Construct job description
