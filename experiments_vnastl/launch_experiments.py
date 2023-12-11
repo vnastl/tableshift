@@ -23,26 +23,26 @@ N_TRIALS    = 1
 # Cluster settings
 JOB_MIN_BID = 50    # htcondor bid (min. is 15 apparently...)
 JOB_CPUS = 1     # number of CPUs per experiment (per cluster job)
-JOB_MEMORY_GB = 32    # GBs of memory
-BIG_JOB_MEMORY_GB = 64
+JOB_MEMORY_GB = 64    # GBs of memory
+BIG_JOB_MEMORY_GB = 128
 
 VERBOSE = True
 
 TASKS = (
-    "acsincome",
-    "acsincome_causal",
-    "acsincome_arguablycausal",
+    # "acsincome",
+    # "acsincome_causal",
+    # "acsincome_arguablycausal",
 
     "acspubcov",
     "acspubcov_causal",
 
-    "acsfoodstamps",
-    "acsfoodstamps_causal",
-    "acsfoodstamps_arguablycausal",
+    # "acsfoodstamps",
+    # "acsfoodstamps_causal",
+    # "acsfoodstamps_arguablycausal",
 
-    "acsunemployment",
-    "acsunemployment_causal",
-    "acsunemployment_arguablycausal",
+    # "acsunemployment",
+    # "acsunemployment_causal",
+    # "acsunemployment_arguablycausal",
 
     # "anes",
     # "anes_causal",
