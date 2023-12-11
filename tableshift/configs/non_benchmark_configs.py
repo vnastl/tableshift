@@ -347,7 +347,7 @@ NON_BENCHMARK_CONFIGS = {
                                 random_state=DEFAULT_RANDOM_STATE,
                                 id_test_size=DEFAULT_ID_TEST_SIZE,
                                 domain_split_varname="INSCOV19",
-                                domain_split_ood_values=['0.0']),
+                                domain_split_ood_values=['1.0']),
         grouper=Grouper({"SEX": ['1.0', ]}, drop=False),
         preprocessor_config=PreprocessorConfig(),
         tabular_dataset_kwargs={}),

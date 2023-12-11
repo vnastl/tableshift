@@ -32,6 +32,8 @@ type_dict = {'int8': int, 'int16': int, 'int64': int, 'category': cat_dtype}
 MEPS_GLOBAL_FEATURES = [Feature(x, type_dict[feature_types[x]]) for x in feature_types]
 MEPS_DEMOGRAPHIC_FEATURES = [Feature(x, type_dict[feature_types[x]]) for x in feature_demographic_types]
 
+# Note in load_meps: X["INSCOV19"] = X["INSCOV19"].replace({'1 ANY PRIVATE':0.0, '2 PUBLIC ONLY':1.0, '3 UNINSURED':2.0})
+
 MEPS_FEATURES = FeatureList(features=[
         Feature('TOTEXP19', int, is_target=True,
                 name_extended="Measure of health care utilization at the end of the year"),
