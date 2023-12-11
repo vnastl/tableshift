@@ -87,7 +87,7 @@ if __name__ == '__main__':
     # ROOT_DIR = Path("/Users/vnastl/Seafile/My Library/mpi project causal vs noncausal/causal-vs-noncausal/code")
 
     # Data directory
-    DATA_DIR = ROOT_DIR / "fast/vnastl/data"  # TODO check again if it is in fact the fast driver
+    DATA_DIR = ROOT_DIR / "fast/vnastl/tmp"  # TODO check again if it is in fact the fast driver
 
     # Make sure results dir exists
     RESULTS_DIR = ROOT_DIR / "vnastl/tableshift/experiment_vnastl"
