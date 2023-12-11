@@ -316,7 +316,7 @@ ACS_INCOME_FEATURES = FeatureList([
 ],
     documentation="https://www2.census.gov/programs-surveys/acs/tech_docs/pums/data_dict/PUMS_Data_Dictionary_2014-2018.pdf")
 
-ACS_INCOME_FEATURES_CAUSAL_OLD = FeatureList([
+ACS_INCOME_FEATURES_CAUSAL = FeatureList([
     Feature('PINCP', float, """Total person's income >= threshold.""",
             is_target=True),
     Feature('DIVISION', cat_dtype,
@@ -359,7 +359,7 @@ ACS_INCOME_FEATURES_CAUSAL_OLD = FeatureList([
 ],
     documentation="https://www2.census.gov/programs-surveys/acs/tech_docs/pums/data_dict/PUMS_Data_Dictionary_2014-2018.pdf")
 
-ACS_INCOME_FEATURES_CAUSAL = FeatureList([
+ACS_INCOME_FEATURES_ARGUABLYCAUSAL = FeatureList([
     Feature('PINCP', float, """Total person's income >= threshold.""",
             is_target=True),
     Feature('DIVISION', cat_dtype,
@@ -571,7 +571,7 @@ ACS_UNEMPLOYMENT_FEATURES = FeatureList(features=[
                   "/pums/data_dict/PUMS_Data_Dictionary_2019.pdf"
 )
 
-ACS_UNEMPLOYMENT_FEATURES_CAUSAL_OLD = FeatureList(features=[
+ACS_UNEMPLOYMENT_FEATURES_CAUSAL = FeatureList(features=[
     Feature('ESR', int, "Employment status (is unemployed)", is_target=True),
     Feature('SCHL', cat_dtype, "Educational attainment",
             name_extended="Educational attainment",
@@ -641,7 +641,7 @@ ACS_UNEMPLOYMENT_FEATURES_CAUSAL_OLD = FeatureList(features=[
                   "/pums/data_dict/PUMS_Data_Dictionary_2019.pdf"
 )
 
-ACS_UNEMPLOYMENT_FEATURES_CAUSAL = FeatureList(features=[
+ACS_UNEMPLOYMENT_FEATURES_ARGUABLYCAUSAL = FeatureList(features=[
    Feature('ESR', int, "Employment status (is unemployed)", is_target=True),
     ENG_FEATURE,
     POBP_FEATURE,
@@ -848,7 +848,7 @@ ACS_FOODSTAMPS_FEATURES = FeatureList(features=[
                   "/pums/data_dict/PUMS_Data_Dictionary_2019.pdf"
 )
 
-ACS_FOODSTAMPS_FEATURES_CAUSAL_OLD = FeatureList(features=[
+ACS_FOODSTAMPS_FEATURES_CAUSAL = FeatureList(features=[
     Feature('FS', int, """Yearly food stamp/Supplemental Nutrition Assistance 
     Program (SNAP) recipiency (household) b .N/A (vacant) 5 1 .Yes 2 .No""",
             is_target=True),
@@ -899,7 +899,7 @@ ACS_FOODSTAMPS_FEATURES_CAUSAL_OLD = FeatureList(features=[
                   "/pums/data_dict/PUMS_Data_Dictionary_2019.pdf"
 )
 
-ACS_FOODSTAMPS_FEATURES_CAUSAL = FeatureList(features=[
+ACS_FOODSTAMPS_FEATURES_ARGUABLYCAUSAL = FeatureList(features=[
     Feature('FS', int, """Yearly food stamp/Supplemental Nutrition Assistance 
     Program (SNAP) recipiency (household) b .N/A (vacant) 5 1 .Yes 2 .No""",
             is_target=True),

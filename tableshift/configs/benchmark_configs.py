@@ -24,6 +24,7 @@ _MIMIC_EXTRACT_PASSTHROUGH_COLUMNS = [
     if f not in MIMIC_EXTRACT_STATIC_FEATURES.names]
 
 BENCHMARK_CONFIGS = {
+    # Foodstamps
     "acsfoodstamps": ExperimentConfig(
         splitter=DomainSplitter(val_size=DEFAULT_ID_VAL_SIZE,
                                 ood_val_size=DEFAULT_OOD_VAL_SIZE,
@@ -44,7 +45,18 @@ BENCHMARK_CONFIGS = {
         grouper=Grouper({"RAC1P": [1, ], "SEX": [1, ]}, drop=False),
         preprocessor_config=PreprocessorConfig(),
         tabular_dataset_kwargs={"acs_task": "acsfoodstamps"}),
+    "acsfoodstamps_arguablycausal": ExperimentConfig(
+        splitter=DomainSplitter(val_size=DEFAULT_ID_VAL_SIZE,
+                                ood_val_size=DEFAULT_OOD_VAL_SIZE,
+                                random_state=DEFAULT_RANDOM_STATE,
+                                id_test_size=DEFAULT_ID_TEST_SIZE,
+                                domain_split_varname="DIVISION",
+                                domain_split_ood_values=['06']),
+        grouper=Grouper({"RAC1P": [1, ], "SEX": [1, ]}, drop=False),
+        preprocessor_config=PreprocessorConfig(),
+        tabular_dataset_kwargs={"acs_task": "acsfoodstamps"}),
 
+    # Income
     "acsincome": ExperimentConfig(
         splitter=DomainSplitter(val_size=DEFAULT_ID_VAL_SIZE,
                                 ood_val_size=DEFAULT_OOD_VAL_SIZE,
@@ -55,7 +67,6 @@ BENCHMARK_CONFIGS = {
         grouper=Grouper({"RAC1P": [1, ], "SEX": [1, ]}, drop=False),
         preprocessor_config=PreprocessorConfig(),
         tabular_dataset_kwargs={"acs_task": "acsincome"}),
-    
     "acsincome_causal": ExperimentConfig(
         splitter=DomainSplitter(val_size=DEFAULT_ID_VAL_SIZE,
                                 ood_val_size=DEFAULT_OOD_VAL_SIZE,
@@ -66,7 +77,18 @@ BENCHMARK_CONFIGS = {
         grouper=Grouper({"RAC1P": [1, ], "SEX": [1, ]}, drop=False),
         preprocessor_config=PreprocessorConfig(),
         tabular_dataset_kwargs={"acs_task": "acsincome"}),
+    "acsincome_arguablycausal": ExperimentConfig(
+        splitter=DomainSplitter(val_size=DEFAULT_ID_VAL_SIZE,
+                                ood_val_size=DEFAULT_OOD_VAL_SIZE,
+                                random_state=DEFAULT_RANDOM_STATE,
+                                id_test_size=DEFAULT_ID_TEST_SIZE,
+                                domain_split_varname="DIVISION",
+                                domain_split_ood_values=['01']),
+        grouper=Grouper({"RAC1P": [1, ], "SEX": [1, ]}, drop=False),
+        preprocessor_config=PreprocessorConfig(),
+        tabular_dataset_kwargs={"acs_task": "acsincome"}),
 
+    # Public Coverage
     "acspubcov": ExperimentConfig(
         splitter=DomainSplitter(val_size=DEFAULT_ID_VAL_SIZE,
                                 ood_val_size=DEFAULT_OOD_VAL_SIZE,
@@ -90,6 +112,7 @@ BENCHMARK_CONFIGS = {
         tabular_dataset_kwargs={"acs_task": "acspubcov_causal", "name": "acspubcov_causal",
                                 "years": ACS_YEARS}),
 
+    # Unemployment
     "acsunemployment": ExperimentConfig(
         splitter=DomainSplitter(val_size=DEFAULT_ID_VAL_SIZE,
                                 ood_val_size=DEFAULT_OOD_VAL_SIZE,
@@ -104,7 +127,6 @@ BENCHMARK_CONFIGS = {
         grouper=Grouper({"RAC1P": [1, ], "SEX": [1, ]}, drop=False),
         preprocessor_config=PreprocessorConfig(),
         tabular_dataset_kwargs={"acs_task": "acsunemployment"}),
-    
     "acsunemployment_causal": ExperimentConfig(
         splitter=DomainSplitter(val_size=DEFAULT_ID_VAL_SIZE,
                                 ood_val_size=DEFAULT_OOD_VAL_SIZE,
@@ -119,7 +141,20 @@ BENCHMARK_CONFIGS = {
         grouper=Grouper({"RAC1P": [1, ], "SEX": [1, ]}, drop=False),
         preprocessor_config=PreprocessorConfig(),
         tabular_dataset_kwargs={"acs_task": "acsunemployment"}),
-
+    "acsunemployment_arguablycausal": ExperimentConfig(
+        splitter=DomainSplitter(val_size=DEFAULT_ID_VAL_SIZE,
+                                ood_val_size=DEFAULT_OOD_VAL_SIZE,
+                                random_state=DEFAULT_RANDOM_STATE,
+                                id_test_size=DEFAULT_ID_TEST_SIZE,
+                                domain_split_varname='SCHL',
+                                # No high school diploma vs. GED/diploma or higher.
+                                domain_split_ood_values=['01', '02', '03', '04',
+                                                         '05', '06', '07', '08',
+                                                         '09', '10', '11', '12',
+                                                         '13', '14', '15']),
+        grouper=Grouper({"RAC1P": [1, ], "SEX": [1, ]}, drop=False),
+        preprocessor_config=PreprocessorConfig(),
+        tabular_dataset_kwargs={"acs_task": "acsunemployment"}),
     "acsunemployment_anticausal": ExperimentConfig(
         splitter=DomainSplitter(val_size=DEFAULT_ID_VAL_SIZE,
                                 ood_val_size=DEFAULT_OOD_VAL_SIZE,
@@ -137,6 +172,8 @@ BENCHMARK_CONFIGS = {
 
     # ANES, Split by region; OOD is south: (AL, AR, DE, D.C., FL, GA, KY, LA,
     # MD, MS, NC, OK, SC,TN, TX, VA, WV)
+
+    # Voting
     "anes": ExperimentConfig(
         splitter=DomainSplitter(val_size=DEFAULT_ID_VAL_SIZE,
                                 ood_val_size=DEFAULT_OOD_VAL_SIZE,
@@ -150,7 +187,6 @@ BENCHMARK_CONFIGS = {
         preprocessor_config=PreprocessorConfig(numeric_features="kbins",
                                                dropna=None),
         tabular_dataset_kwargs={}),
-
     "anes_causal": ExperimentConfig(
         splitter=DomainSplitter(val_size=DEFAULT_ID_VAL_SIZE,
                                 ood_val_size=DEFAULT_OOD_VAL_SIZE,
@@ -165,6 +201,7 @@ BENCHMARK_CONFIGS = {
                                                dropna=None),
         tabular_dataset_kwargs={}),
 
+    # Hypertension
     "brfss_blood_pressure": ExperimentConfig(
         splitter=DomainSplitter(val_size=DEFAULT_ID_VAL_SIZE,
                                 ood_val_size=DEFAULT_OOD_VAL_SIZE,
@@ -194,7 +231,7 @@ BENCHMARK_CONFIGS = {
                                 "years": BRFSS_YEARS},
     ),
 
-
+    # Diabetes
     # "White nonhispanic" (in-domain) vs. all other race/ethnicity codes (OOD)
     "brfss_diabetes": ExperimentConfig(
         splitter=DomainSplitter(val_size=DEFAULT_ID_VAL_SIZE,
@@ -236,6 +273,7 @@ BENCHMARK_CONFIGS = {
                                 "task": "diabetes", "years": BRFSS_YEARS},
     ),
 
+    # Hospital readmission
     "diabetes_readmission": ExperimentConfig(
         splitter=DomainSplitter(val_size=DEFAULT_ID_VAL_SIZE,
                                 ood_val_size=DEFAULT_OOD_VAL_SIZE,
@@ -279,6 +317,7 @@ BENCHMARK_CONFIGS = {
         tabular_dataset_kwargs={"name": "heloc"},
     ),
 
+    # ICU Length of Stay
     "mimic_extract_los_3": ExperimentConfig(
         splitter=DomainSplitter(val_size=DEFAULT_ID_VAL_SIZE,
                                 ood_val_size=DEFAULT_OOD_VAL_SIZE,
@@ -292,7 +331,6 @@ BENCHMARK_CONFIGS = {
             passthrough_columns=_MIMIC_EXTRACT_PASSTHROUGH_COLUMNS),
         tabular_dataset_kwargs={"task": "los_3",
                                 "name": "mimic_extract_los_3"}),
-
     "mimic_extract_los_3_causal": ExperimentConfig(
         splitter=DomainSplitter(val_size=DEFAULT_ID_VAL_SIZE,
                                 ood_val_size=DEFAULT_OOD_VAL_SIZE,
@@ -308,6 +346,7 @@ BENCHMARK_CONFIGS = {
         tabular_dataset_kwargs={"task": "los_3",
                                 "name": "mimic_extract_los_3_causal"}),
 
+    # ICU Mortality
     "mimic_extract_mort_hosp": ExperimentConfig(
         splitter=DomainSplitter(val_size=DEFAULT_ID_VAL_SIZE,
                                 ood_val_size=DEFAULT_OOD_VAL_SIZE,
@@ -353,6 +392,7 @@ BENCHMARK_CONFIGS = {
         tabular_dataset_kwargs={"nhanes_task": "cholesterol",
                                 "years": NHANES_YEARS}),
 
+    # Assistments
     "assistments": ExperimentConfig(
         splitter=DomainSplitter(val_size=DEFAULT_ID_VAL_SIZE,
                                 ood_val_size=DEFAULT_OOD_VAL_SIZE,
@@ -398,6 +438,7 @@ BENCHMARK_CONFIGS = {
         tabular_dataset_kwargs={},
     ),
 
+    # College scorecard
     "college_scorecard": ExperimentConfig(
         splitter=DomainSplitter(val_size=DEFAULT_ID_VAL_SIZE,
                                 ood_val_size=DEFAULT_OOD_VAL_SIZE,
@@ -428,7 +469,6 @@ BENCHMARK_CONFIGS = {
         ),
         tabular_dataset_kwargs={},
     ),
-    
     "college_scorecard_causal": ExperimentConfig(
         splitter=DomainSplitter(val_size=DEFAULT_ID_VAL_SIZE,
                                 ood_val_size=DEFAULT_OOD_VAL_SIZE,
@@ -460,6 +500,7 @@ BENCHMARK_CONFIGS = {
         tabular_dataset_kwargs={},
     ),
 
+    # Childhood lead
     "nhanes_lead": ExperimentConfig(
         splitter=DomainSplitter(val_size=DEFAULT_ID_VAL_SIZE,
                                 ood_val_size=DEFAULT_OOD_VAL_SIZE,
@@ -489,6 +530,7 @@ BENCHMARK_CONFIGS = {
             numeric_features="kbins"),
         tabular_dataset_kwargs={"nhanes_task": "lead", "years": NHANES_YEARS}),
 
+    # Sepsis
     # LOS >= 47 is roughly the 80th %ile of data.
     "physionet": ExperimentConfig(
         splitter=DomainSplitter(val_size=DEFAULT_ID_VAL_SIZE,
@@ -501,7 +543,6 @@ BENCHMARK_CONFIGS = {
         preprocessor_config=PreprocessorConfig(numeric_features="kbins",
                                                dropna=None),
         tabular_dataset_kwargs={"name": "physionet"}),
-
     "physionet_causal": ExperimentConfig(
         splitter=DomainSplitter(val_size=DEFAULT_ID_VAL_SIZE,
                                 ood_val_size=DEFAULT_OOD_VAL_SIZE,
@@ -513,7 +554,6 @@ BENCHMARK_CONFIGS = {
         preprocessor_config=PreprocessorConfig(numeric_features="kbins",
                                                dropna=None),
         tabular_dataset_kwargs={"name": "physionet_causal"}),
-
     "physionet_anticausal": ExperimentConfig(
         splitter=DomainSplitter(val_size=DEFAULT_ID_VAL_SIZE,
                                 ood_val_size=DEFAULT_OOD_VAL_SIZE,

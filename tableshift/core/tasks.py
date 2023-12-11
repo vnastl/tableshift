@@ -35,12 +35,18 @@ _TASK_REGISTRY = {
     "acsincome_causal":
         TaskConfig(ACSDataSource,
                    ACS_INCOME_FEATURES_CAUSAL),
+    "acsincome_ARGUABLYCAUSAL":
+        TaskConfig(ACSDataSource,
+                   ACS_INCOME_FEATURES_ARGUABLYCAUSAL),
     "acsfoodstamps":
         TaskConfig(ACSDataSource,
                    ACS_FOODSTAMPS_FEATURES + ACS_SHARED_FEATURES),
     "acsfoodstamps_causal":
         TaskConfig(ACSDataSource,
                    ACS_FOODSTAMPS_FEATURES_CAUSAL),
+    "acsfoodstamps_ARGUABLYCAUSAL":
+        TaskConfig(ACSDataSource,
+                   ACS_FOODSTAMPS_FEATURES_ARGUABLYCAUSAL),
     "acspubcov":
         TaskConfig(ACSDataSource,
                    ACS_PUBCOV_FEATURES + ACS_SHARED_FEATURES),
@@ -51,6 +57,9 @@ _TASK_REGISTRY = {
         TaskConfig(ACSDataSource,
                    ACS_UNEMPLOYMENT_FEATURES + ACS_SHARED_FEATURES),
     "acsunemployment_causal":
+        TaskConfig(ACSDataSource,
+                   ACS_UNEMPLOYMENT_FEATURES_ARGUABLYCAUSAL),
+    "acsunemployment_ARGUABLYCAUSAL":
         TaskConfig(ACSDataSource,
                    ACS_UNEMPLOYMENT_FEATURES_CAUSAL),
     "acsunemployment_anticausal":

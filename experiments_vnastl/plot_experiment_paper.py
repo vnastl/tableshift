@@ -31,7 +31,7 @@ os.chdir("/Users/vnastl/Seafile/My Library/mpi project causal vs noncausal/table
 dic_experiments = {
     "acsemployment": ["acsemployment","acsemployment_causal", "acsemployment_anticausal"],
     "acsfoodstamps": ["acsfoodstamps","acsfoodstamps_causal"],
-    "acsincome": ["acsincome","acsincome_causal","acsincome_causal2"],
+    "acsincome": ["acsincome","acsincome_causal","acsincome_arguablycausal"],
     "acspubcov": ["acspubcov","acspubcov_causal"],
     "acsunemployment": ["acsunemployment","acsunemployment_causal", "acsunemployment_anticausal"],
     "anes": ["anes","anes_causal"],
@@ -112,7 +112,7 @@ dic_ood_domain = {
 
 color_all = "tab:blue"
 color_causal = "tab:orange"
-color_causal2 = "tab:green"
+color_arguablycausal = "tab:green"
 color_constant = "tab:red"
 
 def get_results(experiment_name):
@@ -136,10 +136,10 @@ def get_results(experiment_name):
                 if 'causal' not in feature_selection: 
                     feature_selection.append('causal') 
                 return 'causal'
-            # elif experiment.endswith('_causal2'):
-            #     if 'causal2' not in feature_selection: 
-            #         feature_selection.append('causal2')
-            #     return 'causal2'
+            # elif experiment.endswith('_arguablycausal'):
+            #     if 'arguablycausal' not in feature_selection: 
+            #         feature_selection.append('arguablycausal')
+            #     return 'arguablycausal'
             # elif experiment.endswith('_causal_no_tuition_fee'):
             #     if 'causal without tuition' not in feature_selection: 
             #         feature_selection.append('causal without tuition')
@@ -169,7 +169,7 @@ def get_results(experiment_name):
                 if get_feature_selection(experiment) == 'causal':
                     causal_features = eval_json['features']
                     causal_features.remove(domain_label)
-                if get_feature_selection(experiment) == 'causal2' or get_feature_selection(experiment) == 'causal without tuition' or get_feature_selection(experiment) == 'anticausal':
+                if get_feature_selection(experiment) == 'arguablycausal' or get_feature_selection(experiment) == 'causal without tuition' or get_feature_selection(experiment) == 'anticausal':
                     extra_features = eval_json['features']
                     extra_features.remove(domain_label)
                 else:
@@ -304,8 +304,8 @@ def do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,axmin=[0.5,0.5],a
     # plt.fill(filled['id_test'],filled['ood_test'], color=color_causal,alpha=0.3)
 
     ## Causal features 2
-    if (eval_all['features'] == "causal2").any():
-        eval_plot = eval_all[eval_all['features']=="causal2"]
+    if (eval_all['features'] == "arguablycausal").any():
+        eval_plot = eval_all[eval_all['features']=="arguablycausal"]
         eval_plot.sort_values('id_test',inplace=True)
         # Calculate the pareto set
         points = eval_plot[['id_test','ood_test']]
@@ -321,18 +321,18 @@ def do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,axmin=[0.5,0.5],a
                     y=markers['ood_test'],
                     xerr=markers['id_test_ub']-markers['id_test'],
                     yerr=markers['ood_test_ub']-markers['ood_test'], fmt="s",
-                    color=color_causal2, ecolor=color_causal2, label="top arguably causal features")
+                    color=color_arguablycausal, ecolor=color_arguablycausal, label="top arguably causal features")
         # highlight bar
         shift = points[points["ood_test"] == points["ood_test"].max()]
-        shift["type"] = "causal2"
-        dic_shift["causal2"] = shift
+        shift["type"] = "arguablycausal"
+        dic_shift["arguablycausal"] = shift
         plt.hlines(y=shift["ood_test"], xmin=shift["ood_test"], xmax=shift['id_test'],
-                color=color_causal2, linewidth=3, alpha=0.7  )
+                color=color_arguablycausal, linewidth=3, alpha=0.7  )
         # get extra points for the plot
         new_row = pd.DataFrame({'id_test':[mymin,max(points['id_test'])], 'ood_test':[max(points['ood_test']),mymin]},)
         points = pd.concat([points,new_row], ignore_index=True)
         points.sort_values('id_test',inplace=True)
-        plt.plot(points['id_test'],points['ood_test'],color=color_causal2,linestyle="dotted")
+        plt.plot(points['id_test'],points['ood_test'],color=color_arguablycausal,linestyle="dotted")
 
         new_row = pd.DataFrame({'id_test':[mymin], 'ood_test':[mymin]},)
         points = pd.concat([points,new_row], ignore_index=True)
@@ -387,7 +387,7 @@ def do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,axmin=[0.5,0.5],a
     plt.ylim((axmin[1],axmax[1]))
 
     # Add text below the plot
-    if (eval_all['features'] == "causal2").any():
+    if (eval_all['features'] == "arguablycausal").any():
         print(f'Causal features: {causal_features} \n Arguably causal features: {extra_features}')
     if experiment_name in anticausal:
         # plt.text(mytextx, mytexty,f'Causal features: {causal_features} \n Anticausal features: {extra_features}')
@@ -408,8 +408,8 @@ def do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,axmin=[0.5,0.5],a
         plt.ylabel("shift gap")
         shift = pd.concat(dic_shift.values(), ignore_index=True)
         shift["gap"] = shift["id_test"] - shift["ood_test"]
-        if (eval_all['features'] == "causal2").any():
-            plt.bar(shift["type"], shift["gap"], color=[color_all,color_causal,color_causal2,color_constant])
+        if (eval_all['features'] == "arguablycausal").any():
+            plt.bar(shift["type"], shift["gap"], color=[color_all,color_causal,color_arguablycausal,color_constant])
         else:
             plt.bar(shift["type"], shift["gap"], color=[color_all,color_causal,color_constant])
         plt.savefig(str(Path(__file__).parents[0]/f"{myname}_shift.pdf"), bbox_inches='tight')

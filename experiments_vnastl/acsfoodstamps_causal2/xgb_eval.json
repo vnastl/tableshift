@@ -1,1 +1,0 @@
-{"id_test": 0.8293610418680368, "id_test_conf": [0.826713061301959, 0.8319846975135847], "features": ["DIVISION", "AGEP", "SEX", "RAC1P", "POBP", "DIS", "ANC", "NATIVITY", "DEAR", "DEYE", "DREM", "ST", "MAR", "CIT", "SCHL", "HUPAC", "OCCP", "MIL", "ENG"], "ood_test": 0.8018945128687753, "ood_test_conf": [0.798332955484613, 0.8054201808344779]}
