@@ -1,5 +1,6 @@
 import argparse
 import logging
+from pathlib import Path
 
 import torch
 from sklearn.metrics import accuracy_score
@@ -22,7 +23,7 @@ logging.basicConfig(
     datefmt='%Y-%m-%d %H:%M:%S')
 
 
-def main(experiment, dset, model, debug: bool):
+def main(experiment, dset, model, save_dir, debug: bool):
     if debug:
         print("[INFO] running in debug mode.")
         experiment = "_debug"
@@ -49,7 +50,9 @@ def main(experiment, dset, model, debug: bool):
             evaluation[test_split + "_conf"] = acc_conf
             print(f"training completed! {test_split} accuracy: {acc:.4f}")
             # Open a file in write mode
-            with open(f'experiments_vnastl/{experiment}/{model}_eval.json', 'w') as f:
+            SAVE_DIR_EXP = save_dir / experiment
+            SAVE_DIR_EXP.mkdir(exist_ok=True)
+            with open(f'{str(SAVE_DIR_EXP)}/{model}_eval.json', 'w') as f:
                # Use json.dump to write the dictionary into the file
                 evaluation["features"] = dset.predictors
                 json.dump(evaluation, f)
@@ -58,7 +61,9 @@ def main(experiment, dset, model, debug: bool):
     else:
         # Case: pytorch estimator; eval is already performed + printed by train().
         print("training completed!")
-        with open(f'experiments_vnastl/{experiment}/{model}_eval.json', 'w') as f:
+        SAVE_DIR_EXP = save_dir / experiment
+        SAVE_DIR_EXP.mkdir(exist_ok=True)
+        with open(f'{str(SAVE_DIR_EXP)}/{model}_eval.json', 'w') as f:
             # Use json.dump to write the dictionary into the file
             evaluation = estimator.fit_metrics
             for test_split in ["id_test","ood_test"]:
@@ -81,7 +86,7 @@ if __name__ == "__main__":
     #                     help="Whether to run in debug mode. If True, various "
     #                          "truncations/simplifications are performed to "
     #                          "speed up experiment.")
-    # parser.add_argument("--experiment", default="college_scorecard",
+    # parser.add_argument("--experiment", default="diabetes_readmission",
     #                     help="Experiment to run. Overridden when debug=True.")
     # parser.add_argument("--model", default="histgbm",
     #                     help="model to use.")
@@ -100,31 +105,31 @@ if __name__ == "__main__":
     # experiments = ["brfss_blood_pressure_causal","brfss_blood_pressure"]
     # experiments=["college_scorecard","college_scorecard_causal"]
     # experiments = ["nhanes_lead", "nhanes_lead_causal"]
-    # experiments = ["diabetes_readmission", "diabetes_readmission_causal"]
-    experiments = ["meps","meps_causal"]
+    experiments = ["diabetes_readmission"] #, "diabetes_readmission_causal"]
+    # experiments = ["meps","meps_causal"]
     # experiments = ["mimic_extract_los_3","mimic_extract_los_3_causal"] 
     # experiments = ["mimic_extract_mort_hosp","mimic_extract_mort_hosp_causal"]
     # experiments = ["physionet","physionet_causal", "physionet_anticausal"]
     # experiments = ["sipp","sipp_causal"]
 
-    cache_dir="tmp"
-
+    cache_dir=Path("tmp")
+    save_dir = Path("experiments_vnastl")
     for experiment in experiments:
-        dset = get_dataset(experiment, cache_dir)
+        dset = get_dataset(experiment, str(cache_dir))
         # X, y, _, _ = dset.get_pandas("train")
         models = [
-            "ft_transformer",
+            # "ft_transformer",
             "histgbm",
-            "mlp",
-            "saint",
-            "tabtransformer",
-            "resnet",
-            "xgb",
-            "aldro",
-            "dro",
-            "node",
-            "group_dro",
-            "label_group_dro",
+            # "mlp",
+            # "saint",
+            # "tabtransformer",
+            # "resnet",
+            # "xgb",
+            # "aldro",
+            # "dro",
+            # "node",
+            # "group_dro",
+            # "label_group_dro",
             # "irm",
             # "vrex",
             # "mixup",
@@ -134,4 +139,4 @@ if __name__ == "__main__":
             # "deepcoral"
             ]
         for model in models:
-            main(experiment=experiment,dset=dset,model=model,debug=False)
+            main(experiment=experiment,dset=dset,model=model,save_dir=save_dir,debug=False)
