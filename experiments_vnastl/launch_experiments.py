@@ -214,7 +214,7 @@ if __name__ == '__main__':
             "executable": "/home/vnastl/miniconda3/envs/tableshift/bin/python3",  # correct env for the python executable
             # "arguments": "foo.py",    # NOTE: used for testing
             "arguments": (
-                "vnastl/tableshift/experiments_vnastl/run_experiment_on_cluster.py "
+                "/home/vnastl/tableshift/experiments_vnastl/run_experiment_on_cluster.py "
                 f"--cache_dir {str(DATA_DIR)} "
                 f"--experiment {exp_obj.name} "
                 f"--model {exp_obj.model} "
