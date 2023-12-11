@@ -88,7 +88,7 @@ if __name__ == '__main__':
     DATA_DIR = ROOT_DIR / "fast/vnastl/data"  # TODO check again if it is in fact the fast driver
 
     # Make sure results dir exists
-    RESULTS_DIR = ROOT_DIR / "vnastl/tableshift/experiments_vnastl"
+    RESULTS_DIR = ROOT_DIR / "vnastl/results" #/tableshift/experiments_vnastl"
     RESULTS_DIR.mkdir(exist_ok=True, parents=False)
 
     # Directory to save cluster logs and job stdout/stderr
