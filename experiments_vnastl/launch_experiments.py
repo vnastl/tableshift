@@ -211,10 +211,10 @@ if __name__ == '__main__':
 
         # Construct job description
         job_description = htcondor.Submit({
-            "executable": "/home/vnastl/miniconda3/envs/py310/bin/python3",  # correct env for the python executable
+            "executable": "/home/vnastl/miniconda3/envs/tableshift/bin/python3",  # correct env for the python executable
             # "arguments": "foo.py",    # NOTE: used for testing
             "arguments": (
-                "/home/vnastl/accuracy_on_the_line/run_experiment_on_cluster.py "
+                "vnastl/tableshift/experiment_vnastl/run_experiment_on_cluster.py "
                 f"--cache_dir {str(DATA_DIR)} "
                 f"--experiment {exp_obj.name} "
                 f"--model {exp_obj.model} "
@@ -231,7 +231,7 @@ if __name__ == '__main__':
             "jobprio": f"{exp_obj.job_bid - 1000}",
             "notify_user": "vivian.nastl@tuebingen.mpg.de",
             "notification": "error",
-            "job_seed_macro": f"$(Process) + {random.randrange(int(1e9))}",      # add random salt to all job seeds
+            # "job_seed_macro": f"$(Process) + {random.randrange(int(1e9))}",      # add random salt to all job seeds
             "job_seed": "$INT(job_seed_macro)",
 
             # Concurrency limits:
