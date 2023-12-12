@@ -166,7 +166,7 @@ if __name__ == '__main__':
             TASK_MODELS = MODELS + DG_MODELS
         else:
             TASK_MODELS = MODELS
-        job_memory_gb = BIG_JOB_MEMORY_GB #JOB_MEMORY_GB #
+        job_memory_gb = JOB_MEMORY_GB #BIG_JOB_MEMORY_GB
 
         for model in TASK_MODELS:
             all_task_experiments.append(ExperimentConfigs(
