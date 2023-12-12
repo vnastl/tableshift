@@ -31,7 +31,7 @@ os.chdir("/Users/vnastl/Seafile/My Library/mpi project causal vs noncausal/table
 dic_experiments = {
     "acsemployment": ["acsemployment","acsemployment_causal", "acsemployment_anticausal"],
     "acsfoodstamps": ["acsfoodstamps","acsfoodstamps_causal"],
-    "acsincome": ["acsincome","acsincome_causal","acsincome_causal2"],
+    "acsincome": ["acsincome","acsincome_causal"],
     "acspubcov": ["acspubcov","acspubcov_causal"],
     "acsunemployment": ["acsunemployment","acsunemployment_causal", "acsunemployment_anticausal"],
     "anes": ["anes","anes_causal"],
@@ -743,22 +743,22 @@ def plot_experiment_zoom(experiment_name):
 
 completed_experiments = [
                         # "acsemployment", # old
-                        #  "acsfoodstamps", # old
-                         "acsincome",
+                         "acsfoodstamps", # old
+                        #  "acsincome",
                         #  "acspubcov", # old
                         #  "acsunemployment", # old
                          "anes",
-                        #  "assistments",
+                         "assistments",
                         #  "brfss_blood_pressure",
-                        #  "brfss_diabetes",
-                        #  "college_scorecard", # old
+                         "brfss_diabetes",
+                         "college_scorecard", # old
                         #  "diabetes_readmission",
                         #  "meps"
                         #  "mimic_extract_mort_hosp",
-                         "mimic_extract_los_3",
+                        #  "mimic_extract_los_3",
                         #  "nhanes_lead",
                         #  "physionet", # old 
-                        #  "sipp",
+                         "sipp",
                          ]
 for experiment_name in completed_experiments:
     plot_experiment(experiment_name)
