@@ -22,6 +22,54 @@ logging.basicConfig(
     level=LOG_LEVEL,
     datefmt='%Y-%m-%d %H:%M:%S')
 
+def binary_stat_scores_format(target,prediction,threshold= 0.5):
+    """Convert all input to label format.
+
+    - If prediction tensor is floating point, applies sigmoid if pred tensor not in [0,1] range
+    - If prediction tensor is floating point, thresholds afterwards
+    - Mask all datapoints that should be ignored with negative values
+
+    """
+    if isinstance(target, pd.Series):
+        target = target.to_numpy()
+    target = torch.from_numpy(target)
+    prediction = torch.from_numpy(prediction)
+    if prediction.is_floating_point():
+        if not torch.all((prediction >= 0) * (prediction <= 1)):
+            # prediction is logits, convert with sigmoid
+            prediction = prediction.sigmoid()
+        prediction = (prediction > threshold)*1.0
+
+    prediction = prediction.reshape(prediction.shape[0], -1)
+    target = target.reshape(target.shape[0], -1)
+
+    return target, prediction
+
+def balanced_accuracy_score(target,prediction):
+    """Calculates balanced accuracy.
+
+    Args:
+        target (np.array): Vector containing the target values for each sample.
+        prediction (np.array): Vector containing the predictions for each sample.
+        inference (bool, optional): If set to True, calculate standard errors of balanced accuracy. Defaults to False.
+
+    Returns:
+        list | float64: If inference is set to True, return list of balanced accuracy and standard error of balanced accuracy.
+            Else return balanced accuracy.
+    """
+    target, prediction = binary_stat_scores_format(target,prediction)
+    n = len(prediction)
+    tp = torch.count_nonzero((target == 1) & (prediction == 1))
+    fn = torch.count_nonzero((target == 1) & (prediction == 0))
+    tn = torch.count_nonzero((target == 0) & (prediction == 0))
+    fp = torch.count_nonzero((target == 0) & (prediction == 1))
+    sensitivity = tp / (tp+fn)
+    specificity = tn / (tn+fp)
+    balanced_acc = (sensitivity + specificity)/2
+    sensitivity_se = torch.sqrt(sensitivity*(1-sensitivity)/n)
+    specificity_se = torch.sqrt(specificity*(1-specificity)/n)
+    balanced_acc_se = torch.sqrt(sensitivity_se**2/4 + specificity_se**2/4)
+    return balanced_acc.item(), balanced_acc_se.item()
 
 def main(experiment, model, cache_dir, save_dir, debug: bool):
     cache_dir = Path(cache_dir)
@@ -45,7 +93,8 @@ def main(experiment, model, cache_dir, save_dir, debug: bool):
             # Fetch predictions and labels for a sklearn model.
             X_te, y_te, _, _ = dset.get_pandas(test_split)
             yhat_te = estimator.predict(X_te)
-        
+
+            # Calculate accuracy
             acc = accuracy_score(y_true=y_te, y_pred=yhat_te)
             evaluation[test_split] = acc
             nobs = len(y_te)
@@ -54,31 +103,53 @@ def main(experiment, model, cache_dir, save_dir, debug: bool):
             acc_conf = proportion_confint(count, nobs, alpha=0.05, method='beta')
             evaluation[test_split + "_conf"] = acc_conf
             print(f"training completed! {test_split} accuracy: {acc:.4f}")
-            # Open a file in write mode
-            SAVE_DIR_EXP = save_dir / experiment
-            SAVE_DIR_EXP.mkdir(exist_ok=True)
-            with open(f'{str(SAVE_DIR_EXP)}/{model}_eval.json', 'w') as f:
-               # Use json.dump to write the dictionary into the file
-                evaluation["features"] = dset.predictors
-                json.dump(evaluation, f)
+
+            # Calculate balanced accuracy
+            balanced_acc, balanced_acc_se = balanced_accuracy_score(target=y_te, prediction=yhat_te)
+            evaluation[test_split + "_balanced"] = balanced_acc
+            balanced_acc_conf = (balanced_acc-1.96*balanced_acc_se, balanced_acc+1.96*balanced_acc_se)
+            evaluation[test_split + "_balanced" + "_conf"] = balanced_acc_conf
+            print(f"training completed! {test_split} balanced accuracy: {balanced_acc:.4f}")
+        
+        # Open a file in write mode
+        SAVE_DIR_EXP = save_dir / experiment
+        SAVE_DIR_EXP.mkdir(exist_ok=True)
+        with open(f'{str(SAVE_DIR_EXP)}/{model}_eval.json', 'w') as f:
+            # Use json.dump to write the dictionary into the file
+            evaluation["features"] = dset.predictors
+            json.dump(evaluation, f)
         
     
     else:
         # Case: pytorch estimator; eval is already performed + printed by train().
         print("training completed!")
+        evaluation = estimator.fit_metrics
+        for test_split in ["id_test","ood_test"]:
+            # Get accuracy
+            # Fetch predictions and labels for a sklearn model.
+            X_te, y_te, _, _ = dset.get_pandas(test_split)
+            nobs = len(y_te)
+            acc = evaluation[test_split]
+            count = nobs*acc
+            acc_conf = proportion_confint(count, nobs, alpha=0.05, method='beta')
+            evaluation[test_split + "_conf"] = acc_conf
+
+            # Calculate balanced accuracy
+            temp = X_te.reset_index(drop=True)
+            temp = temp.to_numpy()
+            temp = torch.from_numpy(temp)
+            temp = temp.float()
+            yhat_te = estimator.predict(temp)
+            balanced_acc, balanced_acc_se = balanced_accuracy_score(target=y_te, prediction=yhat_te)
+            evaluation[test_split + "_balanced"] = balanced_acc
+            balanced_acc_conf = (balanced_acc-1.96*balanced_acc_se, balanced_acc+1.96*balanced_acc_se)
+            evaluation[test_split + "_balanced" + "_conf"] = balanced_acc_conf
+            print(f"training completed! {test_split} balanced accuracy: {balanced_acc:.4f}")
+
+        # Open a file in write mode
         SAVE_DIR_EXP = save_dir / experiment
         SAVE_DIR_EXP.mkdir(exist_ok=True)
         with open(f'{str(SAVE_DIR_EXP)}/{model}_eval.json', 'w') as f:
-            # Use json.dump to write the dictionary into the file
-            evaluation = estimator.fit_metrics
-            for test_split in ["id_test","ood_test"]:
-                # Fetch predictions and labels for a sklearn model.
-                X_te, y_te, _, _ = dset.get_pandas(test_split)
-                nobs = len(y_te)
-                acc = evaluation[test_split]
-                count = nobs*acc
-                acc_conf = proportion_confint(count, nobs, alpha=0.05, method='beta')
-                evaluation[test_split + "_conf"] = acc_conf
             evaluation["features"] = dset.predictors
             json.dump(evaluation, f)
     return
