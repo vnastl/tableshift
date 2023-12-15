@@ -743,22 +743,22 @@ def plot_experiment_zoom(experiment_name):
 
 completed_experiments = [
                         # "acsemployment", # old
-                         "acsfoodstamps", # old
+                        #  "acsfoodstamps", # old
                         #  "acsincome",
                         #  "acspubcov", # old
                         #  "acsunemployment", # old
-                         "anes",
-                         "assistments",
+                        #  "anes",
+                        #  "assistments",
                         #  "brfss_blood_pressure",
-                         "brfss_diabetes",
-                         "college_scorecard", # old
-                        #  "diabetes_readmission",
+                        #  "brfss_diabetes",
+                        #  "college_scorecard", # old
+                         "diabetes_readmission",
                         #  "meps"
                         #  "mimic_extract_mort_hosp",
                         #  "mimic_extract_los_3",
                         #  "nhanes_lead",
                         #  "physionet", # old 
-                         "sipp",
+                        #  "sipp",
                          ]
 for experiment_name in completed_experiments:
     plot_experiment(experiment_name)

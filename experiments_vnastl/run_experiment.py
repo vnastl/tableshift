@@ -11,6 +11,8 @@ from tableshift.models.utils import get_estimator
 from tableshift.models.default_hparams import get_default_config
 from tableshift.core.tabular_dataset import TabularDataset
 
+from experiments_vnastl.metrics import balanced_accuracy_score
+
 import json
 from  statsmodels.stats.proportion import proportion_confint
 
@@ -22,55 +24,6 @@ logging.basicConfig(
     level=LOG_LEVEL,
     datefmt='%Y-%m-%d %H:%M:%S')
 
-
-def binary_stat_scores_format(target,prediction,threshold= 0.5):
-    """Convert all input to label format.
-
-    - If prediction tensor is floating point, applies sigmoid if pred tensor not in [0,1] range
-    - If prediction tensor is floating point, thresholds afterwards
-    - Mask all datapoints that should be ignored with negative values
-
-    """
-    if isinstance(target, pd.Series):
-        target = target.to_numpy()
-    target = torch.from_numpy(target)
-    prediction = torch.from_numpy(prediction)
-    if prediction.is_floating_point():
-        if not torch.all((prediction >= 0) * (prediction <= 1)):
-            # prediction is logits, convert with sigmoid
-            prediction = prediction.sigmoid()
-        prediction = (prediction > threshold)*1.0
-
-    prediction = prediction.reshape(prediction.shape[0], -1)
-    target = target.reshape(target.shape[0], -1)
-
-    return target, prediction
-
-def balanced_accuracy_score(target,prediction):
-    """Calculates balanced accuracy.
-
-    Args:
-        target (np.array): Vector containing the target values for each sample.
-        prediction (np.array): Vector containing the predictions for each sample.
-        inference (bool, optional): If set to True, calculate standard errors of balanced accuracy. Defaults to False.
-
-    Returns:
-        list | float64: If inference is set to True, return list of balanced accuracy and standard error of balanced accuracy.
-            Else return balanced accuracy.
-    """
-    target, prediction = binary_stat_scores_format(target,prediction)
-    n = len(prediction)
-    tp = torch.count_nonzero((target == 1) & (prediction == 1))
-    fn = torch.count_nonzero((target == 1) & (prediction == 0))
-    tn = torch.count_nonzero((target == 0) & (prediction == 0))
-    fp = torch.count_nonzero((target == 0) & (prediction == 1))
-    sensitivity = tp / (tp+fn)
-    specificity = tn / (tn+fp)
-    balanced_acc = (sensitivity + specificity)/2
-    sensitivity_se = torch.sqrt(sensitivity*(1-sensitivity)/n)
-    specificity_se = torch.sqrt(specificity*(1-specificity)/n)
-    balanced_acc_se = torch.sqrt(sensitivity_se**2/4 + specificity_se**2/4)
-    return balanced_acc.item(), balanced_acc_se.item()
 
 def main(experiment, dset, model, debug: bool):
     if debug:
@@ -118,6 +71,7 @@ def main(experiment, dset, model, debug: bool):
         with open(f'experiments_vnastl/{experiment}/{model}_eval.json', 'w') as f:
             # Use json.dump to write the dictionary into the file
             evaluation = estimator.fit_metrics
+            evaluation_balanced = estimator.fit_metrics_balanced
             for test_split in ["id_test","ood_test"]:
                 # Get accuracy
                 # Fetch predictions and labels for a sklearn model.
@@ -128,13 +82,9 @@ def main(experiment, dset, model, debug: bool):
                 acc_conf = proportion_confint(count, nobs, alpha=0.05, method='beta')
                 evaluation[test_split + "_conf"] = acc_conf
 
-                # Calculate balanced accuracy
-                temp = X_te.reset_index(drop=True)
-                temp = temp.to_numpy()
-                temp = torch.from_numpy(temp)
-                temp = temp.float()
-                yhat_te = estimator.predict(temp)
-                balanced_acc, balanced_acc_se = balanced_accuracy_score(target=y_te, prediction=yhat_te)
+                # Get balanced accuracy
+                balanced_acc = evaluation_balanced["score"][test_split]
+                balanced_acc_se = evaluation_balanced["se"][test_split]
                 evaluation[test_split + "_balanced"] = balanced_acc
                 balanced_acc_conf = (balanced_acc-1.96*balanced_acc_se, balanced_acc+1.96*balanced_acc_se)
                 evaluation[test_split + "_balanced" + "_conf"] = balanced_acc_conf
@@ -160,7 +110,7 @@ if __name__ == "__main__":
 
     
     
-    experiments = ["acsincome","acsincome_causal", ] #
+    # experiments = ["acsincome","acsincome_causal", ] #
     # experiments=["acspubcov", "acspubcov_causal"]
     # experiments = ["acsunemployment","acsunemployment_causal", "acsunemployment_anticausal"] 
     # experiments=["acsfoodstamps", "acsfoodstamps_causal"]
@@ -170,7 +120,7 @@ if __name__ == "__main__":
     # experiments = ["brfss_blood_pressure_causal","brfss_blood_pressure"]
     # experiments=["college_scorecard","college_scorecard_causal"]
     # experiments = ["nhanes_lead", "nhanes_lead_causal"]
-    # experiments = ["diabetes_readmission"] #, "diabetes_readmission_causal"]
+    experiments = ["diabetes_readmission"] #, "diabetes_readmission_causal"]
     # experiments = ["meps","meps_causal"]
     # experiments = ["mimic_extract_los_3","mimic_extract_los_3_causal"] 
     # experiments = ["mimic_extract_mort_hosp","mimic_extract_mort_hosp_causal"]
@@ -183,9 +133,9 @@ if __name__ == "__main__":
         dset = get_dataset(experiment, cache_dir)
         # X, y, _, _ = dset.get_pandas("train")
         models = [
-            # "ft_transformer",
-            "histgbm",
-            "mlp",
+            "ft_transformer",
+            # "histgbm",
+            # "mlp",
             # "saint",
             # "tabtransformer",
             # "resnet",

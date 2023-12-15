@@ -30,10 +30,10 @@ os.chdir("/Users/vnastl/Seafile/My Library/mpi project causal vs noncausal/table
 
 dic_experiments = {
     "acsemployment": ["acsemployment","acsemployment_causal", "acsemployment_anticausal"],
-    "acsfoodstamps": ["acsfoodstamps","acsfoodstamps_causal"],
+    "acsfoodstamps": ["acsfoodstamps","acsfoodstamps_causal", "acsfoodstamps_arguablycausal"],
     "acsincome": ["acsincome","acsincome_causal","acsincome_arguablycausal"],
     "acspubcov": ["acspubcov","acspubcov_causal"],
-    "acsunemployment": ["acsunemployment","acsunemployment_causal", "acsunemployment_anticausal"],
+    "acsunemployment": ["acsunemployment","acsunemployment_causal", "acsunemployment_arguablycausal", "acsunemployment_anticausal"],
     "anes": ["anes","anes_causal"],
     "assistments": ["assistments","assistments_causal"],
     "brfss_blood_pressure": ["brfss_blood_pressure", "brfss_blood_pressure_causal"],
@@ -136,10 +136,10 @@ def get_results(experiment_name):
                 if 'causal' not in feature_selection: 
                     feature_selection.append('causal') 
                 return 'causal'
-            # elif experiment.endswith('_arguablycausal'):
-            #     if 'arguablycausal' not in feature_selection: 
-            #         feature_selection.append('arguablycausal')
-            #     return 'arguablycausal'
+            elif experiment.endswith('_arguablycausal'):
+                if 'arguablycausal' not in feature_selection: 
+                    feature_selection.append('arguablycausal')
+                return 'arguablycausal'
             # elif experiment.endswith('_causal_no_tuition_fee'):
             #     if 'causal without tuition' not in feature_selection: 
             #         feature_selection.append('causal without tuition')
@@ -742,23 +742,23 @@ def plot_experiment_zoom(experiment_name):
 # %%
 
 completed_experiments = [
-                        "acsemployment", # old
+                        # "acsemployment", # old
                          "acsfoodstamps", # old
                          "acsincome",
-                         "acspubcov", # old
+                        #  "acspubcov", # old
                          "acsunemployment", # old
-                         "anes",
-                         "assistments",
-                         "brfss_blood_pressure",
-                         "brfss_diabetes",
-                         "college_scorecard", # old
-                         "diabetes_readmission",
-                         "meps"
-                         "mimic_extract_mort_hosp",
-                         "mimic_extract_los_3",
-                         "nhanes_lead",
-                         "physionet", # old 
-                         "sipp",
+                        #  "anes",
+                        #  "assistments",
+                        #  "brfss_blood_pressure",
+                        #  "brfss_diabetes",
+                        #  "college_scorecard", # old
+                        #  "diabetes_readmission",
+                        #  "meps"
+                        #  "mimic_extract_mort_hosp",
+                        #  "mimic_extract_los_3",
+                        #  "nhanes_lead",
+                        #  "physionet", # old 
+                        #  "sipp",
                          ]
 for experiment_name in completed_experiments:
     plot_experiment(experiment_name)
