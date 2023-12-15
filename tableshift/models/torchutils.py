@@ -9,6 +9,7 @@ from tab_transformer_pytorch import TabTransformer
 from tqdm import tqdm
 
 from tableshift.third_party.saint.models import SAINT
+from experiments_vnastl.metrics import balanced_accuracy_score
 
 
 def get_module_attr(model, attr):
@@ -100,4 +101,5 @@ def evaluate(model, loader, device):
     prediction, target = get_predictions_and_labels(model, loader, device)
     prediction = np.round(prediction)
     score = sklearn.metrics.accuracy_score(target, prediction)
-    return score
+    score_balanced, score_balanced_se = balanced_accuracy_score(target=target, prediction=prediction)
+    return score, score_balanced, score_balanced_se

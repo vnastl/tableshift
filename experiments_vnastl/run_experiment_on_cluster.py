@@ -124,6 +124,7 @@ def main(experiment, model, cache_dir, save_dir, debug: bool):
         # Case: pytorch estimator; eval is already performed + printed by train().
         print("training completed!")
         evaluation = estimator.fit_metrics
+        evaluation_balanced = estimator.fit_metrics_balanced
         for test_split in ["id_test","ood_test"]:
             # Get accuracy
             # Fetch predictions and labels for a sklearn model.
@@ -134,13 +135,9 @@ def main(experiment, model, cache_dir, save_dir, debug: bool):
             acc_conf = proportion_confint(count, nobs, alpha=0.05, method='beta')
             evaluation[test_split + "_conf"] = acc_conf
 
-            # Calculate balanced accuracy
-            temp = X_te.reset_index(drop=True)
-            temp = temp.to_numpy()
-            temp = torch.from_numpy(temp)
-            temp = temp.float()
-            yhat_te = estimator.predict(temp)
-            balanced_acc, balanced_acc_se = balanced_accuracy_score(target=y_te, prediction=yhat_te)
+            # Get balanced accuracy
+            balanced_acc = evaluation_balanced["score"][test_split]
+            balanced_acc_se = evaluation_balanced["se"][test_split]
             evaluation[test_split + "_balanced"] = balanced_acc
             balanced_acc_conf = (balanced_acc-1.96*balanced_acc_se, balanced_acc+1.96*balanced_acc_se)
             evaluation[test_split + "_balanced" + "_conf"] = balanced_acc_conf
