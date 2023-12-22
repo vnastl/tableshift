@@ -110,7 +110,7 @@ if __name__ == "__main__":
 
     
     
-    # experiments = ["acsincome","acsincome_causal", ] #
+    experiments = ["acsincome_anticausal","acsincome","acsincome_causal", "acsincome_arguablycausal", ]
     # experiments=["acspubcov", "acspubcov_causal"]
     # experiments = ["acsunemployment","acsunemployment_causal", "acsunemployment_anticausal"] 
     # experiments=["acsfoodstamps", "acsfoodstamps_causal"]
@@ -120,7 +120,7 @@ if __name__ == "__main__":
     # experiments = ["brfss_blood_pressure_causal","brfss_blood_pressure"]
     # experiments=["college_scorecard","college_scorecard_causal"]
     # experiments = ["nhanes_lead", "nhanes_lead_causal"]
-    experiments = ["diabetes_readmission"] #, "diabetes_readmission_causal"]
+    # experiments = ["diabetes_readmission"] #, "diabetes_readmission_causal"]
     # experiments = ["meps","meps_causal"]
     # experiments = ["mimic_extract_los_3","mimic_extract_los_3_causal"] 
     # experiments = ["mimic_extract_mort_hosp","mimic_extract_mort_hosp_causal"]
@@ -134,22 +134,22 @@ if __name__ == "__main__":
         # X, y, _, _ = dset.get_pandas("train")
         models = [
             "ft_transformer",
-            # "histgbm",
-            # "mlp",
-            # "saint",
-            # "tabtransformer",
-            # "resnet",
-            # "xgb",
-            # "aldro",
-            # "dro",
-            # "node",
-            # "group_dro",
-            # "label_group_dro",
-            # "irm",
-            # "vrex",
-            # "mixup",
-            # "dann",
-            # "mmd",
+            "histgbm",
+            "mlp",
+            "saint",
+            "tabtransformer",
+            "resnet",
+            "xgb",
+            "aldro",
+            "dro",
+            "node",
+            "group_dro",
+            "label_group_dro",
+            "irm",
+            "vrex",
+            "mixup",
+            "dann",
+            "mmd",
             # "lightgbm",
             # "deepcoral"
             ]

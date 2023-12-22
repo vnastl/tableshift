@@ -31,7 +31,7 @@ os.chdir("/Users/vnastl/Seafile/My Library/mpi project causal vs noncausal/table
 dic_experiments = {
     "acsemployment": ["acsemployment","acsemployment_causal", "acsemployment_anticausal"],
     "acsfoodstamps": ["acsfoodstamps","acsfoodstamps_causal", "acsfoodstamps_arguablycausal"],
-    "acsincome": ["acsincome","acsincome_causal","acsincome_arguablycausal"],
+    "acsincome": ["acsincome","acsincome_causal","acsincome_arguablycausal","acsincome_anticausal"],
     "acspubcov": ["acspubcov","acspubcov_causal"],
     "acsunemployment": ["acsunemployment","acsunemployment_causal", "acsunemployment_arguablycausal", "acsunemployment_anticausal"],
     "anes": ["anes","anes_causal"],
@@ -113,6 +113,7 @@ dic_ood_domain = {
 color_all = "tab:blue"
 color_causal = "tab:orange"
 color_arguablycausal = "tab:green"
+color_anticausal = "tab:grey"
 color_constant = "tab:red"
 
 def get_results(experiment_name):
@@ -140,14 +141,10 @@ def get_results(experiment_name):
                 if 'arguablycausal' not in feature_selection: 
                     feature_selection.append('arguablycausal')
                 return 'arguablycausal'
-            # elif experiment.endswith('_causal_no_tuition_fee'):
-            #     if 'causal without tuition' not in feature_selection: 
-            #         feature_selection.append('causal without tuition')
-            #     return 'causal without tuition'
-            # elif experiment.endswith('_anticausal'):
-            #     if 'anticausal' not in feature_selection: 
-            #         feature_selection.append('anticausal')
-            #     return 'anticausal'
+            elif experiment.endswith('_anticausal'):
+                if 'anticausal' not in feature_selection: 
+                    feature_selection.append('anticausal')
+                return 'anticausal'
             else:
                 if 'all' not in feature_selection: 
                     feature_selection.append('all')
@@ -303,7 +300,7 @@ def do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,axmin=[0.5,0.5],a
     plt.fill(filled[hull.vertices, 0], filled[hull.vertices, 1], color=color_causal,alpha=0.3)
     # plt.fill(filled['id_test'],filled['ood_test'], color=color_causal,alpha=0.3)
 
-    ## Causal features 2
+    ## Arguably causal features
     if (eval_all['features'] == "arguablycausal").any():
         eval_plot = eval_all[eval_all['features']=="arguablycausal"]
         eval_plot.sort_values('id_test',inplace=True)
@@ -338,7 +335,43 @@ def do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,axmin=[0.5,0.5],a
         points = pd.concat([points,new_row], ignore_index=True)
         points = points.to_numpy()
         hull = ConvexHull(points)
-        plt.fill(points[hull.vertices, 0], points[hull.vertices, 1], color=color_all,alpha=0.3)
+        plt.fill(points[hull.vertices, 0], points[hull.vertices, 1], color=color_arguablycausal,alpha=0.3)
+
+    if (eval_all['features'] == "anticausal").any():
+        eval_plot = eval_all[eval_all['features']=="anticausal"]
+        eval_plot.sort_values('id_test',inplace=True)
+        # Calculate the pareto set
+        points = eval_plot[['id_test','ood_test']]
+        mask = paretoset(points, sense=["max", "max"])
+        points = points[mask]
+        points = points[points["id_test"] >= eval_constant['id_test'].values[0]]
+        markers = eval_plot[mask]
+        markers = markers[markers["id_test"] >= eval_constant['id_test'].values[0]]
+        if not myname.endswith("zoom"):
+            print(markers["model"].values)
+        errors = plt.errorbar(
+                    x=markers['id_test'],
+                    y=markers['ood_test'],
+                    xerr=markers['id_test_ub']-markers['id_test'],
+                    yerr=markers['ood_test_ub']-markers['ood_test'], fmt="s",
+                    color=color_anticausal, ecolor=color_anticausal, label="top anticausal features")
+        # highlight bar
+        shift = points[points["ood_test"] == points["ood_test"].max()]
+        shift["type"] = "anticausal"
+        dic_shift["anticausal"] = shift
+        plt.hlines(y=shift["ood_test"], xmin=shift["ood_test"], xmax=shift['id_test'],
+                color=color_anticausal, linewidth=3, alpha=0.7  )
+        # get extra points for the plot
+        new_row = pd.DataFrame({'id_test':[mymin,max(points['id_test'])], 'ood_test':[max(points['ood_test']),mymin]},)
+        points = pd.concat([points,new_row], ignore_index=True)
+        points.sort_values('id_test',inplace=True)
+        plt.plot(points['id_test'],points['ood_test'],color=color_anticausal,linestyle="dotted")
+
+        new_row = pd.DataFrame({'id_test':[mymin], 'ood_test':[mymin]},)
+        points = pd.concat([points,new_row], ignore_index=True)
+        points = points.to_numpy()
+        hull = ConvexHull(points)
+        plt.fill(points[hull.vertices, 0], points[hull.vertices, 1], color=color_anticausal,alpha=0.3)
 
     ## Constant
     shift = eval_constant
@@ -743,10 +776,10 @@ def plot_experiment_zoom(experiment_name):
 
 completed_experiments = [
                         # "acsemployment", # old
-                         "acsfoodstamps", # old
+                        #  "acsfoodstamps", # old
                          "acsincome",
                         #  "acspubcov", # old
-                         "acsunemployment", # old
+                        #  "acsunemployment", # old
                         #  "anes",
                         #  "assistments",
                         #  "brfss_blood_pressure",

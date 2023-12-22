@@ -400,6 +400,8 @@ ACS_INCOME_FEATURES_ARGUABLYCAUSAL = FeatureList([
                 9: 'Two or More Races'}),
     POBP_FEATURE,
     ## Arguably causal features
+    ENG_FEATURE,
+    FER_FEATURE,
     Feature('ST', cat_dtype, "State Code based on 2010 Census definitions.",
             name_extended="State"),
     Feature('MAR', cat_dtype, "Marital status",
@@ -471,9 +473,37 @@ ACS_INCOME_FEATURES_ARGUABLYCAUSAL = FeatureList([
             value_mapping={'00': 'NA (not reported)',
                            '01': 'Worked',
                            '02': 'Did not work'}),
+    NWLA_FEATURE,
 ],
     documentation="https://www2.census.gov/programs-surveys/acs/tech_docs/pums/data_dict/PUMS_Data_Dictionary_2014-2018.pdf")
 
+ACS_INCOME_FEATURES_ANTICAUSAL = FeatureList([
+    Feature('PINCP', float, """Total person's income >= threshold.""",
+            is_target=True),
+    Feature('DIVISION', cat_dtype,
+            "Division code based on 2010 Census definitions.",
+            name_extended='geographic region',
+            value_mapping={
+                0: 'Puerto Rico',
+                1: 'New England (Northeast region)',
+                2: 'Middle Atlantic (Northeast region)',
+                3: 'East North Central (Midwest region)',
+                4: 'West North Central (Midwest region)',
+                5: 'South Atlantic (South region)',
+                6: 'East South Central (South region)',
+                7: 'West South Central (South Region)',
+                8: 'Mountain (West region)',
+                9: 'Pacific (West region)',
+            }),
+    # Anticausal features
+    Feature('HINS4', cat_dtype, """-""",
+            name_extended="Has Medicaid, medical assistance, or any kind of "
+                          "government-assistance plan for those with low "
+                          "incomes or a disability",
+            value_mapping={'01': 'Yes', '02': 'No'}),
+    NWLK_FEATURE,
+    ],
+    documentation="https://www2.census.gov/programs-surveys/acs/tech_docs/pums/data_dict/PUMS_Data_Dictionary_2014-2018.pdf")
 
 ACS_PUBCOV_FEATURES = FeatureList(features=[
     DIS_FEATURE,

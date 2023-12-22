@@ -38,6 +38,9 @@ _TASK_REGISTRY = {
     "acsincome_arguablycausal":
         TaskConfig(ACSDataSource,
                    ACS_INCOME_FEATURES_ARGUABLYCAUSAL),
+    "acsincome_anticausal":
+        TaskConfig(ACSDataSource,
+                   ACS_INCOME_FEATURES_ANTICAUSAL),
     "acsfoodstamps":
         TaskConfig(ACSDataSource,
                    ACS_FOODSTAMPS_FEATURES + ACS_SHARED_FEATURES),
