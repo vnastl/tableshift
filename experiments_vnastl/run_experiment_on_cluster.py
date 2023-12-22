@@ -1,6 +1,7 @@
 import argparse
 import logging
 from pathlib import Path
+import pandas as pd
 
 import torch
 from sklearn.metrics import accuracy_score
