@@ -32,6 +32,7 @@ TASKS = (
     "acsincome",
     "acsincome_causal",
     "acsincome_arguablycausal",
+    "acsincome_anticausal"
 
     # "acspubcov",
     # "acspubcov_causal",
