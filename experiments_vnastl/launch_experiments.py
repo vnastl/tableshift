@@ -36,13 +36,13 @@ TASKS = (
     # "acspubcov",
     # "acspubcov_causal",
 
-    "acsfoodstamps",
-    "acsfoodstamps_causal",
-    "acsfoodstamps_arguablycausal",
+    # "acsfoodstamps",
+    # "acsfoodstamps_causal",
+    # "acsfoodstamps_arguablycausal",
 
-    "acsunemployment",
-    "acsunemployment_causal",
-    "acsunemployment_arguablycausal",
+    # "acsunemployment",
+    # "acsunemployment_causal",
+    # "acsunemployment_arguablycausal",
 
     # "anes",
     # "anes_causal",
@@ -196,17 +196,17 @@ if __name__ == '__main__':
         # Name/prefix for cluster logs related to this job
         cluster_job_err_name = str(
             CLUSTER_LOGS_SAVE_ERR_DIR
-            / f"{exp_obj.name}_$(Cluster).$(Process)"
+            / f"{exp_obj.name}_{exp_obj.model}_$(Cluster).$(Process)"
         )
 
         cluster_job_out_name = str(
             CLUSTER_LOGS_SAVE_OUT_DIR
-            / f"{exp_obj.name}_$(Cluster).$(Process)"
+            / f"{exp_obj.name}_{exp_obj.model}_$(Cluster).$(Process)"
         )
 
         cluster_job_log_name = str(
             CLUSTER_LOGS_SAVE_LOG_DIR
-            / f"{exp_obj.name}_$(Cluster).$(Process)"
+            / f"{exp_obj.name}_{exp_obj.model}_$(Cluster).$(Process)"
         )
 
         EXP_RESULTS_DIR = RESULTS_DIR
