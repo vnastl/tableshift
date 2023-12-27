@@ -402,8 +402,6 @@ ACS_INCOME_FEATURES_ARGUABLYCAUSAL = FeatureList([
     ## Arguably causal features
     FER_FEATURE,
     ENG_FEATURE,
-    Feature('ST', cat_dtype, "State Code based on 2010 Census definitions.",
-            name_extended="State"),
     Feature('MAR', cat_dtype, "Marital status",
             name_extended='marital status',
             value_mapping={
@@ -981,8 +979,8 @@ ACS_FOODSTAMPS_FEATURES_ARGUABLYCAUSAL = FeatureList(features=[
     DEYE_FEATURE,
     DREM_FEATURE,
     ## Arguably causal features
-    Feature('ST', cat_dtype, "State Code based on 2010 Census definitions.",
-            name_extended="State"),
+    ENG_FEATURE,
+    FER_FEATURE,
     Feature('MAR', cat_dtype, "Marital status",
             name_extended='marital status',
             value_mapping={
@@ -1042,7 +1040,23 @@ ACS_FOODSTAMPS_FEATURES_ARGUABLYCAUSAL = FeatureList(features=[
             }),
     OCCP_FEATURE,
     MIL_FEATURE,
-    ENG_FEATURE,
+    Feature('WIF', int, "Workers in family during the past 12 months",
+            name_extended="Workers in family during the past 12 months",
+            value_mapping={
+                0: 'No workers',
+                1: '1 worker',
+                2: '2 workers',
+                3: '3 or more workers'}),
+    WKHP_FEATURE,
+    Feature('WKW', int,
+            "Weeks worked during past 12 months.",
+            name_extended="Weeks worked during past 12 months",
+            ),
+    Feature('WRK', cat_dtype, "Worked last week",
+            name_extended="worked last week",
+            value_mapping={'01': 'worked', '02': 'did not work'}),
+    NWLA_FEATURE,
+    NWLK_FEATURE,
 ],
     documentation="https://www2.census.gov/programs-surveys/acs/tech_docs"
                   "/pums/data_dict/PUMS_Data_Dictionary_2019.pdf"
