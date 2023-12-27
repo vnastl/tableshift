@@ -110,7 +110,7 @@ if __name__ == "__main__":
 
     
     
-    experiments = ["acsincome_anticausal","acsincome","acsincome_causal", "acsincome_arguablycausal", ]
+    experiments = ["acsincome"]#,"acsincome_causal", "acsincome_arguablycausal","acsincome_anticausal",]
     # experiments=["acspubcov", "acspubcov_causal"]
     # experiments = ["acsunemployment","acsunemployment_causal", "acsunemployment_anticausal"] 
     # experiments=["acsfoodstamps", "acsfoodstamps_causal"]
@@ -133,23 +133,23 @@ if __name__ == "__main__":
         dset = get_dataset(experiment, cache_dir)
         # X, y, _, _ = dset.get_pandas("train")
         models = [
-            "ft_transformer",
-            "histgbm",
-            "mlp",
-            "saint",
-            "tabtransformer",
-            "resnet",
+            # "ft_transformer",
+            # "histgbm",
+            # "mlp",
+            # "saint",
+            # "tabtransformer",
+            # "resnet",
             "xgb",
-            "aldro",
-            "dro",
-            "node",
-            "group_dro",
-            "label_group_dro",
-            "irm",
-            "vrex",
-            "mixup",
-            "dann",
-            "mmd",
+            # "aldro",
+            # "dro",
+            # "node",
+            # "group_dro",
+            # "label_group_dro",
+            # "irm",
+            # "vrex",
+            # "mixup",
+            # "dann",
+            # "mmd",
             # "lightgbm",
             # "deepcoral"
             ]

@@ -31,7 +31,7 @@ os.chdir("/Users/vnastl/Seafile/My Library/mpi project causal vs noncausal/table
 dic_experiments = {
     "acsemployment": ["acsemployment","acsemployment_causal", "acsemployment_anticausal"],
     "acsfoodstamps": ["acsfoodstamps","acsfoodstamps_causal", "acsfoodstamps_arguablycausal"],
-    "acsincome": ["acsincome","acsincome_causal","acsincome_arguablycausal","acsincome_anticausal"],
+    "acsincome": ["acsincome","acsincome_causal","acsincome_arguablycausal"],#"acsincome_anticausal"],
     "acspubcov": ["acspubcov","acspubcov_causal"],
     "acsunemployment": ["acsunemployment","acsunemployment_causal", "acsunemployment_arguablycausal", "acsunemployment_anticausal"],
     "anes": ["anes","anes_causal"],

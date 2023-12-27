@@ -400,8 +400,8 @@ ACS_INCOME_FEATURES_ARGUABLYCAUSAL = FeatureList([
                 9: 'Two or More Races'}),
     POBP_FEATURE,
     ## Arguably causal features
-    ENG_FEATURE,
     FER_FEATURE,
+    ENG_FEATURE,
     Feature('ST', cat_dtype, "State Code based on 2010 Census definitions.",
             name_extended="State"),
     Feature('MAR', cat_dtype, "Marital status",
@@ -452,6 +452,7 @@ ACS_INCOME_FEATURES_ARGUABLYCAUSAL = FeatureList([
                 23: "Professional degree beyond a bachelor's degree",
                 24: 'Doctorate degree',
             }),
+    OCCP_FEATURE,
     Feature('COW', cat_dtype, """Class of worker.""",
             name_extended='class of worker',
             value_mapping={
@@ -464,7 +465,6 @@ ACS_INCOME_FEATURES_ARGUABLYCAUSAL = FeatureList([
                 '06': "Self-employed in own not incorporated business, professional practice, or farm",
                 '07': "Self-employed in own incorporated business, professional practice or farm",
                 '08': "Working without pay in family business or farm"}),
-    OCCP_FEATURE,
     WKHP_FEATURE,
     Feature('WKW', int, "Weeks worked during past 12 months.",
             name_extended="Weeks worked during past 12 months"),
@@ -496,6 +496,10 @@ ACS_INCOME_FEATURES_ANTICAUSAL = FeatureList([
                 9: 'Pacific (West region)',
             }),
     # Anticausal features
+    Feature('HINS2', cat_dtype,
+            "Insurance purchased directly from an insurance company",
+            name_extended="Has insurance purchased directly from an insurance company",
+            value_mapping={'01': 'Yes', '02': 'No'}),
     Feature('HINS4', cat_dtype, """-""",
             name_extended="Has Medicaid, medical assistance, or any kind of "
                           "government-assistance plan for those with low "
