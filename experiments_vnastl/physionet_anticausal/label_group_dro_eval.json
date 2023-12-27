@@ -1,1 +1,0 @@
-{"validation": 0.8632945319238419, "id_test": 0.8644360173357665, "ood_test": 0.8149878722042827, "ood_validation": 0.8156555510914691, "train": 0.8635051799921412, "id_test_conf": [0.8626335875087705, 0.866223370165328], "ood_test_conf": [0.8129013958282808, 0.817060750155092], "features": ["Temp", "WBC", "Fibrinogen", "Platelets", "ICULOS"]}

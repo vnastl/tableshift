@@ -1,1 +1,0 @@
-{"validation": 0.5685954269715352, "id_test": 0.5721950081642174, "ood_test": 0.5079657824517344, "ood_validation": 0.4929378531073446, "train": 0.5720368642090528, "id_test_conf": [0.5572229725085357, 0.5870685795273696], "ood_test_conf": [0.5036153779756365, 0.5123152795411978], "features": ["admission_source_id", "race", "gender", "age", "payer_code", "medical_specialty"]}

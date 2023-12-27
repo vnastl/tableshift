@@ -1,1 +1,0 @@
-{"id_test": 0.874512987012987, "id_test_conf": [0.8685342251787616, 0.8803141886802838], "features": ["AccredAgency", "HIGHDEG", "CONTROL", "region", "LOCALE", "locale2", "CCBASIC", "HBCU", "DISTANCEONLY"], "ood_test": 0.6686390532544378, "ood_test_conf": [0.6428329759858842, 0.6937098765945601]}

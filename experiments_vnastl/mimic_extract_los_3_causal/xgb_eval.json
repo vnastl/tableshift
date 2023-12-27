@@ -1,1 +1,0 @@
-{"id_test": 0.5861111111111111, "id_test_conf": [0.5560721677920593, 0.6156795741704582], "features": ["gender", "age", "ethnicity", "insurance", "height_time_since_measured_1", "weight_time_since_measured_17"], "ood_test": 0.5227714406421631, "ood_test_conf": [0.5137257509025345, 0.5318059247868423]}
