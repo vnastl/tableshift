@@ -115,11 +115,11 @@ dic_ood_domain = {
 # color_arguablycausal = "tab:green"
 # color_anticausal = "tab:grey"
 # color_constant = "tab:red"
-color_all = "#006BA4"
-color_causal = "#FF800E"
-color_arguablycausal = "#C85200"
-color_anticausal = "#ABABAB"
-color_constant = "#595959"
+color_all = "#0173b2"
+color_causal = "#de8f05"
+color_arguablycausal = "#d55e00"
+color_anticausal = "#029e73"
+color_constant = "#949494"
 
 def get_results(experiment_name):
     cache_dir="tmp"

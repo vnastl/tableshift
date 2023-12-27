@@ -279,6 +279,9 @@ _TASK_REGISTRY = {
         TaskConfig(SIPPDataSource, SIPP_FEATURES_CAUSAL),
 }
 
+for index, subset in enumerate(ACS_INCOME_FEATURES_CAUSAL_SUBSETS):
+    _TASK_REGISTRY["acsincome_causal"+f"{index}"] = TaskConfig(ACSDataSource, subset)
+
 
 def get_task_config(name: str) -> TaskConfig:
     if name in _TASK_REGISTRY:

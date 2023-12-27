@@ -29,17 +29,17 @@ BIG_JOB_MEMORY_GB = 256
 VERBOSE = True
 
 TASKS = (
-    "acsincome",
-    "acsincome_causal",
-    "acsincome_arguablycausal",
-    "acsincome_anticausal"
+    # "acsincome",
+    # "acsincome_causal",
+    # "acsincome_arguablycausal",
+    "acsincome_anticausal",
 
     # "acspubcov",
     # "acspubcov_causal",
 
     "acsfoodstamps",
-    "acsfoodstamps_causal",
-    "acsfoodstamps_arguablycausal",
+    # "acsfoodstamps_causal",
+    # "acsfoodstamps_arguablycausal",
 
     # "acsunemployment",
     # "acsunemployment_causal",

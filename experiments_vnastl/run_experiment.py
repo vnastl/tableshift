@@ -1,5 +1,6 @@
 import argparse
 import logging
+from pathlib import Path
 
 import torch
 import pandas as pd
@@ -10,6 +11,7 @@ from tableshift.models.training import train
 from tableshift.models.utils import get_estimator
 from tableshift.models.default_hparams import get_default_config
 from tableshift.core.tabular_dataset import TabularDataset
+from tableshift.datasets import ACS_INCOME_FEATURES_CAUSAL_SUBSETS_NUMBER
 
 from experiments_vnastl.metrics import balanced_accuracy_score
 
@@ -94,23 +96,14 @@ def main(experiment, dset, model, debug: bool):
     return
 
 if __name__ == "__main__":
-    # parser = argparse.ArgumentParser()
-    # parser.add_argument("--cache_dir", default="tmp",
-    #                     help="Directory to cache raw data files to.")
-    # parser.add_argument("--debug", action="store_true", default=False,
-    #                     help="Whether to run in debug mode. If True, various "
-    #                          "truncations/simplifications are performed to "
-    #                          "speed up experiment.")
-    # parser.add_argument("--experiment", default="college_scorecard",
-    #                     help="Experiment to run. Overridden when debug=True.")
-    # parser.add_argument("--model", default="histgbm",
-    #                     help="model to use.")
-    # args = parser.parse_args()
-    # main(**vars(args))
-
-    
-    
-    experiments = ["acsincome"]#,"acsincome_causal", "acsincome_arguablycausal","acsincome_anticausal",]
+    ROOT_DIR = Path("/Users/vnastl/Seafile/My Library/mpi project causal vs noncausal/tableshift/experiments_vnastl")
+    experiments = []
+    for index in range(ACS_INCOME_FEATURES_CAUSAL_SUBSETS_NUMBER-1):
+        experiments.append("acsincome_causal"+f"{index}")
+        RESULTS_DIR = ROOT_DIR / f"acsincome_causal{index}"
+        RESULTS_DIR.mkdir(exist_ok=True, parents=False)
+    experiments.append("acsincome")
+    # experiments = ["acsincome" ,"acsincome_causal", "acsincome_arguablycausal","acsincome_anticausal",]
     # experiments=["acspubcov", "acspubcov_causal"]
     # experiments = ["acsunemployment","acsunemployment_causal", "acsunemployment_anticausal"] 
     # experiments=["acsfoodstamps", "acsfoodstamps_causal"]
@@ -133,11 +126,11 @@ if __name__ == "__main__":
         dset = get_dataset(experiment, cache_dir)
         # X, y, _, _ = dset.get_pandas("train")
         models = [
-            # "ft_transformer",
-            # "histgbm",
-            # "mlp",
+            "ft_transformer",
+            "histgbm",
+            "mlp",
             # "saint",
-            # "tabtransformer",
+            "tabtransformer",
             # "resnet",
             "xgb",
             # "aldro",
