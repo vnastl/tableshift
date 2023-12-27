@@ -110,11 +110,11 @@ dic_ood_domain = {
 }
 
 
-color_all = "tab:blue"
-color_causal = "tab:orange"
-color_arguablycausal = "tab:green"
-color_anticausal = "tab:grey"
-color_constant = "tab:red"
+color_all = "#006BA4"
+color_causal = "#FF800E"
+color_arguablycausal = "#C85200"
+color_anticausal = "#ABABAB"
+color_constant = "#595959"
 
 def get_results(experiment_name):
     cache_dir="tmp"
@@ -141,10 +141,10 @@ def get_results(experiment_name):
                 if 'arguablycausal' not in feature_selection: 
                     feature_selection.append('arguablycausal')
                 return 'arguablycausal'
-            elif experiment.endswith('_anticausal'):
-                if 'anticausal' not in feature_selection: 
-                    feature_selection.append('anticausal')
-                return 'anticausal'
+            # elif experiment.endswith('_anticausal'):
+            #     if 'anticausal' not in feature_selection: 
+            #         feature_selection.append('anticausal')
+            #     return 'anticausal'
             else:
                 if 'all' not in feature_selection: 
                     feature_selection.append('all')
@@ -155,12 +155,12 @@ def get_results(experiment_name):
                 # print(str(RESULTS_DIR / run))
                 eval_json = json.load(file)
                 eval_pd = pd.DataFrame([{
-                    'id_test':eval_json['id_test'],
-                    'id_test_lb':eval_json['id_test_conf'][0],
-                    'id_test_ub':eval_json['id_test_conf'][1],
-                    'ood_test':eval_json['ood_test'],
-                    'ood_test_lb':eval_json['ood_test_conf'][0],
-                    'ood_test_ub':eval_json['ood_test_conf'][1],
+                    'id_test':eval_json['id_test'+'_balanced'],
+                    'id_test_lb':eval_json['id_test'+'_balanced' + '_conf'][0],
+                    'id_test_ub':eval_json['id_test'+'_balanced' + '_conf'][1],
+                    'ood_test':eval_json['ood_test'+'_balanced'],
+                    'ood_test_lb':eval_json['ood_test'+'_balanced' + '_conf'][0],
+                    'ood_test_ub':eval_json['ood_test'+'_balanced' + '_conf'][1],
                     'features': get_feature_selection(experiment),
                     'model':run.split("_")[0]}])
                 if get_feature_selection(experiment) == 'causal':
@@ -173,27 +173,33 @@ def get_results(experiment_name):
                     extra_features = []
                 eval_all = pd.concat([eval_all, eval_pd], ignore_index=True)
 
-    RESULTS_DIR = Path(__file__).parents[0]
-    filename = f"{experiment_name}_constant"
-    if filename in os.listdir(RESULTS_DIR):
-        with open(str(RESULTS_DIR / filename), "rb") as file:
-                print(str(RESULTS_DIR / filename))
-                eval_constant = json.load(file)
-    else:
-        eval_constant = {}
-        dset = get_dataset(experiment_name, cache_dir)
-        for test_split in ["id_test","ood_test"]:
-            X_te, y_te, _, _ = dset.get_pandas(test_split)
-            majority_class = y_te.mode()[0]
-            count = y_te.value_counts()[majority_class]
-            nobs = len(y_te)
-            acc = count / nobs
-            acc_conf = proportion_confint(count, nobs, alpha=0.05, method='beta')
+    # RESULTS_DIR = Path(__file__).parents[0]
+    # filename = f"{experiment_name}_constant"
+    # if filename in os.listdir(RESULTS_DIR):
+    #     with open(str(RESULTS_DIR / filename), "rb") as file:
+    #             # print(str(RESULTS_DIR / filename))
+    #             eval_constant = json.load(file)
+    # else:
+    #     eval_constant = {}
+    #     dset = get_dataset(experiment_name, cache_dir)
+    #     for test_split in ["id_test","ood_test"]:
+    #         X_te, y_te, _, _ = dset.get_pandas(test_split)
+    #         majority_class = y_te.mode()[0]
+    #         count = y_te.value_counts()[majority_class]
+    #         nobs = len(y_te)
+    #         acc = count / nobs
+    #         acc_conf = proportion_confint(count, nobs, alpha=0.05, method='beta')
 
-            eval_constant[test_split] =  acc
-            eval_constant[test_split + "_conf"] = acc_conf
-        with open(str(RESULTS_DIR / filename), "w") as file:
-            json.dump(eval_constant, file)
+    #         eval_constant[test_split] =  acc
+    #         eval_constant[test_split + "_conf"] = acc_conf
+    #     with open(str(RESULTS_DIR / filename), "w") as file:
+    #         json.dump(eval_constant, file)
+    
+    #balanced eval constant
+    eval_constant = {}
+    for test_split in ["id_test","ood_test"]:
+        eval_constant[test_split] =  0.5
+        eval_constant[test_split + "_conf"] = (0.5,0.5)
 
     eval_pd = pd.DataFrame([{
             'id_test':eval_constant['id_test'],
@@ -220,8 +226,8 @@ def do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,axmin=[0.5,0.5],a
 
     plt.title(
         f"Tableshift: {experiment_name}")
-    plt.xlabel(f"in-domain accuracy\n({dic_id_domain[experiment_name]})")
-    plt.ylabel(f"out-of-domain accuracy\n({dic_ood_domain[experiment_name]})")
+    plt.xlabel(f"in-domain balanced accuracy\n({dic_id_domain[experiment_name]})")
+    plt.ylabel(f"out-of-domain balanced accuracy\n({dic_ood_domain[experiment_name]})")
     ## All features
     eval_plot = eval_all[eval_all['features']=="all"]
     eval_plot.sort_values('id_test',inplace=True)
@@ -232,8 +238,8 @@ def do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,axmin=[0.5,0.5],a
     points = points[points["id_test"] >= eval_constant['id_test'].values[0]]
     markers = eval_plot[mask]
     markers = markers[markers["id_test"] >= eval_constant['id_test'].values[0]]
-    if not myname.endswith("zoom"):
-        print(markers["model"].values)
+    # if not myname.endswith("zoom"):
+    #     print(markers["model"].values)
     errors = plt.errorbar(
                 x=markers['id_test'],
                 y=markers['ood_test'],
@@ -311,13 +317,13 @@ def do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,axmin=[0.5,0.5],a
         points = points[points["id_test"] >= eval_constant['id_test'].values[0]]
         markers = eval_plot[mask]
         markers = markers[markers["id_test"] >= eval_constant['id_test'].values[0]]
-        if not myname.endswith("zoom"):
-            print(markers["model"].values)
+        # if not myname.endswith("zoom"):
+        #     print(markers["model"].values)
         errors = plt.errorbar(
                     x=markers['id_test'],
                     y=markers['ood_test'],
                     xerr=markers['id_test_ub']-markers['id_test'],
-                    yerr=markers['ood_test_ub']-markers['ood_test'], fmt="s",
+                    yerr=markers['ood_test_ub']-markers['ood_test'], fmt="^",
                     color=color_arguablycausal, ecolor=color_arguablycausal, label="top arguably causal features")
         # highlight bar
         shift = points[points["ood_test"] == points["ood_test"].max()]
@@ -347,13 +353,13 @@ def do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,axmin=[0.5,0.5],a
         points = points[points["id_test"] >= eval_constant['id_test'].values[0]]
         markers = eval_plot[mask]
         markers = markers[markers["id_test"] >= eval_constant['id_test'].values[0]]
-        if not myname.endswith("zoom"):
-            print(markers["model"].values)
+        # if not myname.endswith("zoom"):
+        #     print(markers["model"].values)
         errors = plt.errorbar(
                     x=markers['id_test'],
                     y=markers['ood_test'],
                     xerr=markers['id_test_ub']-markers['id_test'],
-                    yerr=markers['ood_test_ub']-markers['ood_test'], fmt="s",
+                    yerr=markers['ood_test_ub']-markers['ood_test'], fmt="P",
                     color=color_anticausal, ecolor=color_anticausal, label="top anticausal features")
         # highlight bar
         shift = points[points["ood_test"] == points["ood_test"].max()]
@@ -376,6 +382,8 @@ def do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,axmin=[0.5,0.5],a
     ## Constant
     shift = eval_constant
     shift["type"] = "constant"
+    shift["id_test"] = 0.5 + 3e-5
+    shift["ood_test"] = 0.5
     dic_shift["constant"] = shift
     plot_constant = plt.plot(
             eval_constant['id_test'],
@@ -420,33 +428,47 @@ def do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,axmin=[0.5,0.5],a
     plt.ylim((axmin[1],axmax[1]))
 
     # Add text below the plot
-    if (eval_all['features'] == "arguablycausal").any():
-        print(f'Causal features: {causal_features} \n Arguably causal features: {extra_features}')
-    if experiment_name in anticausal:
-        # plt.text(mytextx, mytexty,f'Causal features: {causal_features} \n Anticausal features: {extra_features}')
-        print(f'Causal features: {causal_features} \n Anticausal features: {extra_features}')
-    elif experiment_name == 'college_scorecard':
-        # plt.text(mytextx, mytexty,f'Causal features: {causal_features} \n Causal features without tuition: {extra_features}')
-        print(f'Causal features: {causal_features} \n Causal features without tuition: {extra_features}')
-    else:
-        # plt.text(mytextx, mytexty,f'Causal features: {causal_features}')
-        print(f'Causal features: {causal_features}')
+    # if (eval_all['features'] == "arguablycausal").any():
+    #     print(f'Causal features: {causal_features} \nArguably causal features: {extra_features}')
+    # else:
+    #     # plt.text(mytextx, mytexty,f'Causal features: {causal_features}')
+    #     print(f'Causal features: {causal_features}')
+    # if (eval_all['features'] == "anticausal").any():
+    #     # plt.text(mytextx, mytexty,f'Causal features: {causal_features} \n Anticausal features: {extra_features}')
+    #     print(f'Anticausal features: {extra_features}')
+    # if experiment_name == 'college_scorecard':
+    #     # plt.text(mytextx, mytexty,f'Causal features: {causal_features} \n Causal features without tuition: {extra_features}')
+    #     print(f'Causal features without tuition: {extra_features}')
 
-    plt.savefig(f"{str(Path(__file__).parents[0]/myname)}.pdf", bbox_inches='tight')
+    plt.savefig(f"{str(Path(__file__).parents[0]/myname)}_balanced.pdf", bbox_inches='tight')
     plt.show()
 
     if not myname.endswith("zoom"):
+        sns.set_style("whitegrid")
         plt.title(
             f"Tableshift: {experiment_name}")
-        plt.ylabel("shift gap")
+        plt.ylabel("balanced shift gap")
         shift = pd.concat(dic_shift.values(), ignore_index=True)
         shift["gap"] = shift["id_test"] - shift["ood_test"]
         if (eval_all['features'] == "arguablycausal").any():
-            plt.bar(shift["type"], shift["gap"], color=[color_all,color_causal,color_arguablycausal,color_constant])
+            if (eval_all['features'] == "anticausal").any():
+                plt.bar(shift["type"], shift["gap"], color=[color_all,color_causal,color_arguablycausal,color_anticausal,color_constant])
+                barlist[0].set_hatch('--')
+                barlist[1].set_hatch('oo')
+                barlist[2].set_hatch('//')
+                barlist[2].set_hatch('**')
+            else:
+                barlist = plt.bar(shift["type"], shift["gap"], color=[color_all,color_causal,color_arguablycausal,color_constant])
+                barlist[0].set_hatch('--')
+                barlist[1].set_hatch('oo')
+                barlist[2].set_hatch('//')
         else:
             plt.bar(shift["type"], shift["gap"], color=[color_all,color_causal,color_constant])
-        plt.savefig(str(Path(__file__).parents[0]/f"{myname}_shift.pdf"), bbox_inches='tight')
+            barlist[0].set_hatch('--')
+            barlist[1].set_hatch('oo')
+        plt.savefig(str(Path(__file__).parents[0]/f"{myname}_balanced_shift.pdf"), bbox_inches='tight')
         plt.show()
+        sns.set_style("white")
 
 # %%
 def plot_experiment(experiment_name):
@@ -626,10 +648,10 @@ def plot_experiment_zoom(experiment_name):
         do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,[mymin,mymin],[mymax,mymax])
 
     elif experiment_name == "acsincome":
-        mymin = 0.58
+        mymin = 0.64
         mymax = 0.85
-        mytextx = 0.58
-        mytexty = 0.55
+        mytextx = 0.63
+        mytexty = 0.63
         myname = f"plots_paper/plot_{experiment_name}_zoom"
 
         do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,[mymin,mymin],[mymax,mymax])
