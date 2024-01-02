@@ -10,7 +10,7 @@ import matplotlib.colors as mcolors
 from matplotlib import cm
 from matplotlib.colors import ListedColormap
 import seaborn as sns
-sns.set_context("paper")
+sns.set_context("paper", font_scale=1.5)
 
 
 from tableshift import get_dataset
@@ -109,6 +109,25 @@ dic_ood_domain = {
     "sipp": 'non U.S. citizen',
 }
 
+dic_title = {
+    "acsemployment":'Tableshift: Employment',
+    "acsfoodstamps": 'Tableshift: Food Stamps',
+    "acsincome": 'Tableshift: Income',
+    "acspubcov": 'Tableshift: PublicCoverage',
+    "acsunemployment": 'Tableshift: Unemployment',
+    "anes": 'Tableshift: Voting',
+    "assistments": 'Tableshift: ASSISTments',
+    "brfss_blood_pressure":'Tableshift: Hypertension',
+    "brfss_diabetes": 'Tableshift: Diabetes',
+    "college_scorecard": 'Tableshift: College Scorecard',
+    "diabetes_readmission": 'Tableshift: Hospital Readmission',
+    "meps": 'MEPS: Utilization',
+    "mimic_extract_los_3": 'Tableshift: ICU Length of Stay',
+    "mimic_extract_mort_hosp": 'Tableshift: Hospital Mortality',
+    "nhanes_lead": 'Tableshift: Childhood Lead',
+    "physionet": 'Tableshift: Sepsis', # ICU length of stay
+    "sipp": 'SIPP: Poverty',
+}
 
 # color_all = "tab:blue"
 # color_causal = "tab:orange"
@@ -217,6 +236,7 @@ def get_results(experiment_name):
     return eval_all, causal_features, extra_features
 
 #%%
+
 def do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,axmin=[0.5,0.5],axmax=[1.0,1.0]):
 
     eval_all, causal_features, extra_features = get_results(experiment_name)
@@ -224,7 +244,7 @@ def do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,axmin=[0.5,0.5],a
     dic_shift = {}
 
     plt.title(
-        f"Tableshift: {experiment_name}")
+        f"{dic_title[experiment_name]}")
     plt.xlabel(f"in-domain accuracy\n({dic_id_domain[experiment_name]})")
     plt.ylabel(f"out-of-domain accuracy\n({dic_ood_domain[experiment_name]})")
     ## All features
@@ -382,12 +402,12 @@ def do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,axmin=[0.5,0.5],a
     shift = eval_constant
     shift["type"] = "constant"
     dic_shift["constant"] = shift
-    plot_constant = plt.plot(
-            eval_constant['id_test'],
-            eval_constant['ood_test'],
-            marker="D",linestyle="None",
-            color=color_constant,
-            label="constant")
+    # plot_constant = plt.plot(
+    #         eval_constant['id_test'],
+    #         eval_constant['ood_test'],
+    #         marker="D",linestyle="None",
+    #         color=color_constant,
+    #         label="constant")
     errors = plt.errorbar(
             x=eval_constant['id_test'],
             y=eval_constant['ood_test'],
@@ -444,7 +464,7 @@ def do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,axmin=[0.5,0.5],a
     if not myname.endswith("zoom"):
         sns.set_style("whitegrid")
         plt.title(
-            f"Tableshift: {experiment_name}")
+        f"{dic_title[experiment_name]}")
         plt.ylabel("balanced shift gap")
         shift = pd.concat(dic_shift.values(), ignore_index=True)
         shift["gap"] = shift["id_test"] - shift["ood_test"]

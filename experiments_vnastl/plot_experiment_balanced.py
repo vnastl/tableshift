@@ -10,7 +10,7 @@ import matplotlib.colors as mcolors
 from matplotlib import cm
 from matplotlib.colors import ListedColormap
 import seaborn as sns
-sns.set_context("paper")
+sns.set_context("paper", font_scale=1.5)
 
 
 from tableshift import get_dataset
@@ -109,12 +109,31 @@ dic_ood_domain = {
     "sipp": 'non U.S. citizen',
 }
 
+dic_title = {
+    "acsemployment":'Tableshift: Employment',
+    "acsfoodstamps": 'Tableshift: Food Stamps',
+    "acsincome": 'Tableshift: Income',
+    "acspubcov": 'Tableshift: PublicCoverage',
+    "acsunemployment": 'Tableshift: Unemployment',
+    "anes": 'Tableshift: Voting',
+    "assistments": 'Tableshift: ASSISTments',
+    "brfss_blood_pressure":'Tableshift: Hypertension',
+    "brfss_diabetes": 'Tableshift: Diabetes',
+    "college_scorecard": 'Tableshift: College Scorecard',
+    "diabetes_readmission": 'Tableshift: Hospital Readmission',
+    "meps": 'MEPS: Utilization',
+    "mimic_extract_los_3": 'Tableshift: ICU Length of Stay',
+    "mimic_extract_mort_hosp": 'Tableshift: Hospital Mortality',
+    "nhanes_lead": 'Tableshift: Childhood Lead',
+    "physionet": 'Tableshift: Sepsis', # ICU length of stay
+    "sipp": 'SIPP: Poverty',
+}
 
-color_all = "#006BA4"
-color_causal = "#FF800E"
-color_arguablycausal = "#C85200"
-color_anticausal = "#ABABAB"
-color_constant = "#595959"
+color_all = "#0173b2"
+color_causal = "#de8f05"
+color_arguablycausal = "#d55e00"
+color_anticausal = "#029e73"
+color_constant = "#949494"
 
 def get_results(experiment_name):
     cache_dir="tmp"
@@ -225,7 +244,7 @@ def do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,axmin=[0.5,0.5],a
     dic_shift = {}
 
     plt.title(
-        f"Tableshift: {experiment_name}")
+        f"{dic_title[experiment_name]}")
     plt.xlabel(f"in-domain balanced accuracy\n({dic_id_domain[experiment_name]})")
     plt.ylabel(f"out-of-domain balanced accuracy\n({dic_ood_domain[experiment_name]})")
     ## All features
@@ -380,17 +399,12 @@ def do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,axmin=[0.5,0.5],a
         plt.fill(points[hull.vertices, 0], points[hull.vertices, 1], color=color_anticausal,alpha=0.3)
 
     ## Constant
-    shift = eval_constant
-    shift["type"] = "constant"
-    shift["id_test"] = 0.5 + 3e-5
-    shift["ood_test"] = 0.5
-    dic_shift["constant"] = shift
-    plot_constant = plt.plot(
-            eval_constant['id_test'],
-            eval_constant['ood_test'],
-            marker="D",linestyle="None",
-            color=color_constant,
-            label="constant")
+    # plot_constant = plt.plot(
+    #         eval_constant['id_test'],
+    #         eval_constant['ood_test'],
+    #         marker="D",linestyle="None",
+    #         color=color_constant,
+    #         label="constant")
     errors = plt.errorbar(
             x=eval_constant['id_test'],
             y=eval_constant['ood_test'],
@@ -446,24 +460,24 @@ def do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,axmin=[0.5,0.5],a
     if not myname.endswith("zoom"):
         sns.set_style("whitegrid")
         plt.title(
-            f"Tableshift: {experiment_name}")
+            f"{dic_title[experiment_name]}")
         plt.ylabel("balanced shift gap")
         shift = pd.concat(dic_shift.values(), ignore_index=True)
         shift["gap"] = shift["id_test"] - shift["ood_test"]
         if (eval_all['features'] == "arguablycausal").any():
             if (eval_all['features'] == "anticausal").any():
-                plt.bar(shift["type"], shift["gap"], color=[color_all,color_causal,color_arguablycausal,color_anticausal,color_constant])
+                plt.bar(shift["type"], shift["gap"], color=[color_all,color_causal,color_arguablycausal,color_anticausal])
                 barlist[0].set_hatch('--')
                 barlist[1].set_hatch('oo')
                 barlist[2].set_hatch('//')
                 barlist[2].set_hatch('**')
             else:
-                barlist = plt.bar(shift["type"], shift["gap"], color=[color_all,color_causal,color_arguablycausal,color_constant])
+                barlist = plt.bar(shift["type"], shift["gap"], color=[color_all,color_causal,color_arguablycausal])
                 barlist[0].set_hatch('--')
                 barlist[1].set_hatch('oo')
                 barlist[2].set_hatch('//')
         else:
-            plt.bar(shift["type"], shift["gap"], color=[color_all,color_causal,color_constant])
+            plt.bar(shift["type"], shift["gap"], color=[color_all,color_causal])
             barlist[0].set_hatch('--')
             barlist[1].set_hatch('oo')
         plt.savefig(str(Path(__file__).parents[0]/f"{myname}_balanced_shift.pdf"), bbox_inches='tight')
