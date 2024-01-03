@@ -139,6 +139,7 @@ color_causal = "#de8f05"
 color_arguablycausal = "#d55e00"
 color_anticausal = "#029e73"
 color_constant = "#949494"
+sns.set_style("white")
 
 def get_results(experiment_name):
     cache_dir="tmp"
@@ -165,10 +166,10 @@ def get_results(experiment_name):
                 if 'arguablycausal' not in feature_selection: 
                     feature_selection.append('arguablycausal')
                 return 'arguablycausal'
-            # elif experiment.endswith('_anticausal'):
-            #     if 'anticausal' not in feature_selection: 
-            #         feature_selection.append('anticausal')
-            #     return 'anticausal'
+            elif experiment.endswith('_anticausal'):
+                if 'anticausal' not in feature_selection: 
+                    feature_selection.append('anticausal')
+                return 'anticausal'
             else:
                 if 'all' not in feature_selection: 
                     feature_selection.append('all')
@@ -310,20 +311,12 @@ def do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,axmin=[0.5,0.5],a
     points = pd.concat([points,new_row], ignore_index=True)
     points.sort_values('id_test',inplace=True)
     plt.plot(points['id_test'],points['ood_test'],color=color_causal,linestyle="dotted")
-    # dotted = points.to_numpy()
-    # hull = ConvexHull(dotted,incremental=True)
-    # plt.plot(dotted[list(hull.vertices[1:])+[hull.vertices[0]], 0], dotted[list(hull.vertices[1:])+[hull.vertices[0]], 1],
-    #          color=color_causal,linestyle="dotted")
-    # plt.plot(dotted[hull.vertices, 0][1:], dotted[hull.vertices, 1][1:],color=color_causal,linestyle="dotted")
-    # points.sort_values('id_test',inplace=True)
-    # plt.plot(points['id_test'],points['ood_test'],color=color_causal,linestyle="dotted")
 
     new_row = pd.DataFrame({'id_test':[mymin], 'ood_test':[mymin]},)
     points = pd.concat([points,new_row], ignore_index=True)
     filled = points.to_numpy()
     hull = ConvexHull(filled,incremental=True)
     plt.fill(filled[hull.vertices, 0], filled[hull.vertices, 1], color=color_causal,alpha=0.3)
-    # plt.fill(filled['id_test'],filled['ood_test'], color=color_causal,alpha=0.3)
 
     ## Arguably causal features
     if (eval_all['features'] == "arguablycausal").any():
@@ -346,7 +339,7 @@ def do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,axmin=[0.5,0.5],a
                     color=color_arguablycausal, ecolor=color_arguablycausal, label="top arguably causal features")
         # highlight bar
         shift = points[points["ood_test"] == points["ood_test"].max()]
-        shift["type"] = "arguablycausal"
+        shift["type"] = "arguably\ncausal"
         dic_shift["arguablycausal"] = shift
         plt.hlines(y=shift["ood_test"], xmin=shift["ood_test"], xmax=shift['id_test'],
                 color=color_arguablycausal, linewidth=3, alpha=0.7  )
@@ -402,12 +395,6 @@ def do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,axmin=[0.5,0.5],a
     shift = eval_constant
     shift["type"] = "constant"
     dic_shift["constant"] = shift
-    # plot_constant = plt.plot(
-    #         eval_constant['id_test'],
-    #         eval_constant['ood_test'],
-    #         marker="D",linestyle="None",
-    #         color=color_constant,
-    #         label="constant")
     errors = plt.errorbar(
             x=eval_constant['id_test'],
             y=eval_constant['ood_test'],
@@ -457,36 +444,44 @@ def do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,axmin=[0.5,0.5],a
     #     # plt.text(mytextx, mytexty,f'Causal features: {causal_features} \n Causal features without tuition: {extra_features}')
     #     print(f'Causal features without tuition: {extra_features}')
         
-
-    plt.savefig(f"{str(Path(__file__).parents[0]/myname)}.pdf", bbox_inches='tight')
-    plt.show()
+    
+    if (eval_all['features'] == "anticausal").any():
+        plt.savefig(f"{str(Path(__file__).parents[0]/myname)}_anticausal.pdf", bbox_inches='tight')
+        plt.show()
+    else:
+        plt.savefig(f"{str(Path(__file__).parents[0]/myname)}.pdf", bbox_inches='tight')
+        plt.show()
 
     if not myname.endswith("zoom"):
-        sns.set_style("whitegrid")
+        # sns.set_style("whitegrid")
         plt.title(
         f"{dic_title[experiment_name]}")
-        plt.ylabel("balanced shift gap")
+        plt.ylabel("shift gap")
         shift = pd.concat(dic_shift.values(), ignore_index=True)
         shift["gap"] = shift["id_test"] - shift["ood_test"]
         if (eval_all['features'] == "arguablycausal").any():
             if (eval_all['features'] == "anticausal").any():
-                plt.bar(shift["type"], shift["gap"], color=[color_all,color_causal,color_arguablycausal,color_anticausal,color_constant])
+                barlist = plt.bar(shift["type"], shift["gap"], color=[color_all,color_causal,color_arguablycausal,color_anticausal,color_constant])
                 barlist[0].set_hatch('--')
                 barlist[1].set_hatch('oo')
                 barlist[2].set_hatch('//')
-                barlist[2].set_hatch('**')
+                barlist[3].set_hatch('++')
+                plt.savefig(str(Path(__file__).parents[0]/f"{myname}_anticausal_shift.pdf"), bbox_inches='tight')
+                plt.show()
             else:
                 barlist = plt.bar(shift["type"], shift["gap"], color=[color_all,color_causal,color_arguablycausal,color_constant])
                 barlist[0].set_hatch('--')
                 barlist[1].set_hatch('oo')
                 barlist[2].set_hatch('//')
+                plt.savefig(str(Path(__file__).parents[0]/f"{myname}_shift.pdf"), bbox_inches='tight')
+                plt.show()
         else:
-            plt.bar(shift["type"], shift["gap"], color=[color_all,color_causal,color_constant])
+            barlist = plt.bar(shift["type"], shift["gap"], color=[color_all,color_causal,color_constant])
             barlist[0].set_hatch('--')
             barlist[1].set_hatch('oo')
-        plt.savefig(str(Path(__file__).parents[0]/f"{myname}_shift.pdf"), bbox_inches='tight')
-        plt.show()
-        sns.set_style("white")
+            plt.savefig(str(Path(__file__).parents[0]/f"{myname}_shift.pdf"), bbox_inches='tight')
+            plt.show()
+        # sns.set_style("white")
 
 # %%
 def plot_experiment(experiment_name):

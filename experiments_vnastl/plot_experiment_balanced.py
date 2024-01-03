@@ -346,7 +346,7 @@ def do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,axmin=[0.5,0.5],a
                     color=color_arguablycausal, ecolor=color_arguablycausal, label="top arguably causal features")
         # highlight bar
         shift = points[points["ood_test"] == points["ood_test"].max()]
-        shift["type"] = "arguablycausal"
+        shift["type"] = "arguably\ncausal"
         dic_shift["arguablycausal"] = shift
         plt.hlines(y=shift["ood_test"], xmin=shift["ood_test"], xmax=shift['id_test'],
                 color=color_arguablycausal, linewidth=3, alpha=0.7  )
@@ -458,7 +458,7 @@ def do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,axmin=[0.5,0.5],a
     plt.show()
 
     if not myname.endswith("zoom"):
-        sns.set_style("whitegrid")
+        # sns.set_style("whitegrid")
         plt.title(
             f"{dic_title[experiment_name]}")
         plt.ylabel("balanced shift gap")
@@ -480,9 +480,10 @@ def do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,axmin=[0.5,0.5],a
             plt.bar(shift["type"], shift["gap"], color=[color_all,color_causal])
             barlist[0].set_hatch('--')
             barlist[1].set_hatch('oo')
+        plt.axhline(y=0,linewidth=1, color='k')
         plt.savefig(str(Path(__file__).parents[0]/f"{myname}_balanced_shift.pdf"), bbox_inches='tight')
         plt.show()
-        sns.set_style("white")
+        # sns.set_style("white")
 
 # %%
 def plot_experiment(experiment_name):
