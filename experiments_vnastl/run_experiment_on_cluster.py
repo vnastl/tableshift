@@ -1,6 +1,7 @@
 import argparse
 import logging
 from pathlib import Path
+import pickle
 import pandas as pd
 
 import torch
@@ -77,7 +78,9 @@ def main(experiment, model, cache_dir, save_dir, debug: bool):
     save_dir = Path(save_dir)
     save_dir.mkdir(exist_ok=True,parents=False)
     
-    dset = get_dataset(experiment, str(cache_dir))
+    with open(f"{str(cache_dir)}/{experiment}.pickle", 'rb') as f:
+        dset = pickle.load(f)
+    
     if debug:
         print("[INFO] running in debug mode.")
         experiment = "_debug"

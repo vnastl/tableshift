@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Python script to launch condor jobs for all T5.6 ACS experiments.
+Python script to launch condor jobs for task.
 """
 # %%
 import sys
@@ -15,7 +15,7 @@ if __name__ == '__main__':
     import htcondor
     import classad
 
-# Number of experiments to run per algorithm, per dataset
+# Number of task to run per algorithm, per dataset
 N_TRIALS    = 1
 # N_TRIALS    = 30
 # N_TRIALS    = 100
@@ -29,15 +29,15 @@ BIG_JOB_MEMORY_GB = 256
 VERBOSE = True
 
 TASKS = (
-    # "acsincome",
+    "acsincome",
     # "acsincome_causal",
     # "acsincome_arguablycausal",
-    "acsincome_anticausal",
+    # "acsincome_anticausal",
 
     # "acspubcov",
     # "acspubcov_causal",
 
-    "acsfoodstamps",
+    # "acsfoodstamps",
     # "acsfoodstamps_causal",
     # "acsfoodstamps_arguablycausal",
 
@@ -91,8 +91,8 @@ if __name__ == '__main__':
     # Data directory
     DATA_DIR = ROOT_DIR / "fast/vnastl/data"  # TODO check again if it is in fact the fast driver
 
-    # Make sure results dir exists
-    RESULTS_DIR = ROOT_DIR / "vnastl/results" #/tableshift/experiments_vnastl"
+    # Results directory
+    RESULTS_DIR = ROOT_DIR / "vnastl/results" #/tableshift/task_vnastl"
     RESULTS_DIR.mkdir(exist_ok=True, parents=False)
 
     # Directory to save cluster logs and job stdout/stderr
@@ -109,12 +109,11 @@ if __name__ == '__main__':
     CLUSTER_LOGS_SAVE_LOG_DIR.mkdir(exist_ok=True)
 
 ####################################################
-#  START of: details on which experiments to run.  #
+#  START of: details on which task to run.  #
 ####################################################
 @dataclasses.dataclass
 class ExperimentConfigs:
     name: str
-    model: str
     job_memory_gb: int  # = JOB_MEMORY_GB
 
     n_trials: int = N_TRIALS
@@ -125,62 +124,18 @@ class ExperimentConfigs:
     def __post_init__(self):
         self.job_bid = max(self.job_bid, JOB_MIN_BID)       # enforce min bid
 
-DG_TASKS = (
-    "acspubcov",
-    "physionet", 
-    "nhanes_lead",
-    "brfss_blood_pressure",
-)
-MODELS = (
-    "ft_transformer",
-    "histgbm",
-    "mlp",
-    "saint",
-    "tabtransformer",
-    "resnet",
-    "xgb",
-    "aldro",
-    "dro",
-    "node",
-    "group_dro",
-    "label_group_dro",
-)
-DG_MODELS = (
-    "dann",
-    "irm",
-    "vrex",
-    "mixup",
-    "mmd",
-)
-
-def IS_TASK_DG(task):
-    for dg_task in DG_TASKS:
-        if task.startswith(dg_task):
-            return False
-    return True
-
 if __name__ == '__main__':
-    all_experiments = {}
+    all_task = []
     for task in TASKS:
-        all_task_experiments = []
-        if IS_TASK_DG(task):
-            TASK_MODELS = MODELS + DG_MODELS
-        else:
-            TASK_MODELS = MODELS
-        job_memory_gb = JOB_MEMORY_GB #BIG_JOB_MEMORY_GB
-
-        for model in TASK_MODELS:
-            all_task_experiments.append(ExperimentConfigs(
+        all_task.append(ExperimentConfigs(
                     name=task,
-                    model=model,
-                    job_memory_gb=job_memory_gb))
-        all_experiments[task] = all_task_experiments.copy()
+                    job_memory_gb=JOB_MEMORY_GB))
         
 ##################################################
-#  END of: details on which experiments to run.  #
+#  END of: details on which task to run.  #
 ##################################################
 
-    def launch_experiments_jobs(
+    def launch_task_jobs(
         task: str,
         exp_obj: ExperimentConfigs,
     ):
@@ -197,17 +152,17 @@ if __name__ == '__main__':
         # Name/prefix for cluster logs related to this job
         cluster_job_err_name = str(
             CLUSTER_LOGS_SAVE_ERR_DIR
-            / f"{exp_obj.name}_{exp_obj.model}_$(Cluster).$(Process)"
+            / f"launch_{exp_obj.name}_$(Cluster).$(Process)"
         )
 
         cluster_job_out_name = str(
             CLUSTER_LOGS_SAVE_OUT_DIR
-            / f"{exp_obj.name}_{exp_obj.model}_$(Cluster).$(Process)"
+            / f"launch_{exp_obj.name}_$(Cluster).$(Process)"
         )
 
         cluster_job_log_name = str(
             CLUSTER_LOGS_SAVE_LOG_DIR
-            / f"{exp_obj.name}_{exp_obj.model}_$(Cluster).$(Process)"
+            / f"launch_{exp_obj.name}_$(Cluster).$(Process)"
         )
 
         EXP_RESULTS_DIR = RESULTS_DIR
@@ -218,12 +173,15 @@ if __name__ == '__main__':
             "executable": "/home/vnastl/miniconda3/envs/tableshift/bin/python3",  # correct env for the python executable
             # "arguments": "foo.py",    # NOTE: used for testing
             "arguments": (
-                "/home/vnastl/tableshift/experiments_vnastl/run_experiment_on_cluster.py "
-                f"--cache_dir {str(DATA_DIR)} "
-                f"--experiment {exp_obj.name} "
-                f"--model {exp_obj.model} "
-                f"--save_dir {str(EXP_RESULTS_DIR)} "
-                # f"{'--verbose' if VERBOSE else ''} "
+                "/home/vnastl/tableshift/task_vnastl/launch_one_experiment.py "
+                f"--DATA_DIR {str(DATA_DIR)} "
+                f"--RESULTS_DIR {str(EXP_RESULTS_DIR)} "
+                f"--CLUSTER_LOGS_SAVE_DIR {str(CLUSTER_LOGS_SAVE_DIR)} "
+                f"--N_TRIALS {N_TRIALS} "
+                f"--JOB_CPUS {JOB_CPUS} "
+                f"--JOB_MEMORY_GB {JOB_MEMORY_GB} "
+                f"--JOB_MIN_BID {JOB_MIN_BID} "
+                f"--task {exp_obj.name} "
             ),
             "output": f"{cluster_job_out_name}.out",
             "error": f"{cluster_job_err_name}.err",
@@ -257,22 +215,21 @@ if __name__ == '__main__':
                 f"Launched {submit_result.num_procs()} processes with "
                 f"cluster-ID={submit_result.cluster()}\n")
 
-    # Log all experiments that we want to run
-    num_experiments = sum([len(all_experiments[task]) for task in all_experiments])
+    # Log all task that we want to run
+    num_task = len(all_task)
     print(
-        f"\nLaunching the following experiments (n={num_experiments}):\n")
+        f"\nLaunching the following tasks (n={num_task}):\n")
     
     # For each task
-    for task in TASKS:
-        print(
+    print(
             f"\n*** *** ***\n"
-            f"Launching {len(all_experiments[task])} * {N_TRIALS} = "
-            f"{N_TRIALS * len(all_experiments[task])} "
-            f"experiments for task={task}"
+            f"Launching {len(all_task)} * {N_TRIALS} = "
+            f"{N_TRIALS * len(all_task)} "
+            f"tasks"
             f"\n*** *** ***\n"
         )
 
-        for i, exp_obj in enumerate(all_experiments[task]):
-            print(f"{i}. Launching {exp_obj.n_trials} trials for the experiment '{exp_obj}'")
-            launch_experiments_jobs(task=task, exp_obj=exp_obj)
+    for i, exp_obj in enumerate(all_task):
+            print(f"{i}. Launching {exp_obj.n_trials} trials for the task '{exp_obj.name}'")
+            launch_task_jobs(task=task, exp_obj=exp_obj)
 
