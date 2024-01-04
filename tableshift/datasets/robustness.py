@@ -24,9 +24,12 @@ def select_subset_minus_one(x):
         subsets.append(list(item))
     return subsets
 
-def select_superset_plus_one(x,x_and_additional):
+def select_superset_plus_one(x,all):
     # Generate powerset of columns
-    subsets = []
-    additional = list(set(x_and_additional).difference(x))
+    superset = []
+    feature_names_x = [feature.name for feature in x]
+    feature_names_all = [feature.name for feature in all]
+    feature_names_additional = list(set(feature_names_all).difference(feature_names_x))
+    additional = [feature for feature in all if feature.name in feature_names_additional]
     for item in additional:
-        subsets.append(item)
+        superset.append(x+[item])

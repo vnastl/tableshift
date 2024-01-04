@@ -517,7 +517,8 @@ ACS_INCOME_FEATURES_ARGUABLYCAUSAL = FeatureList([
     NWLA_FEATURE,
 ],
     documentation="https://www2.census.gov/programs-surveys/acs/tech_docs/pums/data_dict/PUMS_Data_Dictionary_2014-2018.pdf")
-arguablycausal_supersets = select_superset_plus_one(ACS_INCOME_FEATURES_ARGUABLYCAUSAL.features, ACS_INCOME_FEATURES.features)
+
+arguablycausal_supersets = select_superset_plus_one(ACS_INCOME_FEATURES_ARGUABLYCAUSAL.features, ACS_INCOME_FEATURES.features + ACS_SHARED_FEATURES.features)
 ACS_INCOME_FEATURES_ARGUABLYCAUSAL_SUPERSETS = []
 for superset in arguablycausal_supersets:
     ACS_INCOME_FEATURES_ARGUABLYCAUSAL_SUPERSETS.append(FeatureList(superset))
