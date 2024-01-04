@@ -117,9 +117,9 @@ if __name__ == "__main__":
                 name=dic_args["task"],
                 model=model,
                 job_memory_gb=job_memory_gb,
-                n_trials = dic_args["N_TRIALS"],
-                job_cpus =  dic_args["JOB_CPUS"],
-                job_bid = dic_args["JOB_MIN_BID"],
+                n_trials = int(dic_args["N_TRIALS"]),
+                job_cpus = int(dic_args["JOB_CPUS"]),
+                job_bid = int(dic_args["JOB_MIN_BID"]),
                  ))
 
     # Set up preprocessing of data for the task
