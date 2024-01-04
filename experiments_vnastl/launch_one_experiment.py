@@ -88,6 +88,7 @@ if __name__ == "__main__":
     dic_args = vars(args)
     
     DATA_DIR_PREPROCESSED = Path(dic_args["DATA_DIR"]) / "preprocessed"
+    DATA_DIR_PREPROCESSED.mkdir(exist_ok=True)
 
     CLUSTER_LOGS_SAVE_ERR_DIR = Path(dic_args["CLUSTER_LOGS_SAVE_DIR"]) / "error"
     CLUSTER_LOGS_SAVE_ERR_DIR.mkdir(exist_ok=True)
