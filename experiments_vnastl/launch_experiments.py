@@ -30,7 +30,7 @@ BIG_JOB_MEMORY_GB = 256
 
 VERBOSE = True
 
-TASKS = (
+TASKS = [
     "acsincome",
     # "acsincome_causal",
     # "acsincome_arguablycausal",
@@ -82,10 +82,11 @@ TASKS = (
 
     # "meps", 
     # "meps_causal",
-)
+]
 
 # Robustness checks
-TASKS = TASKS + ( "acsincome_causal"+f"{index}" for index  in range(ACS_INCOME_FEATURES_CAUSAL_SUBSETS_NUMBER-1))
+for index in range(ACS_INCOME_FEATURES_CAUSAL_SUBSETS_NUMBER-1):
+        TASKS.append("acsincome_causal"+f"{index}")
 
 # Useful directories
 if __name__ == '__main__':
