@@ -92,7 +92,7 @@ if __name__ == '__main__':
     DATA_DIR = ROOT_DIR / "fast/vnastl/data"  # TODO check again if it is in fact the fast driver
 
     # Results directory
-    RESULTS_DIR = ROOT_DIR / "vnastl/results" #/tableshift/task_vnastl"
+    RESULTS_DIR = ROOT_DIR / "vnastl/results" #/tableshift/experiment_vnastl"
     RESULTS_DIR.mkdir(exist_ok=True, parents=False)
 
     # Directory to save cluster logs and job stdout/stderr
@@ -194,7 +194,7 @@ if __name__ == '__main__':
             "notify_user": "vivian.nastl@tuebingen.mpg.de",
             "notification": "error",
             # "job_seed_macro": f"$(Process) + {random.randrange(int(1e9))}",      # add random salt to all job seeds
-            "job_seed": "$INT(job_seed_macro)",
+            # "job_seed": "$INT(job_seed_macro)",
 
             # Concurrency limits:
             # > each job uses this amount of resources out of a pool of 10k

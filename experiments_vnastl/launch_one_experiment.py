@@ -117,6 +117,7 @@ if __name__ == "__main__":
     dset = get_dataset(dic_args["task"], dic_args["DATA_DIR"])
     with open(f"{str(DATA_DIR_PREPROCESSED)}/{dic_args['task']}.pickle", 'wb') as f:
         pickle.dump(dset, f)
+    # pickle dset into cache_dir under the name of dset_task
     
             
 ##################################################
@@ -179,7 +180,7 @@ if __name__ == "__main__":
             "notify_user": "vivian.nastl@tuebingen.mpg.de",
             "notification": "error",
             # "job_seed_macro": f"$(Process) + {random.randrange(int(1e9))}",      # add random salt to all job seeds
-            "job_seed": "$INT(job_seed_macro)",
+            # "job_seed": "$INT(job_seed_macro)",
 
             # Concurrency limits:
             # > each job uses this amount of resources out of a pool of 10k
