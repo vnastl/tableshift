@@ -62,8 +62,8 @@ class ExperimentConfigs:
     job_gpus: int = 0
     job_bid: int # = dic_args["JOB_MIN_BID"]
 
-    def __post_init__(self):
-        self.job_bid = max(self.job_bid, dic_args["JOB_MIN_BID"]) 
+    # def __post_init__(self):
+    #     self.job_bid = max(self.job_bid, dic_args["JOB_MIN_BID"]) 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
