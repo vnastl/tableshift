@@ -29,7 +29,7 @@ BIG_JOB_MEMORY_GB = 256
 VERBOSE = True
 
 TASKS = (
-    "acsincome",
+    # "acsincome",
     # "acsincome_causal",
     # "acsincome_arguablycausal",
     # "acsincome_anticausal",
@@ -63,7 +63,7 @@ TASKS = (
     # "nhanes_lead", 
     # "nhanes_lead_causal",
 
-    # "diabetes_readmission", 
+    "diabetes_readmission", 
     # "diabetes_readmission_causal",
 
     # "mimic_extract_los_3",
