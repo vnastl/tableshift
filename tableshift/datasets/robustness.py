@@ -23,3 +23,10 @@ def select_subset_minus_one(x):
     for item in combinations_r:
         subsets.append(list(item))
     return subsets
+
+def select_superset_plus_one(x,x_and_additional):
+    # Generate powerset of columns
+    subsets = []
+    additional = list(set(x_and_additional).difference(x))
+    for item in additional:
+        subsets.append(item)

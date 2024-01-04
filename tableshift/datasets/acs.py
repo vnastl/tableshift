@@ -20,14 +20,7 @@ from itertools import combinations
 
 from tableshift.core.features import Feature, FeatureList, cat_dtype
 
-def select_subset_minus_one(x):
-    # Generate powerset of columns
-    subset = []
-    r = len(x)-1
-    combinations_r = list(combinations(x, r))
-    for item in combinations_r:
-        subset.append(list(item))
-    return subset
+from tableshift.datasets.robustness import select_subset_minus_one, select_superset_plus_one
 
 ################################################################################
 # Shared features used in more than one task
@@ -387,7 +380,7 @@ causal_features.remove(Feature('DIVISION', cat_dtype,
                                     8: 'Mountain (West region)',
                                     9: 'Pacific (West region)',
                                 }))
-causal_subsets = select_subset_minus_one(ACS_INCOME_FEATURES_CAUSAL.features)
+causal_subsets = select_subset_minus_one(causal_features)
 ACS_INCOME_FEATURES_CAUSAL_SUBSETS = []
 for subset in causal_subsets:
     subset.append(Feature('PINCP', float, """Total person's income >= threshold.""",is_target=True))
@@ -524,6 +517,11 @@ ACS_INCOME_FEATURES_ARGUABLYCAUSAL = FeatureList([
     NWLA_FEATURE,
 ],
     documentation="https://www2.census.gov/programs-surveys/acs/tech_docs/pums/data_dict/PUMS_Data_Dictionary_2014-2018.pdf")
+arguablycausal_supersets = select_superset_plus_one(ACS_INCOME_FEATURES_ARGUABLYCAUSAL.features, ACS_INCOME_FEATURES.features)
+ACS_INCOME_FEATURES_ARGUABLYCAUSAL_SUPERSETS = []
+for superset in arguablycausal_supersets:
+    ACS_INCOME_FEATURES_ARGUABLYCAUSAL_SUPERSETS.append(FeatureList(superset))
+ACS_INCOME_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER = len(arguablycausal_supersets)
 
 ACS_INCOME_FEATURES_ANTICAUSAL = FeatureList([
     Feature('PINCP', float, """Total person's income >= threshold.""",

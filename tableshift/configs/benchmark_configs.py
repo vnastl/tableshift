@@ -8,8 +8,8 @@ from tableshift.configs.experiment_config import ExperimentConfig
 from tableshift.configs.experiment_defaults import DEFAULT_ID_TEST_SIZE, \
     DEFAULT_OOD_VAL_SIZE, DEFAULT_ID_VAL_SIZE, DEFAULT_RANDOM_STATE
 from tableshift.core import Grouper, PreprocessorConfig, DomainSplitter
-from tableshift.datasets import BRFSS_YEARS, ACS_YEARS, NHANES_YEARS, \
-    ACS_INCOME_FEATURES_CAUSAL_SUBSETS_NUMBER
+from tableshift.datasets import BRFSS_YEARS, ACS_YEARS, NHANES_YEARS
+from tableshift.datasets import ACS_INCOME_FEATURES_CAUSAL_SUBSETS_NUMBER, ACS_INCOME_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER
 from tableshift.datasets.mimic_extract import MIMIC_EXTRACT_STATIC_FEATURES, \
     MIMIC_EXTRACT_LOS_3_FEATURES_CAUSAL, MIMIC_EXTRACT_MORT_HOSP_FEATURES_CAUSAL
 from tableshift.datasets.mimic_extract_feature_lists import \
@@ -579,7 +579,7 @@ BENCHMARK_CONFIGS = {
 }
 
 for index in range(ACS_INCOME_FEATURES_CAUSAL_SUBSETS_NUMBER):
-    BENCHMARK_CONFIGS["acsincome_causal"+f"{index}"] = ExperimentConfig(
+    BENCHMARK_CONFIGS["acsincome_causal_test_"+f"{index}"] = ExperimentConfig(
                                                             splitter=DomainSplitter(val_size=DEFAULT_ID_VAL_SIZE,
                                                                                     ood_val_size=DEFAULT_OOD_VAL_SIZE,
                                                                                     random_state=DEFAULT_RANDOM_STATE,
@@ -587,5 +587,17 @@ for index in range(ACS_INCOME_FEATURES_CAUSAL_SUBSETS_NUMBER):
                                                                                     domain_split_varname="DIVISION",
                                                                                     domain_split_ood_values=['01']),
                                                             grouper=None,
+                                                            preprocessor_config=PreprocessorConfig(),
+                                                            tabular_dataset_kwargs={"acs_task": "acsincome"})
+
+for index in range(ACS_INCOME_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
+    BENCHMARK_CONFIGS["acsincome_arguablycausal_test_"+f"{index}"] = ExperimentConfig(
+                                                            splitter=DomainSplitter(val_size=DEFAULT_ID_VAL_SIZE,
+                                                                                    ood_val_size=DEFAULT_OOD_VAL_SIZE,
+                                                                                    random_state=DEFAULT_RANDOM_STATE,
+                                                                                    id_test_size=DEFAULT_ID_TEST_SIZE,
+                                                                                    domain_split_varname="DIVISION",
+                                                                                    domain_split_ood_values=['01']),
+                                                            grouper=Grouper({"RAC1P": [1, ], "SEX": [1, ]}, drop=False),
                                                             preprocessor_config=PreprocessorConfig(),
                                                             tabular_dataset_kwargs={"acs_task": "acsincome"})

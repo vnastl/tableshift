@@ -172,9 +172,9 @@ if __name__ == "__main__":
             # "arguments": "foo.py",    # NOTE: used for testing
             "arguments": (
                 "/home/vnastl/tableshift/experiments_vnastl/run_experiment_on_cluster.py "
-                f"--cache_dir {str(DATA_DIR_PREPROCESSED)} "
                 f"--experiment {exp_obj.name} "
                 f"--model {exp_obj.model} "
+                f"--cache_dir {str(DATA_DIR_PREPROCESSED)} "
                 f"--save_dir {str(EXP_RESULTS_DIR)} "
                 # f"{'--verbose' if VERBOSE else ''} "
             ),

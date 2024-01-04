@@ -10,7 +10,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 import json
-from tableshift.datasets import ACS_INCOME_FEATURES_CAUSAL_SUBSETS_NUMBER
+from tableshift.datasets import ACS_INCOME_FEATURES_CAUSAL_SUBSETS_NUMBER, ACS_INCOME_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER
 
 
 if __name__ == '__main__':
@@ -86,7 +86,10 @@ TASKS = [
 
 # Robustness checks
 for index in range(ACS_INCOME_FEATURES_CAUSAL_SUBSETS_NUMBER-1):
-        TASKS.append("acsincome_causal"+f"{index}")
+        TASKS.append("acsincome_causal_test_"+f"{index}")
+
+for index in range(ACS_INCOME_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER-1):
+        TASKS.append("acsincome_arguablycausal_test_"+f"{index}")
 
 # Useful directories
 if __name__ == '__main__':
@@ -179,6 +182,7 @@ if __name__ == '__main__':
             # "arguments": "foo.py",    # NOTE: used for testing
             "arguments": (
                 "/home/vnastl/tableshift/experiments_vnastl/launch_one_experiment.py "
+                f"--task {exp_obj.name} "
                 f"--DATA_DIR {str(DATA_DIR)} "
                 f"--RESULTS_DIR {str(EXP_RESULTS_DIR)} "
                 f"--CLUSTER_LOGS_SAVE_DIR {str(CLUSTER_LOGS_SAVE_DIR)} "
@@ -186,7 +190,6 @@ if __name__ == '__main__':
                 f"--JOB_CPUS {JOB_CPUS} "
                 f"--JOB_MEMORY_GB {JOB_MEMORY_GB} "
                 f"--JOB_MIN_BID {JOB_MIN_BID} "
-                f"--task {exp_obj.name} "
             ),
             "output": f"{cluster_job_out_name}.out",
             "error": f"{cluster_job_err_name}.err",

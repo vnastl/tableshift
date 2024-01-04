@@ -280,7 +280,10 @@ _TASK_REGISTRY = {
 }
 
 for index, subset in enumerate(ACS_INCOME_FEATURES_CAUSAL_SUBSETS):
-    _TASK_REGISTRY["acsincome_causal"+f"{index}"] = TaskConfig(ACSDataSource, subset)
+    _TASK_REGISTRY["acsincome_causal_test_"+f"{index}"] = TaskConfig(ACSDataSource, subset)
+
+for index, superset in enumerate(ACS_INCOME_FEATURES_ARGUABLYCAUSAL_SUPERSETS):
+    _TASK_REGISTRY["acsincome_arguablycausal_test_"+f"{index}"] = TaskConfig(ACSDataSource, superset)
 
 
 def get_task_config(name: str) -> TaskConfig:
