@@ -987,10 +987,9 @@ ACS_FOODSTAMPS_FEATURES_CAUSAL = FeatureList(features=[
 )
 
 causal_features = ACS_FOODSTAMPS_FEATURES_CAUSAL.features.copy()
-causal_features.remove(Feature('FS', int,
-                               """Yearly food stamp/Supplemental Nutrition Assistance 
-                               Program (SNAP) recipiency (household) b .N/A (vacant) 5 1 .Yes 2 .No""",
-                                is_target=True))
+causal_features.remove(Feature('FS', int, """Yearly food stamp/Supplemental Nutrition Assistance 
+    Program (SNAP) recipiency (household) b .N/A (vacant) 5 1 .Yes 2 .No""",
+            is_target=True))
 causal_features.remove(Feature('DIVISION', cat_dtype,
                                 "Division code based on 2010 Census definitions.",
                                 name_extended='geographic region',
