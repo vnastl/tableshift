@@ -267,6 +267,7 @@ ACS_SHARED_FEATURES = FeatureList(features=[
                   "/pums/data_dict/PUMS_Data_Dictionary_2019.pdf"
 )
 
+# INCOME
 
 ACS_INCOME_FEATURES = FeatureList([
     Feature('COW', cat_dtype, """Class of worker.""",
@@ -556,6 +557,8 @@ ACS_INCOME_FEATURES_ANTICAUSAL = FeatureList([
     ],
     documentation="https://www2.census.gov/programs-surveys/acs/tech_docs/pums/data_dict/PUMS_Data_Dictionary_2014-2018.pdf")
 
+# PUBLIC COVERAGE
+
 ACS_PUBCOV_FEATURES = FeatureList(features=[
     DIS_FEATURE,
     ESP_FEATURE,
@@ -616,6 +619,7 @@ ACS_PUBCOV_FEATURES_CAUSAL = FeatureList(features=[
     health coverage 0=Without public health coverage""", is_target=True)],
     )
 
+# UNEMPLOYMENT
 
 ACS_UNEMPLOYMENT_FEATURES = FeatureList(features=[
     Feature('ESR', int, "Employment status (is unemployed)", is_target=True),
@@ -878,6 +882,8 @@ ACS_UNEMPLOYMENT_FEATURES_ANTICAUSAL = FeatureList(features=[
 )
 
 
+# FOODSTAMPS
+
 ACS_FOODSTAMPS_FEATURES = FeatureList(features=[
     Feature('FS', int, """Yearly food stamp/Supplemental Nutrition Assistance 
     Program (SNAP) recipiency (household) b .N/A (vacant) 5 1 .Yes 2 .No""",
@@ -979,6 +985,51 @@ ACS_FOODSTAMPS_FEATURES_CAUSAL = FeatureList(features=[
     documentation="https://www2.census.gov/programs-surveys/acs/tech_docs"
                   "/pums/data_dict/PUMS_Data_Dictionary_2019.pdf"
 )
+
+causal_features = ACS_FOODSTAMPS_FEATURES_CAUSAL.features.copy()
+causal_features.remove(Feature('FS', int,
+                               """Yearly food stamp/Supplemental Nutrition Assistance 
+                               Program (SNAP) recipiency (household) b .N/A (vacant) 5 1 .Yes 2 .No""",
+                                is_target=True))
+causal_features.remove(Feature('DIVISION', cat_dtype,
+                                "Division code based on 2010 Census definitions.",
+                                name_extended='geographic region',
+                                value_mapping={
+                                    0: 'Puerto Rico',
+                                    1: 'New England (Northeast region)',
+                                    2: 'Middle Atlantic (Northeast region)',
+                                    3: 'East North Central (Midwest region)',
+                                    4: 'West North Central (Midwest region)',
+                                    5: 'South Atlantic (South region)',
+                                    6: 'East South Central (South region)',
+                                    7: 'West South Central (South Region)',
+                                    8: 'Mountain (West region)',
+                                    9: 'Pacific (West region)',
+                                }))
+causal_subsets = select_subset_minus_one(causal_features)
+ACS_FOODSTAMPS_FEATURES_CAUSAL_SUBSETS = []
+for subset in causal_subsets:
+    subset.append(Feature('FS', int,
+                               """Yearly food stamp/Supplemental Nutrition Assistance 
+                               Program (SNAP) recipiency (household) b .N/A (vacant) 5 1 .Yes 2 .No""",
+                                is_target=True))
+    subset.append(Feature('DIVISION', cat_dtype,
+            "Division code based on 2010 Census definitions.",
+            name_extended='geographic region',
+            value_mapping={
+                0: 'Puerto Rico',
+                1: 'New England (Northeast region)',
+                2: 'Middle Atlantic (Northeast region)',
+                3: 'East North Central (Midwest region)',
+                4: 'West North Central (Midwest region)',
+                5: 'South Atlantic (South region)',
+                6: 'East South Central (South region)',
+                7: 'West South Central (South Region)',
+                8: 'Mountain (West region)',
+                9: 'Pacific (West region)',
+            }))
+    ACS_FOODSTAMPS_FEATURES_CAUSAL_SUBSETS.append(FeatureList(subset))
+ACS_FOODSTAMPS_FEATURES_CAUSAL_SUBSETS_NUMBER = len(causal_subsets)
 
 ACS_FOODSTAMPS_FEATURES_ARGUABLYCAUSAL = FeatureList(features=[
     Feature('FS', int, """Yearly food stamp/Supplemental Nutrition Assistance 
@@ -1110,6 +1161,12 @@ ACS_FOODSTAMPS_FEATURES_ARGUABLYCAUSAL = FeatureList(features=[
     documentation="https://www2.census.gov/programs-surveys/acs/tech_docs"
                   "/pums/data_dict/PUMS_Data_Dictionary_2019.pdf"
 )
+
+arguablycausal_supersets = select_superset_plus_one(ACS_FOODSTAMPS_FEATURES_ARGUABLYCAUSAL.features, ACS_FOODSTAMPS_FEATURES.features + ACS_SHARED_FEATURES.features)
+ACS_FOODSTAMPS_FEATURES_ARGUABLYCAUSAL_SUPERSETS = []
+for superset in arguablycausal_supersets:
+    ACS_FOODSTAMPS_FEATURES_ARGUABLYCAUSAL_SUPERSETS.append(FeatureList(superset))
+ACS_FOODSTAMPS_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER = len(arguablycausal_supersets)
 
 
 ################################################################################

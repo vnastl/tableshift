@@ -10,7 +10,8 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 import json
-from tableshift.datasets import ACS_INCOME_FEATURES_CAUSAL_SUBSETS_NUMBER, ACS_INCOME_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER
+from tableshift.datasets import ACS_INCOME_FEATURES_CAUSAL_SUBSETS_NUMBER, ACS_INCOME_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER, \
+    ACS_FOODSTAMPS_FEATURES_CAUSAL_SUBSETS_NUMBER, ACS_FOODSTAMPS_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER
 
 
 if __name__ == '__main__':
@@ -31,7 +32,7 @@ BIG_JOB_MEMORY_GB = 256
 VERBOSE = True
 
 TASKS = [
-    "acsincome",
+    # "acsincome",
     # "acsincome_causal",
     # "acsincome_arguablycausal",
     # "acsincome_anticausal",
@@ -39,9 +40,9 @@ TASKS = [
     # "acspubcov",
     # "acspubcov_causal",
 
-    # "acsfoodstamps",
-    # "acsfoodstamps_causal",
-    # "acsfoodstamps_arguablycausal",
+    "acsfoodstamps",
+    "acsfoodstamps_causal",
+    "acsfoodstamps_arguablycausal",
 
     # "acsunemployment",
     # "acsunemployment_causal",
@@ -85,11 +86,17 @@ TASKS = [
 ]
 
 # Robustness checks
-for index in range(ACS_INCOME_FEATURES_CAUSAL_SUBSETS_NUMBER):
-        TASKS.append("acsincome_causal_test_"+f"{index}")
+# for index in range(ACS_INCOME_FEATURES_CAUSAL_SUBSETS_NUMBER):
+#         TASKS.append("acsincome_causal_test_"+f"{index}")
 
-for index in range(ACS_INCOME_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
-        TASKS.append("acsincome_arguablycausal_test_"+f"{index}")
+# for index in range(ACS_INCOME_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
+#         TASKS.append("acsincome_arguablycausal_test_"+f"{index}")
+
+for index in range(ACS_FOODSTAMPS_FEATURES_CAUSAL_SUBSETS_NUMBER):
+        TASKS.append("acsfoodstamps_causal_test_"+f"{index}")
+
+for index in range(ACS_FOODSTAMPS_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
+        TASKS.append("acsfoodstamps_arguablycausal_test_"+f"{index}")
 
 # Useful directories
 if __name__ == '__main__':
