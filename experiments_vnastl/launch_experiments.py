@@ -85,10 +85,10 @@ TASKS = [
 ]
 
 # Robustness checks
-for index in range(ACS_INCOME_FEATURES_CAUSAL_SUBSETS_NUMBER-1):
+for index in range(ACS_INCOME_FEATURES_CAUSAL_SUBSETS_NUMBER):
         TASKS.append("acsincome_causal_test_"+f"{index}")
 
-for index in range(ACS_INCOME_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER-1):
+for index in range(ACS_INCOME_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
         TASKS.append("acsincome_arguablycausal_test_"+f"{index}")
 
 # Useful directories
