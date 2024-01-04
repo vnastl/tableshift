@@ -11,7 +11,8 @@ from tableshift.models.training import train
 from tableshift.models.utils import get_estimator
 from tableshift.models.default_hparams import get_default_config
 from tableshift.core.tabular_dataset import TabularDataset
-from tableshift.datasets import ACS_INCOME_FEATURES_CAUSAL_SUBSETS_NUMBER, ACS_INCOME_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER
+from tableshift.datasets import ACS_INCOME_FEATURES_CAUSAL_SUBSETS_NUMBER, ACS_INCOME_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER, \
+    ACS_FOODSTAMPS_FEATURES_CAUSAL_SUBSETS_NUMBER, ACS_FOODSTAMPS_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER
 
 from experiments_vnastl.metrics import balanced_accuracy_score
 
@@ -98,19 +99,27 @@ def main(experiment, dset, model, debug: bool):
 if __name__ == "__main__":
     ROOT_DIR = Path("/Users/vnastl/Seafile/My Library/mpi project causal vs noncausal/tableshift/experiments_vnastl")
     experiments = []
-    for index in range(ACS_INCOME_FEATURES_CAUSAL_SUBSETS_NUMBER-1):
-        experiments.append("acsincome_causal_test_"+f"{index}")
-        RESULTS_DIR = ROOT_DIR / f"acsincome_causal_test_{index}"
-        RESULTS_DIR.mkdir(exist_ok=True, parents=False)
-    for index in range(ACS_INCOME_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER-1):
-        experiments.append("acsincome_arguablycausal_test_"+f"{index}")
-        RESULTS_DIR = ROOT_DIR / f"acsincome_arguablycausal_test_{index}"
-        RESULTS_DIR.mkdir(exist_ok=True, parents=False)
-    experiments.append("acsincome")
+    # for index in range(ACS_INCOME_FEATURES_CAUSAL_SUBSETS_NUMBER-1):
+    #     experiments.append("acsincome_causal_test_"+f"{index}")
+    #     RESULTS_DIR = ROOT_DIR / f"acsincome_causal_test_{index}"
+    #     RESULTS_DIR.mkdir(exist_ok=True, parents=False)
+    # for index in range(ACS_INCOME_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER-1):
+    #     experiments.append("acsincome_arguablycausal_test_"+f"{index}")
+    #     RESULTS_DIR = ROOT_DIR / f"acsincome_arguablycausal_test_{index}"
+    #     RESULTS_DIR.mkdir(exist_ok=True, parents=False)
+    # experiments.append("acsincome")
     # experiments = ["acsincome" ,"acsincome_causal", "acsincome_arguablycausal","acsincome_anticausal",]
     # experiments=["acspubcov", "acspubcov_causal"]
     # experiments = ["acsunemployment","acsunemployment_causal", "acsunemployment_anticausal"] 
     # experiments=["acsfoodstamps", "acsfoodstamps_causal"]
+    for index in range(ACS_INCOME_FEATURES_CAUSAL_SUBSETS_NUMBER-1):
+        experiments.append("acsfoodstamps_causal_test_"+f"{index}")
+        RESULTS_DIR = ROOT_DIR / f"acsfoodstamps_causal_test_{index}"
+        RESULTS_DIR.mkdir(exist_ok=True, parents=False)
+    for index in range(ACS_INCOME_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER-1):
+        experiments.append("acsfoodstamps_arguablycausal_test_"+f"{index}")
+        RESULTS_DIR = ROOT_DIR / f"acsfoodstamps_arguablycausal_test_{index}"
+        RESULTS_DIR.mkdir(exist_ok=True, parents=False)
     # experiments = ["anes","anes_causal"]
     # experiments = ["assistments","assistments_causal"]
     # experiments = ["brfss_diabetes_causal","brfss_diabetes_anticausal"] #,"brfss_diabetes"]
@@ -130,13 +139,13 @@ if __name__ == "__main__":
         dset = get_dataset(experiment, cache_dir)
         # X, y, _, _ = dset.get_pandas("train")
         models = [
-            "ft_transformer",
+            # "ft_transformer",
             "histgbm",
-            "mlp",
+            # "mlp",
             # "saint",
-            "tabtransformer",
+            # "tabtransformer",
             # "resnet",
-            "xgb",
+            # "xgb",
             # "aldro",
             # "dro",
             # "node",

@@ -286,10 +286,10 @@ for index, superset in enumerate(ACS_INCOME_FEATURES_ARGUABLYCAUSAL_SUPERSETS):
     _TASK_REGISTRY["acsincome_arguablycausal_test_"+f"{index}"] = TaskConfig(ACSDataSource, superset)
 
 for index, subset in enumerate(ACS_FOODSTAMPS_FEATURES_CAUSAL_SUBSETS):
-    _TASK_REGISTRY["acsincome_causal_test_"+f"{index}"] = TaskConfig(ACSDataSource, subset)
+    _TASK_REGISTRY["acsfoodstamps_causal_test_"+f"{index}"] = TaskConfig(ACSDataSource, subset)
 
 for index, superset in enumerate(ACS_FOODSTAMPS_FEATURES_ARGUABLYCAUSAL_SUPERSETS):
-    _TASK_REGISTRY["acsincome_arguablycausal_test_"+f"{index}"] = TaskConfig(ACSDataSource, superset)
+    _TASK_REGISTRY["acsfoodstamps_arguablycausal_test_"+f"{index}"] = TaskConfig(ACSDataSource, superset)
 
 
 def get_task_config(name: str) -> TaskConfig:
