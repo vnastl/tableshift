@@ -59,8 +59,8 @@ class ExperimentConfigs:
 
     n_trials: int # = dic_args["N_TRIALS"]
     job_cpus: int # = dic_args["JOB_CPUS"]
-    job_gpus: int = 0
     job_bid: int # = dic_args["JOB_MIN_BID"]
+    job_gpus: int = 0 
 
     # def __post_init__(self):
     #     self.job_bid = max(self.job_bid, dic_args["JOB_MIN_BID"]) 
