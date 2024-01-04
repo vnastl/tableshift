@@ -163,7 +163,7 @@ if __name__ == "__main__":
             / f"{exp_obj.name}_{exp_obj.model}_$(Cluster).$(Process)"
         )
 
-        EXP_RESULTS_DIR = dic_args["RESULTS_DIR"]
+        EXP_RESULTS_DIR = Path(dic_args["RESULTS_DIR"])
         EXP_RESULTS_DIR.mkdir(exist_ok=True, parents=False)
 
         # Construct job description
@@ -175,7 +175,7 @@ if __name__ == "__main__":
                 f"--cache_dir {str(DATA_DIR_PREPROCESSED)} "
                 f"--experiment {exp_obj.name} "
                 f"--model {exp_obj.model} "
-                f"--save_dir {EXP_RESULTS_DIR} "
+                f"--save_dir {str(EXP_RESULTS_DIR)} "
                 # f"{'--verbose' if VERBOSE else ''} "
             ),
             "output": f"{cluster_job_out_name}.out",
