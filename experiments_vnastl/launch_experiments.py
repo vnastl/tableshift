@@ -10,6 +10,8 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 import json
+from tableshift.datasets import ACS_INCOME_FEATURES_CAUSAL_SUBSETS_NUMBER
+
 
 if __name__ == '__main__':
     import htcondor
@@ -29,7 +31,7 @@ BIG_JOB_MEMORY_GB = 256
 VERBOSE = True
 
 TASKS = (
-    # "acsincome",
+    "acsincome",
     # "acsincome_causal",
     # "acsincome_arguablycausal",
     # "acsincome_anticausal",
@@ -63,7 +65,7 @@ TASKS = (
     # "nhanes_lead", 
     # "nhanes_lead_causal",
 
-    "diabetes_readmission", 
+    # "diabetes_readmission", 
     # "diabetes_readmission_causal",
 
     # "mimic_extract_los_3",
@@ -82,6 +84,8 @@ TASKS = (
     # "meps_causal",
 )
 
+# Robustness checks
+TASKS = TASKS + ( "acsincome_causal"+f"{index}" for index  in range(ACS_INCOME_FEATURES_CAUSAL_SUBSETS_NUMBER-1))
 
 # Useful directories
 if __name__ == '__main__':
