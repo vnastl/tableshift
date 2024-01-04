@@ -51,6 +51,7 @@ def IS_TASK_DG(task):
             return False
     return True
 
+@dataclasses.dataclass
 class ExperimentConfigs:
     name: str
     model: str
