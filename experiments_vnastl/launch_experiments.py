@@ -37,7 +37,6 @@ TASKS = [
     # "acsincome_causal",
     # "acsincome_arguablycausal",
     # "acsincome_anticausal",
-     "acsincome_arguablycausal_test_1",
 
     # "acspubcov",
     # "acspubcov_causal",
@@ -102,11 +101,11 @@ TASKS = [
 # for index in range(ACS_FOODSTAMPS_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
 #         TASKS.append("acsfoodstamps_arguablycausal_test_"+f"{index}")
 
-# for index in range(BRFSS_DIABETES_FEATURES_CAUSAL_SUBSETS_NUMBER):
-#         TASKS.append("brfss_diabetes_causal_test_"+f"{index}")
+for index in range(BRFSS_DIABETES_FEATURES_CAUSAL_SUBSETS_NUMBER):
+        TASKS.append("brfss_diabetes_causal_test_"+f"{index}")
 
-# for index in range(BRFSS_DIABETES_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
-#         TASKS.append("brfss_diabetes_arguablycausal_test_"+f"{index}")
+for index in range(BRFSS_DIABETES_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
+        TASKS.append("brfss_diabetes_arguablycausal_test_"+f"{index}")
 
 # Useful directories
 if __name__ == '__main__':

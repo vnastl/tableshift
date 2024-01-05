@@ -107,9 +107,9 @@ if __name__ == "__main__":
     #     experiments.append("acsincome_arguablycausal_test_"+f"{index}")
     #     RESULTS_DIR = ROOT_DIR / f"acsincome_arguablycausal_test_{index}"
     #     RESULTS_DIR.mkdir(exist_ok=True, parents=False)
-    experiments.append("acsincome_arguablycausal_test_1")
-    RESULTS_DIR = ROOT_DIR / f"acsincome_arguablycausal_test_1"
-    RESULTS_DIR.mkdir(exist_ok=True, parents=False)
+    # experiments.append("acsincome_arguablycausal_test_1")
+    # RESULTS_DIR = ROOT_DIR / f"acsincome_arguablycausal_test_1"
+    # RESULTS_DIR.mkdir(exist_ok=True, parents=False)
     # experiments = ["acsincome" ,"acsincome_causal", "acsincome_arguablycausal","acsincome_anticausal",]
     # experiments=["acspubcov", "acspubcov_causal"]
     # experiments = ["acsunemployment","acsunemployment_causal", "acsunemployment_anticausal"] 
@@ -124,6 +124,10 @@ if __name__ == "__main__":
     #     RESULTS_DIR.mkdir(exist_ok=True, parents=False)
     # experiments = ["anes","anes_causal"]
     # experiments = ["assistments","assistments_causal"]
+    # experiments.append("brfss_diabetes_causal")
+    experiments.append("brfss_diabetes_causal_test_0")
+    RESULTS_DIR = ROOT_DIR / f"brfss_diabetes_test_0"
+    RESULTS_DIR.mkdir(exist_ok=True, parents=False)
     # experiments = ["brfss_diabetes_causal","brfss_diabetes_anticausal"] #,"brfss_diabetes"]
     # experiments = ["brfss_blood_pressure_causal","brfss_blood_pressure"]
     # experiments=["college_scorecard","college_scorecard_causal"]

@@ -653,7 +653,7 @@ for index in range(BRFSS_DIABETES_FEATURES_CAUSAL_SUBSETS_NUMBER):
                                                                                             domain_split_id_values=[1, ]),
                                                                     grouper=None,
                                                                     preprocessor_config=PreprocessorConfig(passthrough_columns=["IYEAR"]),
-                                                                    tabular_dataset_kwargs={"name": "brfss_diabetes",
+                                                                    tabular_dataset_kwargs={"name": "brfss_diabetes_causal_test_"+f"{index}",
                                                                                             "task": "diabetes", "years": BRFSS_YEARS})
 for index in range(BRFSS_DIABETES_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
     BENCHMARK_CONFIGS["brfss_diabetes_arguablycausal_test_"+f"{index}"] = ExperimentConfig(
@@ -666,5 +666,5 @@ for index in range(BRFSS_DIABETES_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
                                                                                                     domain_split_id_values=[1, ]),
                                                                             grouper=Grouper({"SEX": [1, ]}, drop=False),
                                                                             preprocessor_config=PreprocessorConfig(passthrough_columns=["IYEAR"]),
-                                                                            tabular_dataset_kwargs={"name": "brfss_diabetes",
+                                                                            tabular_dataset_kwargs={"name": "brfss_diabetes_causal_test_"+f"{index}",
                                                                                                     "task": "diabetes", "years": BRFSS_YEARS})
