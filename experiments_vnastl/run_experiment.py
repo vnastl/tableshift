@@ -107,19 +107,21 @@ if __name__ == "__main__":
     #     experiments.append("acsincome_arguablycausal_test_"+f"{index}")
     #     RESULTS_DIR = ROOT_DIR / f"acsincome_arguablycausal_test_{index}"
     #     RESULTS_DIR.mkdir(exist_ok=True, parents=False)
-    # experiments.append("acsincome")
+    experiments.append("acsincome_arguablycausal_test_1")
+    RESULTS_DIR = ROOT_DIR / f"acsincome_arguablycausal_test_1"
+    RESULTS_DIR.mkdir(exist_ok=True, parents=False)
     # experiments = ["acsincome" ,"acsincome_causal", "acsincome_arguablycausal","acsincome_anticausal",]
     # experiments=["acspubcov", "acspubcov_causal"]
     # experiments = ["acsunemployment","acsunemployment_causal", "acsunemployment_anticausal"] 
     # experiments=["acsfoodstamps", "acsfoodstamps_causal"]
-    for index in range(ACS_INCOME_FEATURES_CAUSAL_SUBSETS_NUMBER-1):
-        experiments.append("acsfoodstamps_causal_test_"+f"{index}")
-        RESULTS_DIR = ROOT_DIR / f"acsfoodstamps_causal_test_{index}"
-        RESULTS_DIR.mkdir(exist_ok=True, parents=False)
-    for index in range(ACS_INCOME_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER-1):
-        experiments.append("acsfoodstamps_arguablycausal_test_"+f"{index}")
-        RESULTS_DIR = ROOT_DIR / f"acsfoodstamps_arguablycausal_test_{index}"
-        RESULTS_DIR.mkdir(exist_ok=True, parents=False)
+    # for index in range(ACS_INCOME_FEATURES_CAUSAL_SUBSETS_NUMBER-1):
+    #     experiments.append("acsfoodstamps_causal_test_"+f"{index}")
+    #     RESULTS_DIR = ROOT_DIR / f"acsfoodstamps_causal_test_{index}"
+    #     RESULTS_DIR.mkdir(exist_ok=True, parents=False)
+    # for index in range(ACS_INCOME_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER-1):
+    #     experiments.append("acsfoodstamps_arguablycausal_test_"+f"{index}")
+    #     RESULTS_DIR = ROOT_DIR / f"acsfoodstamps_arguablycausal_test_{index}"
+    #     RESULTS_DIR.mkdir(exist_ok=True, parents=False)
     # experiments = ["anes","anes_causal"]
     # experiments = ["assistments","assistments_causal"]
     # experiments = ["brfss_diabetes_causal","brfss_diabetes_anticausal"] #,"brfss_diabetes"]
