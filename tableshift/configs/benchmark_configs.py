@@ -10,7 +10,8 @@ from tableshift.configs.experiment_defaults import DEFAULT_ID_TEST_SIZE, \
 from tableshift.core import Grouper, PreprocessorConfig, DomainSplitter
 from tableshift.datasets import BRFSS_YEARS, ACS_YEARS, NHANES_YEARS
 from tableshift.datasets import ACS_INCOME_FEATURES_CAUSAL_SUBSETS_NUMBER, ACS_INCOME_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER, \
-    ACS_FOODSTAMPS_FEATURES_CAUSAL_SUBSETS_NUMBER, ACS_FOODSTAMPS_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER
+    ACS_FOODSTAMPS_FEATURES_CAUSAL_SUBSETS_NUMBER, ACS_FOODSTAMPS_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER, \
+    BRFSS_DIABETES_FEATURES_CAUSAL_SUBSETS_NUMBER, BRFSS_DIABETES_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER
 from tableshift.datasets.mimic_extract import MIMIC_EXTRACT_STATIC_FEATURES, \
     MIMIC_EXTRACT_LOS_3_FEATURES_CAUSAL, MIMIC_EXTRACT_MORT_HOSP_FEATURES_CAUSAL
 from tableshift.datasets.mimic_extract_feature_lists import \
@@ -269,6 +270,19 @@ BENCHMARK_CONFIGS = {
         grouper=Grouper({"SEX": [1, ]}, drop=False),
         preprocessor_config=PreprocessorConfig(passthrough_columns=["IYEAR"]),
         tabular_dataset_kwargs={"name": "brfss_diabetes_causal",
+                                "task": "diabetes", "years": BRFSS_YEARS},
+    ),
+    "brfss_diabetes_arguablycausal": ExperimentConfig(
+        splitter=DomainSplitter(val_size=DEFAULT_ID_VAL_SIZE,
+                                ood_val_size=DEFAULT_OOD_VAL_SIZE,
+                                random_state=DEFAULT_RANDOM_STATE,
+                                id_test_size=DEFAULT_ID_TEST_SIZE,
+                                domain_split_varname="PRACE1",
+                                domain_split_ood_values=[2, 3, 4, 5, 6],
+                                domain_split_id_values=[1, ]),
+        grouper=Grouper({"SEX": [1, ]}, drop=False),
+        preprocessor_config=PreprocessorConfig(passthrough_columns=["IYEAR"]),
+        tabular_dataset_kwargs={"name": "brfss_diabetes_arguablycausal",
                                 "task": "diabetes", "years": BRFSS_YEARS},
     ),
     "brfss_diabetes_anticausal": ExperimentConfig(
@@ -626,3 +640,31 @@ for index in range(ACS_FOODSTAMPS_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
                                                                         grouper=Grouper({"RAC1P": [1, ], "SEX": [1, ]}, drop=False),
                                                                         preprocessor_config=PreprocessorConfig(),
                                                                         tabular_dataset_kwargs={"acs_task": "acsfoodstamps"})
+    
+
+for index in range(BRFSS_DIABETES_FEATURES_CAUSAL_SUBSETS_NUMBER):
+    BENCHMARK_CONFIGS["brfss_diabetes_causal_test_"+f"{index}"] = ExperimentConfig(
+                                                                    splitter=DomainSplitter(val_size=DEFAULT_ID_VAL_SIZE,
+                                                                                            ood_val_size=DEFAULT_OOD_VAL_SIZE,
+                                                                                            random_state=DEFAULT_RANDOM_STATE,
+                                                                                            id_test_size=DEFAULT_ID_TEST_SIZE,
+                                                                                            domain_split_varname="PRACE1",
+                                                                                            domain_split_ood_values=[2, 3, 4, 5, 6],
+                                                                                            domain_split_id_values=[1, ]),
+                                                                    grouper=None,
+                                                                    preprocessor_config=PreprocessorConfig(passthrough_columns=["IYEAR"]),
+                                                                    tabular_dataset_kwargs={"name": "brfss_diabetes",
+                                                                                            "task": "diabetes", "years": BRFSS_YEARS})
+for index in range(BRFSS_DIABETES_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
+    BENCHMARK_CONFIGS["brfss_diabetes_arguablycausal_test_"+f"{index}"] = ExperimentConfig(
+                                                                            splitter=DomainSplitter(val_size=DEFAULT_ID_VAL_SIZE,
+                                                                                                    ood_val_size=DEFAULT_OOD_VAL_SIZE,
+                                                                                                    random_state=DEFAULT_RANDOM_STATE,
+                                                                                                    id_test_size=DEFAULT_ID_TEST_SIZE,
+                                                                                                    domain_split_varname="PRACE1",
+                                                                                                    domain_split_ood_values=[2, 3, 4, 5, 6],
+                                                                                                    domain_split_id_values=[1, ]),
+                                                                            grouper=Grouper({"SEX": [1, ]}, drop=False),
+                                                                            preprocessor_config=PreprocessorConfig(passthrough_columns=["IYEAR"]),
+                                                                            tabular_dataset_kwargs={"name": "brfss_diabetes",
+                                                                                                    "task": "diabetes", "years": BRFSS_YEARS})

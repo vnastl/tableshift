@@ -82,6 +82,8 @@ _TASK_REGISTRY = {
         TaskConfig(BRFSSDataSource, BRFSS_DIABETES_FEATURES),
     "brfss_diabetes_causal":
         TaskConfig(BRFSSDataSource, BRFSS_DIABETES_FEATURES_CAUSAL),
+    "brfss_diabetes_arguablycausal":
+        TaskConfig(BRFSSDataSource, BRFSS_DIABETES_FEATURES_ARGUABLYCAUSAL),
     "brfss_diabetes_anticausal":
         TaskConfig(BRFSSDataSource, BRFSS_DIABETES_FEATURES_ANTICAUSAL),
     "brfss_blood_pressure":
@@ -291,6 +293,11 @@ for index, subset in enumerate(ACS_FOODSTAMPS_FEATURES_CAUSAL_SUBSETS):
 for index, superset in enumerate(ACS_FOODSTAMPS_FEATURES_ARGUABLYCAUSAL_SUPERSETS):
     _TASK_REGISTRY["acsfoodstamps_arguablycausal_test_"+f"{index}"] = TaskConfig(ACSDataSource, superset)
 
+for index, subset in enumerate(BRFSS_DIABETES_FEATURES_CAUSAL_SUBSETS):
+    _TASK_REGISTRY["brfss_diabetes_causal_test_"+f"{index}"] = TaskConfig(ACSDataSource, subset)
+
+for index, superset in enumerate(BRFSS_DIABETES_FEATURES_ARGUABLYCAUSAL_SUPERSETS):
+    _TASK_REGISTRY["brfss_diabetes_arguablycausal_test_"+f"{index}"] = TaskConfig(ACSDataSource, superset)
 
 def get_task_config(name: str) -> TaskConfig:
     if name in _TASK_REGISTRY:

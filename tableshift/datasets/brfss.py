@@ -21,6 +21,8 @@ import pandas as pd
 from tableshift.core.features import Feature, FeatureList, cat_dtype
 from tableshift.core.splitter import idx_where_not_in
 
+from tableshift.datasets.robustness import select_subset_minus_one, select_superset_plus_one
+
 # Features present in every year of BRFSS
 BRFSS_GLOBAL_FEATURES = [
     'CHCOCNCR', 'CHCSCNCR', 'CHECKUP1', 'CVDSTRK3', 'EDUCA', 'EMPLOY1',
@@ -183,6 +185,9 @@ PHYSICAL_ACTIVITY_FEATURE = Feature(
         2: 'No physical activity or exercise in last 30 days'},
     name_extended="Physical activity or exercise during the past 30 " \
                   "days other than their regular job")
+
+################################ Features Definition ############################
+
 BRFSS_DIABETES_FEATURES = FeatureList([
     ################ Target ################
     Feature("DIABETES", float,
@@ -536,7 +541,6 @@ BRFSS_CROSS_YEAR_FEATURE_MAPPING = {
 
 #########################################################################
 #########################################################################
-# Causal features
 BRFSS_DIABETES_FEATURES_CAUSAL = FeatureList([
     # Derived feature for year.
     Feature("IYEAR", float, "Year of BRFSS dataset.",
@@ -586,6 +590,12 @@ BRFSS_DIABETES_FEATURES_CAUSAL = FeatureList([
     # BMI5CAT_FEATURE,
     ################ Smoking ################
     # *BRFSS_SMOKE_FEATURES,
+    Feature("SMOKE100", cat_dtype,
+            "Have you smoked at least 100 cigarettes in your entire life?",
+            na_values=(7, 9),
+            value_mapping={1: 'Yes', 2: 'No'},
+            name_extended="Answer to the question 'Have you smoked at least "
+                          "100 cigarettes in your entire life?'"),
     ################ Diet ################
     # *BRFSS_DIET_FEATURES,
     ################ Alcohol Consumption ################
@@ -608,7 +618,218 @@ BRFSS_DIABETES_FEATURES_CAUSAL = FeatureList([
                 5: 'College 1 year to 3 years (Some college or technical school)',
                 6: 'College 4 years or more (College graduate)', 9: 'Refused'
             }),
+    ################ Marital status ################
+    Feature("MARITAL", cat_dtype,
+            "Marital status",
+            name_extended="Marital status",
+            na_values=(9,),
+            value_mapping={
+                1: 'Married', 2: 'Divorced',
+                3: 'Widowed', 4: 'Separated', 5: 'Never married',
+                6: 'A member of an unmarried couple', 9: 'Refused'
+            }),
+
 ])
+
+causal_features = BRFSS_DIABETES_FEATURES_CAUSAL.features.copy()
+target = Feature("DIABETES", float,
+            '(Ever told) you have diabetes',
+            name_extended='(Ever told) you have diabetes',
+            is_target=True,
+            na_values=(7, 9),
+            # value_mapping={
+            #     1: 'Yes',
+            #     2: 'Yes but female told only during pregnancy',
+            #     3: 'No',
+            #     4: 'No, prediabetes or borderline diabetes',
+            #     7: 'Don’t know / Not Sure',
+            #     9: 'Refused'
+            # }
+            )
+domain = Feature("PRACE1", float, """Preferred race category.""",
+            name_extended="Preferred race category",
+            na_values=(7., 8., 77., 99.),
+            value_mapping={
+                1: 'White',
+                2: 'Black or African American',
+                3: 'American Indian or Alaskan Native',
+                4: 'Asian', 5: 'Native Hawaiian or other Pacific Islander',
+                6: 'Other race',
+                7: 'No preferred race',
+                8: 'Multiracial but preferred race not answered',
+                77: 'Don’t know/Not sure', 9: 'refused', })
+causal_features.remove(target)
+causal_features.remove(domain)
+causal_features.remove(Feature("IYEAR", float, "Year of BRFSS dataset.",
+            name_extended="Survey year"))
+causal_subsets = select_subset_minus_one(causal_features)
+BRFSS_DIABETES_FEATURES_CAUSAL_SUBSETS = []
+for subset in causal_subsets:
+    subset.append(target)
+    subset.append(domain)
+    subset.append(Feature("IYEAR", float, "Year of BRFSS dataset.",
+            name_extended="Survey year"),)
+    BRFSS_DIABETES_FEATURES_CAUSAL_SUBSETS.append(FeatureList(subset))
+BRFSS_DIABETES_FEATURES_CAUSAL_SUBSETS_NUMBER = len(causal_subsets)
+
+BRFSS_DIABETES_FEATURES_ARGUABLYCAUSAL = FeatureList([
+    ################ Target ################
+    Feature("DIABETES", float,
+            '(Ever told) you have diabetes',
+            name_extended='(Ever told) you have diabetes',
+            is_target=True,
+            na_values=(7, 9),
+            # value_mapping={
+            #     1: 'Yes',
+            #     2: 'Yes but female told only during pregnancy',
+            #     3: 'No',
+            #     4: 'No, prediabetes or borderline diabetes',
+            #     7: 'Don’t know / Not Sure',
+            #     9: 'Refused'
+            # }
+            ),
+     # Derived feature for year.
+    Feature("IYEAR", float, "Year of BRFSS dataset.",
+            name_extended="Survey year"),
+    # ################ Demographics/sensitive attributes. ################
+    Feature("MEDCOST", cat_dtype, """Was there a time in the past 12 months 
+    when you needed to see a doctor but could not because of cost?""",
+            name_extended="Answer to the question 'Was there a time in the "
+                          "past 12 months when you needed to see a doctor but "
+                          "could not because of cost?'",
+            na_values=(7, 9),
+            value_mapping={
+                1: "Yes", 2: "No", 7: "Don't know/not sure", 9: "Refused",
+            }),
+    # Preferred race category; note that ==1 is equivalent to
+    # "White non-Hispanic race group" variable _RACEG21
+    Feature("PRACE1", float, """Preferred race category.""",
+            name_extended="Preferred race category",
+            na_values=(7., 8., 77., 99.),
+            value_mapping={
+                1: 'White',
+                2: 'Black or African American',
+                3: 'American Indian or Alaskan Native',
+                4: 'Asian', 5: 'Native Hawaiian or other Pacific Islander',
+                6: 'Other race',
+                7: 'No preferred race',
+                8: 'Multiracial but preferred race not answered',
+                77: 'Don’t know/Not sure', 9: 'refused', }),
+    Feature("SEX", float, """Indicate sex of respondent.""",
+            name_extended="Sex of respondent",
+            value_mapping={1: "Male", 2: "Female"}),
+    # Below are a set of indicators for known risk factors for diabetes.
+    ################ General health ################
+    Feature("PHYSHLTH", float,
+            "For how many days during the past 30 days"
+            " was your physical health not good?",
+            name_extended="Number of days during the past 30 days where "
+                          "physical health was not good",
+            na_values=(77, 99),
+            note="""Values: 1 - 30 Number of 
+            days, 88 None, 77 Don’t know/Not sure, 99 Refused, BLANK Not 
+            asked or Missing"""),
+    ################ BMI/Obesity ################
+    # Calculated Body Mass Index (BMI)
+    Feature("BMI5", float, """Computed Body Mass Index (BMI)""",
+            name_extended='Body Mass Index (BMI)',
+            note="""Values: 1 - 9999 1 or greater - Notes: WTKG3/(HTM4*HTM4) 
+            (Has 2 implied decimal places); BLANK: Don’t 
+            know/Refused/Missing."""),
+    # Four-categories of Body Mass Index (BMI)
+    BMI5CAT_FEATURE,
+    ################ Smoking ################
+    *BRFSS_SMOKE_FEATURES,
+    ################ Diet ################
+    *BRFSS_DIET_FEATURES,
+    ################ Alcohol Consumption ################
+    *BRFSS_ALCOHOL_FEATURES,
+    ################ Exercise ################
+    PHYSICAL_ACTIVITY_FEATURE,
+    ################ Household income ################
+    Feature("INCOME", cat_dtype,
+            """Annual household income from all sources""",
+            name_extended="Annual household income from all sources",
+            na_values=(77, 99),
+            value_mapping={
+                1: 'Less than $10,000',
+                2: 'Less than $15,000 ($10,000 to less than $15,000)',
+                3: 'Less than $20,000 ($15,000 to less than $20,000)',
+                4: 'Less than $25,000 ($20,000 to less than $25,000)',
+                5: 'Less than $35,000 ($25,000 to less than $35,000)',
+                6: 'Less than $50,000 ($35,000 to less than $50,000)',
+                7: 'Less than $75, 000 ($50,000 to less than $75,000)',
+                8: '$75,000 or more (BRFSS 2015-2019) or less than $100,'
+                   '000 ($75,000 to < $100,000) (BRFSS 2021)',
+                9: 'Less than $150,000 ($100,000 to < $150,000)',
+                10: 'Less than $200,000 ($150,000 to < $200,000)',
+                11: '$200,000  or more',
+                77: 'Don’t know/Not sure', 99: 'Refused',
+            }),
+    ################ Marital status ################
+    Feature("MARITAL", cat_dtype,
+            "Marital status",
+            name_extended="Marital status",
+            na_values=(9,),
+            value_mapping={
+                1: 'Married', 2: 'Divorced',
+                3: 'Widowed', 4: 'Separated', 5: 'Never married',
+                6: 'A member of an unmarried couple', 9: 'Refused'
+            }),
+    ################ Time since last checkup
+    # About how long has it been since you last visited a
+    # doctor for a routine checkup?
+    Feature("CHECKUP1", cat_dtype,
+            """Time since last visit to the doctor for a checkup""",
+            name_extended="Time since last visit to the doctor for a checkup",
+            na_values=(7, 9),
+            value_mapping={
+                1: 'Within past year (anytime < 12 months ago)',
+                2: 'Within past 2 years (1 year but < 2 years ago)',
+                3: 'Within past 5 years (2 years but < 5 years ago)',
+                4: '5 or more years ago',
+                7: "Don’t know/Not sure", 8: 'Never', 9: 'Refuse'},
+            note="""Question: About how long has it been since you last 
+            visited a doctor for a routine checkup? [A routine checkup is a 
+            general physical exam, not an exam for a specific injury, 
+            illness, or condition.] """
+            ),
+    ################ Education ################
+    # highest grade or year of school completed
+    Feature("EDUCA", cat_dtype,
+            "Highest grade or year of school completed",
+            name_extended="Highest grade or year of school completed",
+            note="""Question: What is the highest grade or year of school you 
+            completed?""",
+            na_values=(9,),
+            value_mapping={
+                1: 'Never attended school or only kindergarten',
+                2: 'Grades 1 through 8 (Elementary)',
+                3: 'Grades 9 through 11 (Some high school)',
+                4: 'Grade 12 or GED (High school graduate)',
+                5: 'College 1 year to 3 years (Some college or technical school)',
+                6: 'College 4 years or more (College graduate)', 9: 'Refused'
+            }),
+    ################ Mental health ################
+    # for how many days during the past 30
+    # days was your mental health not good?
+    Feature("MENTHLTH", float,
+            """Now thinking about your mental health, which includes stress, 
+            depression, and problems with emotions, for how many days during 
+            the past 30 days was your mental health not good?""",
+            name_extended="Answer to the question 'for how many days during "
+                          "the past 30 days was your mental health not good?'",
+            na_values=(77, 99),
+            note="""Values: 1 - 30: Number of days, 88: None, 77: Don’t 
+            know/Not sure, 99: Refused."""),
+])
+
+arguablycausal_supersets = select_superset_plus_one(BRFSS_DIABETES_FEATURES_ARGUABLYCAUSAL.features, BRFSS_DIABETES_FEATURES.features)
+BRFSS_DIABETES_FEATURES_ARGUABLYCAUSAL_SUPERSETS = []
+for superset in arguablycausal_supersets:
+    BRFSS_DIABETES_FEATURES_ARGUABLYCAUSAL_SUPERSETS.append(FeatureList(superset))
+BRFSS_DIABETES_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER = len(arguablycausal_supersets)
+
 
 BRFSS_DIABETES_FEATURES_ANTICAUSAL =  FeatureList([
     # Derived feature for year.
@@ -705,45 +926,33 @@ BRFSS_DIABETES_FEATURES_ANTICAUSAL =  FeatureList([
     ################ Time since last checkup
     # About how long has it been since you last visited a
     # doctor for a routine checkup?
-    Feature("CHECKUP1", cat_dtype,
-            """Time since last visit to the doctor for a checkup""",
-            name_extended="Time since last visit to the doctor for a checkup",
-            na_values=(7, 9),
-            value_mapping={
-                1: 'Within past year (anytime < 12 months ago)',
-                2: 'Within past 2 years (1 year but < 2 years ago)',
-                3: 'Within past 5 years (2 years but < 5 years ago)',
-                4: '5 or more years ago',
-                7: "Don’t know/Not sure", 8: 'Never', 9: 'Refuse'},
-            note="""Question: About how long has it been since you last 
-            visited a doctor for a routine checkup? [A routine checkup is a 
-            general physical exam, not an exam for a specific injury, 
-            illness, or condition.] """
-            ),
+    # Feature("CHECKUP1", cat_dtype,
+    #         """Time since last visit to the doctor for a checkup""",
+    #         name_extended="Time since last visit to the doctor for a checkup",
+    #         na_values=(7, 9),
+    #         value_mapping={
+    #             1: 'Within past year (anytime < 12 months ago)',
+    #             2: 'Within past 2 years (1 year but < 2 years ago)',
+    #             3: 'Within past 5 years (2 years but < 5 years ago)',
+    #             4: '5 or more years ago',
+    #             7: "Don’t know/Not sure", 8: 'Never', 9: 'Refuse'},
+    #         note="""Question: About how long has it been since you last 
+    #         visited a doctor for a routine checkup? [A routine checkup is a 
+    #         general physical exam, not an exam for a specific injury, 
+    #         illness, or condition.] """
+    #         ),
     ################ Health care coverage ################
     # Note: we keep missing values (=9) for this column since they are grouped
     # with respondents aged over 64; otherwise dropping the observations
     # with this value would exclude all respondents over 64.
-    # Feature("HEALTH_COV", cat_dtype,
-    #         "Respondents aged 18-64 who have any form of health care coverage",
-    #         name_extended='Current health care coverage',
-    #         value_mapping={
-    #             1: 'Have health care coverage',
-    #             2: 'Do not have health care coverage',
-    #             9: "Not aged 18-64, Don’t know/Not Sure, Refused or Missing"
-    #         }),
-    ################ Mental health ################
-    # for how many days during the past 30
-    # days was your mental health not good?
-    # Feature("MENTHLTH", float,
-    #         """Now thinking about your mental health, which includes stress, 
-    #         depression, and problems with emotions, for how many days during 
-    #         the past 30 days was your mental health not good?""",
-    #         name_extended="Answer to the question 'for how many days during "
-    #                       "the past 30 days was your mental health not good?'",
-    #         na_values=(77, 99),
-    #         note="""Values: 1 - 30: Number of days, 88: None, 77: Don’t 
-    #         know/Not sure, 99: Refused."""),
+    Feature("HEALTH_COV", cat_dtype,
+            "Respondents aged 18-64 who have any form of health care coverage",
+            name_extended='Current health care coverage',
+            value_mapping={
+                1: 'Have health care coverage',
+                2: 'Do not have health care coverage',
+                9: "Not aged 18-64, Don’t know/Not Sure, Refused or Missing"
+            }),
 ])
 
 BRFSS_BLOOD_PRESSURE_FEATURES_CAUSAL = FeatureList(features=[

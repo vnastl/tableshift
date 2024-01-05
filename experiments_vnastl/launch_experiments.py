@@ -11,7 +11,8 @@ import numpy as np
 import pandas as pd
 import json
 from tableshift.datasets import ACS_INCOME_FEATURES_CAUSAL_SUBSETS_NUMBER, ACS_INCOME_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER, \
-    ACS_FOODSTAMPS_FEATURES_CAUSAL_SUBSETS_NUMBER, ACS_FOODSTAMPS_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER
+    ACS_FOODSTAMPS_FEATURES_CAUSAL_SUBSETS_NUMBER, ACS_FOODSTAMPS_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER, \
+    BRFSS_DIABETES_FEATURES_CAUSAL_SUBSETS_NUMBER, BRFSS_DIABETES_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER
 
 
 if __name__ == '__main__':
@@ -54,8 +55,10 @@ TASKS = [
     # "assistments",
     # "assistments_causal",
 
-    # "brfss_diabetes",
-    # "brfss_diabetes_causal",
+    "brfss_diabetes",
+    "brfss_diabetes_causal",
+    "brfss_diabetes_arguablycausal",
+    "brfss_diabetes_anticausal",
 
     # "brfss_blood_pressure",
     # "brfss_blood_pressure_causal",
@@ -92,11 +95,17 @@ TASKS = [
 # for index in range(ACS_INCOME_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
 #         TASKS.append("acsincome_arguablycausal_test_"+f"{index}")
 
-for index in range(ACS_FOODSTAMPS_FEATURES_CAUSAL_SUBSETS_NUMBER):
-        TASKS.append("acsfoodstamps_causal_test_"+f"{index}")
+# for index in range(ACS_FOODSTAMPS_FEATURES_CAUSAL_SUBSETS_NUMBER):
+#         TASKS.append("acsfoodstamps_causal_test_"+f"{index}")
 
-for index in range(ACS_FOODSTAMPS_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
-        TASKS.append("acsfoodstamps_arguablycausal_test_"+f"{index}")
+# for index in range(ACS_FOODSTAMPS_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
+#         TASKS.append("acsfoodstamps_arguablycausal_test_"+f"{index}")
+
+for index in range(BRFSS_DIABETES_FEATURES_CAUSAL_SUBSETS_NUMBER):
+        TASKS.append("brfss_diabetes_causal_test_"+f"{index}")
+
+for index in range(BRFSS_DIABETES_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
+        TASKS.append("brfss_diabetes_arguablycausal_test_"+f"{index}")
 
 # Useful directories
 if __name__ == '__main__':
