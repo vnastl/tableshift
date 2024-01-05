@@ -31,7 +31,7 @@ os.chdir("/Users/vnastl/Seafile/My Library/mpi project causal vs noncausal/table
 dic_experiments = {
     "acsemployment": ["acsemployment","acsemployment_causal", "acsemployment_anticausal"],
     "acsfoodstamps": ["acsfoodstamps","acsfoodstamps_causal", "acsfoodstamps_arguablycausal"],
-    "acsincome": ["acsincome","acsincome_causal","acsincome_arguablycausal"], #,"acsincome_anticausal"],
+    "acsincome": ["acsincome","acsincome_causal","acsincome_arguablycausal","acsincome_anticausal"],
     "acspubcov": ["acspubcov","acspubcov_causal"],
     "acsunemployment": ["acsunemployment","acsunemployment_causal", "acsunemployment_arguablycausal"], # "acsunemployment_anticausal"],
     "anes": ["anes","anes_causal"],
@@ -137,7 +137,7 @@ dic_title = {
 color_all = "#0173b2"
 color_causal = "#de8f05"
 color_arguablycausal = "#d55e00"
-color_anticausal = "#029e73"
+color_anticausal = "#56b4e9"
 color_constant = "#949494"
 sns.set_style("white")
 
@@ -465,7 +465,7 @@ def do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,axmin=[0.5,0.5],a
                 barlist[0].set_hatch('--')
                 barlist[1].set_hatch('oo')
                 barlist[2].set_hatch('//')
-                barlist[3].set_hatch('++')
+                barlist[3].set_hatch('||')
                 plt.savefig(str(Path(__file__).parents[0]/f"{myname}_anticausal_shift.pdf"), bbox_inches='tight')
                 plt.show()
             else:
@@ -811,7 +811,7 @@ def plot_experiment_zoom(experiment_name):
 
 completed_experiments = [
                         # "acsemployment", # old
-                        #  "acsfoodstamps", # old
+                        #  "acsfoodstamps",
                          "acsincome",
                         #  "acspubcov", # old
                         #  "acsunemployment", # old

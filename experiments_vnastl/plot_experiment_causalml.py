@@ -28,7 +28,23 @@ os.chdir("/Users/vnastl/Seafile/My Library/mpi project causal vs noncausal/table
 #%%
 
 dic_experiments = {
-    "acsincome": ["acsincome","acsincome_causal"],
+    "acsemployment": ["acsemployment","acsemployment_causal",],
+    "acsfoodstamps": ["acsfoodstamps","acsfoodstamps_causal",],
+    "acsincome": ["acsincome","acsincome_causal",], #,"acsincome_anticausal"],
+    "acspubcov": ["acspubcov","acspubcov_causal"],
+    "acsunemployment": ["acsunemployment","acsunemployment_causal"],
+    "anes": ["anes","anes_causal"],
+    "assistments": ["assistments","assistments_causal"],
+    "brfss_blood_pressure": ["brfss_blood_pressure", "brfss_blood_pressure_causal"],
+    "brfss_diabetes": ["brfss_diabetes","brfss_diabetes_causal",],
+    "college_scorecard": ["college_scorecard","college_scorecard_causal",],
+    "diabetes_readmission": ["diabetes_readmission", "diabetes_readmission_causal"],
+    "meps": ["meps", "meps_causal"],
+    "mimic_extract_los_3": ["mimic_extract_los_3","mimic_extract_los_3_causal"],
+    "mimic_extract_mort_hosp": ["mimic_extract_mort_hosp","mimic_extract_mort_hosp_causal"],
+    "nhanes_lead": ["nhanes_lead", "nhanes_lead_causal"],
+    "physionet":["physionet","physionet_causal"],
+    "sipp": ["sipp", "sipp_causal"],
 }
  #%%
 dic_domain_label = {
@@ -118,7 +134,7 @@ dic_title = {
 # color_constant = "tab:red"
 color_all = "#0173b2"
 color_causal = "#de8f05"
-color_ml = "#56b4e9"
+color_ml = "#029e73"
 # color_arguablycausal = "#d55e00"
 # color_anticausal = "#029e73"
 color_constant = "#949494"
@@ -568,8 +584,8 @@ def plot_experiment_zoom(experiment_name):
         do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,[axmin,axmin],[mymax,mymax])
 
     elif experiment_name == "acsfoodstamps":
-        mymin = 0.75
-        mymax = 0.86
+        mymin = 0.76
+        mymax = 0.82
         mytextx = 0.75
         mytexty = 0.73
         myname = f"plots_paper/plot_{experiment_name}_zoom"
@@ -727,7 +743,7 @@ def plot_experiment_zoom(experiment_name):
 
 completed_experiments = [
                         # "acsemployment", # old
-                        #  "acsfoodstamps", # old
+                         "acsfoodstamps",
                          "acsincome",
                         #  "acspubcov", # old
                         #  "acsunemployment", # old

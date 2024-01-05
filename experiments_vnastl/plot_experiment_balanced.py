@@ -654,8 +654,8 @@ def plot_experiment_zoom(experiment_name):
         do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,[axmin,axmin],[mymax,mymax])
 
     elif experiment_name == "acsfoodstamps":
-        mymin = 0.75
-        mymax = 0.86
+        mymin = 0.45
+        mymax = 0.8
         mytextx = 0.75
         mytexty = 0.73
         myname = f"plots_paper/plot_{experiment_name}_zoom"
@@ -813,8 +813,8 @@ def plot_experiment_zoom(experiment_name):
 
 completed_experiments = [
                         # "acsemployment", # old
-                        #  "acsfoodstamps", # old
-                         "acsincome",
+                         "acsfoodstamps",
+                        #  "acsincome",
                         #  "acspubcov", # old
                         #  "acsunemployment", # old
                         #  "anes",
@@ -833,3 +833,5 @@ completed_experiments = [
 for experiment_name in completed_experiments:
     plot_experiment(experiment_name)
     plot_experiment_zoom(experiment_name)
+
+# %%

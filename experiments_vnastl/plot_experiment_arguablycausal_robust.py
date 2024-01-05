@@ -17,7 +17,7 @@ from  statsmodels.stats.proportion import proportion_confint
 from paretoset import paretoset
 from scipy.spatial import ConvexHull
 
-from tableshift.datasets import ACS_INCOME_FEATURES_CAUSAL_SUBSETS_NUMBER
+from tableshift.datasets import ACS_INCOME_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER, ACS_FOODSTAMPS_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER
 
 import warnings
 warnings.filterwarnings('ignore')
@@ -30,13 +30,14 @@ os.chdir("/Users/vnastl/Seafile/My Library/mpi project causal vs noncausal/table
 #%%
 
 dic_experiments = {
-    "acsincome": ["acsincome","acsincome_causal"]+[f"acsincome_causal{index}" for index in range(ACS_INCOME_FEATURES_CAUSAL_SUBSETS_NUMBER-1)],
+    "acsincome": ["acsincome","acsincome_arguablycausal", "acsincome_arguablycausal_test_0"]+[f"acsincome_arguablycausal_test_{index}" for index in range(2,ACS_INCOME_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER-1)],
+    "acsfoodstamps": ["acsfoodstamps","acsfoodstamps_arguablycausal"]+[f"acsfoodstamps_arguablycausal_test_{index}" for index in range(ACS_FOODSTAMPS_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER-1)],
 }
  #%%
 dic_robust_number = {
-    "acsincome": ACS_INCOME_FEATURES_CAUSAL_SUBSETS_NUMBER,
+    "acsincome": ACS_INCOME_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER,
+    "acsfoodstamps": ACS_FOODSTAMPS_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER,
 }
-# anticausal = ["acsemployment", "acsunemployment", "physionet", "brfss_diabetes"]
 
 dic_domain_label = {
     "acsemployment":'SCHL',
@@ -119,12 +120,12 @@ dic_title = {
 }
 
 # color_all = "tab:blue"
-# color_causal = "tab:orange"
+# color_arguablycausal = "tab:orange"
 # color_arguablycausal = "tab:green"
 # color_anticausal = "tab:grey"
 # color_constant = "tab:red"
 color_all = "#0173b2"
-color_causal = "#de8f05"
+color_arguablycausal = "#de8f05"
 color_robust = "#cc78bc"
 # color_arguablycausal = "#d55e00"
 # color_anticausal = "#029e73"
@@ -148,7 +149,7 @@ def get_results(experiment_name):
                 file_info.append(filename)
 
         def get_feature_selection(experiment):
-            if experiment.endswith('_causal'):
+            if experiment.endswith('_arguablycausal'):
                 if 'causal' not in feature_selection: 
                     feature_selection.append('causal') 
                 return 'causal'
@@ -263,9 +264,9 @@ def do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,axmin=[0.5,0.5],a
     points = pd.concat([points,new_row], ignore_index=True)
     points = points.to_numpy()
     hull = ConvexHull(points)
-    plt.fill(points[hull.vertices, 0], points[hull.vertices, 1], color=color_all,alpha=0.3)
+    plt.fill(points[hull.vertices, 0], points[hull.vertices, 1], color=color_all,alpha=0.3, zorder = 0)
     
-    ## Causal features
+    ## Arguably causal features
     eval_plot = eval_all[eval_all['features']=="causal"]
     eval_plot.sort_values('id_test',inplace=True)
     # Calculate the pareto set
@@ -279,25 +280,25 @@ def do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,axmin=[0.5,0.5],a
                 x=markers['id_test'],
                 y=markers['ood_test'],
                 xerr=markers['id_test_ub']-markers['id_test'],
-                yerr=markers['ood_test_ub']-markers['ood_test'], fmt="o",
-                color=color_causal, ecolor=color_causal, label="top causal features")
+                yerr=markers['ood_test_ub']-markers['ood_test'], fmt="o", 
+                color=color_arguablycausal, ecolor=color_arguablycausal, label="top arguably causal features")
     # highlight bar
     shift = points[points["ood_test"] == points["ood_test"].max()]
     shift["type"] = "causal"
     dic_shift["causal"] = shift
     plt.hlines(y=shift["ood_test"], xmin=shift["ood_test"], xmax=shift['id_test'],
-               color=color_causal, linewidth=3, alpha=0.7)
+               color=color_arguablycausal, linewidth=3, alpha=0.7)
     # get extra points for the plot
     new_row = pd.DataFrame({'id_test':[mymin,max(points['id_test'])], 'ood_test':[max(points['ood_test']),mymin]},)
     points = pd.concat([points,new_row], ignore_index=True)
     points.sort_values('id_test',inplace=True)
-    plt.plot(points['id_test'],points['ood_test'],color=color_causal,linestyle="dotted")
+    plt.plot(points['id_test'],points['ood_test'],color=color_arguablycausal,linestyle="dotted")
 
     new_row = pd.DataFrame({'id_test':[mymin], 'ood_test':[mymin]},)
     points = pd.concat([points,new_row], ignore_index=True)
     filled = points.to_numpy()
     hull = ConvexHull(filled,incremental=True)
-    plt.fill(filled[hull.vertices, 0], filled[hull.vertices, 1], color=color_causal,alpha=0.3)
+    plt.fill(filled[hull.vertices, 0], filled[hull.vertices, 1], color=color_arguablycausal,alpha=0.3)
 
     ## robustness test
     for index in range(dic_robust_number[experiment_name]-1):
@@ -318,7 +319,8 @@ def do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,axmin=[0.5,0.5],a
                         y=markers['ood_test'],
                         xerr=markers['id_test_ub']-markers['id_test'],
                         yerr=markers['ood_test_ub']-markers['ood_test'], fmt="v",
-                        color=color_robust, ecolor=color_robust, label="robustness test for causal features")
+                        color=color_robust, ecolor=color_robust, zorder = 1,
+                        label="robustness test for arguably causal features")
             # highlight bar
             shift = points[points["ood_test"] == points["ood_test"].max()]
             shift["type"] = f"test {index}"
@@ -380,12 +382,8 @@ def do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,axmin=[0.5,0.5],a
     #     print(f'Causal features without tuition: {extra_features}')
         
     
-    if (eval_all['features'] == "anticausal").any():
-        plt.savefig(f"{str(Path(__file__).parents[0]/myname)}_anticausal.pdf", bbox_inches='tight')
-        plt.show()
-    else:
-        plt.savefig(f"{str(Path(__file__).parents[0]/myname)}.pdf", bbox_inches='tight')
-        plt.show()
+    plt.savefig(f"{str(Path(__file__).parents[0]/myname)}_arguablycausal_robust.pdf", bbox_inches='tight')
+    plt.show()
 
     if not myname.endswith("zoom"):
         # sns.set_style("whitegrid")
@@ -394,12 +392,13 @@ def do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,axmin=[0.5,0.5],a
         plt.ylabel("shift gap")
         shift = pd.concat(dic_shift.values(), ignore_index=True)
         shift["gap"] = shift["id_test"] - shift["ood_test"]
-        barlist = plt.bar(shift["type"], shift["gap"], color=[color_all,color_causal]+[color_robust for index in range(dic_robust_number[experiment_name]-1)]+[color_constant])
+        barlist = plt.bar(shift["type"], shift["gap"], color=[color_all,color_arguablycausal]+[color_robust for index in range(dic_robust_number[experiment_name]-1)]+[color_constant])
         barlist[0].set_hatch('--')
         barlist[1].set_hatch('oo')
         for index in range(2,dic_robust_number[experiment_name]+1):
             barlist[index].set_hatch('//')
-        plt.savefig(str(Path(__file__).parents[0]/f"{myname}_shift.pdf"), bbox_inches='tight')
+        plt.xticks(rotation=45)
+        plt.savefig(str(Path(__file__).parents[0]/f"{myname}_arguablycausal_robust_shift.pdf"), bbox_inches='tight')
         plt.show()
         # sns.set_style("white")
 
@@ -572,7 +571,7 @@ def plot_experiment_zoom(experiment_name):
         do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,[axmin,axmin],[mymax,mymax])
 
     elif experiment_name == "acsfoodstamps":
-        mymin = 0.75
+        mymin = 0.8
         mymax = 0.86
         mytextx = 0.75
         mytexty = 0.73
@@ -581,8 +580,8 @@ def plot_experiment_zoom(experiment_name):
         do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,[mymin,mymin],[mymax,mymax])
 
     elif experiment_name == "acsincome":
-        mymin = 0.58
-        mymax = 0.85
+        mymin = 0.79
+        mymax = 0.83
         mytextx = 0.58
         mytexty = 0.55
         myname = f"plots_paper/plot_{experiment_name}_zoom"
@@ -731,8 +730,8 @@ def plot_experiment_zoom(experiment_name):
 
 completed_experiments = [
                         # "acsemployment", # old
-                        #  "acsfoodstamps", # old
-                         "acsincome",
+                         "acsfoodstamps",
+                        #  "acsincome",
                         #  "acspubcov", # old
                         #  "acsunemployment", # old
                         #  "anes",
