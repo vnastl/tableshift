@@ -37,7 +37,7 @@ dic_experiments = {
     "anes": ["anes","anes_causal"],
     "assistments": ["assistments","assistments_causal"],
     "brfss_blood_pressure": ["brfss_blood_pressure", "brfss_blood_pressure_causal"],
-    "brfss_diabetes": ["brfss_diabetes","brfss_diabetes_causal","brfss_diabetes_anticausal"],
+    "brfss_diabetes": ["brfss_diabetes","brfss_diabetes_causal","brfss_diabetes_arguablycausal","brfss_diabetes_anticausal"],
     "college_scorecard": ["college_scorecard","college_scorecard_causal","college_scorecard_causal_no_tuition_fee"],
     "diabetes_readmission": ["diabetes_readmission", "diabetes_readmission_causal"],
     "meps": ["meps", "meps_causal"],
@@ -144,7 +144,7 @@ def get_results(experiment_name):
     feature_selection = []
     for experiment in experiments:
         file_info = []
-        RESULTS_DIR = Path(__file__).parents[0] / experiment
+        RESULTS_DIR = Path(__file__).parents[0] / "results" / experiment
         for filename in os.listdir(RESULTS_DIR):
             if filename == ".DS_Store":
                 pass
@@ -192,7 +192,7 @@ def get_results(experiment_name):
                     extra_features = []
                 eval_all = pd.concat([eval_all, eval_pd], ignore_index=True)
 
-    # RESULTS_DIR = Path(__file__).parents[0]
+    RESULTS_DIR = Path(__file__).parents[0] / "results" 
     # filename = f"{experiment_name}_constant"
     # if filename in os.listdir(RESULTS_DIR):
     #     with open(str(RESULTS_DIR / filename), "rb") as file:
@@ -232,7 +232,7 @@ def get_results(experiment_name):
     eval_all = pd.concat([eval_all, eval_pd], ignore_index=True)
 
         
-    eval_all.to_csv(str(Path(__file__).parents[0]/f"{experiment_name}_eval.csv"))
+    eval_all.to_csv(str(RESULTS_DIR/f"{experiment_name}_balanced_eval.csv"))
     # print(eval_all)
     return eval_all, causal_features, extra_features
 
@@ -281,7 +281,7 @@ def do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,axmin=[0.5,0.5],a
     points = pd.concat([points,new_row], ignore_index=True)
     points = points.to_numpy()
     hull = ConvexHull(points)
-    plt.fill(points[hull.vertices, 0], points[hull.vertices, 1], color=color_all,alpha=0.3)
+    plt.fill(points[hull.vertices, 0], points[hull.vertices, 1], color=color_all,alpha=0.1)
     
     ## Causal features
     eval_plot = eval_all[eval_all['features']=="causal"]
@@ -322,8 +322,8 @@ def do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,axmin=[0.5,0.5],a
     points = pd.concat([points,new_row], ignore_index=True)
     filled = points.to_numpy()
     hull = ConvexHull(filled,incremental=True)
-    plt.fill(filled[hull.vertices, 0], filled[hull.vertices, 1], color=color_causal,alpha=0.3)
-    # plt.fill(filled['id_test'],filled['ood_test'], color=color_causal,alpha=0.3)
+    plt.fill(filled[hull.vertices, 0], filled[hull.vertices, 1], color=color_causal,alpha=0.1)
+    # plt.fill(filled['id_test'],filled['ood_test'], color=color_causal,alpha=0.1)
 
     ## Arguably causal features
     if (eval_all['features'] == "arguablycausal").any():
@@ -360,7 +360,7 @@ def do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,axmin=[0.5,0.5],a
         points = pd.concat([points,new_row], ignore_index=True)
         points = points.to_numpy()
         hull = ConvexHull(points)
-        plt.fill(points[hull.vertices, 0], points[hull.vertices, 1], color=color_arguablycausal,alpha=0.3)
+        plt.fill(points[hull.vertices, 0], points[hull.vertices, 1], color=color_arguablycausal,alpha=0.1)
 
     if (eval_all['features'] == "anticausal").any():
         eval_plot = eval_all[eval_all['features']=="anticausal"]
@@ -396,7 +396,7 @@ def do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,axmin=[0.5,0.5],a
         points = pd.concat([points,new_row], ignore_index=True)
         points = points.to_numpy()
         hull = ConvexHull(points)
-        plt.fill(points[hull.vertices, 0], points[hull.vertices, 1], color=color_anticausal,alpha=0.3)
+        plt.fill(points[hull.vertices, 0], points[hull.vertices, 1], color=color_anticausal,alpha=0.1)
 
     ## Constant
     # plot_constant = plt.plot(
@@ -420,7 +420,7 @@ def do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,axmin=[0.5,0.5],a
     plt.fill_between([0, eval_constant['id_test'].values[0]],
                         [0,0],
                         [eval_constant['ood_test'].values[0],eval_constant['ood_test'].values[0]],
-                        color=color_constant, alpha=0.3)
+                        color=color_constant, alpha=0.1)
 
     # Get the lines and labels
     lines, labels = plt.gca().get_legend_handles_labels()
@@ -477,7 +477,7 @@ def do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,axmin=[0.5,0.5],a
                 barlist[1].set_hatch('oo')
                 barlist[2].set_hatch('//')
         else:
-            plt.bar(shift["type"], shift["gap"], color=[color_all,color_causal])
+            barlist = plt.bar(shift["type"], shift["gap"], color=[color_all,color_causal])
             barlist[0].set_hatch('--')
             barlist[1].set_hatch('oo')
         plt.axhline(y=0,linewidth=1, color='k')
@@ -721,8 +721,8 @@ def plot_experiment_zoom(experiment_name):
         do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,[mymin,mymin],[mymax,mymax])
 
     elif experiment_name == "brfss_diabetes":
-        mymin = 0.81
-        mymax = 0.88
+        mymin = 0.58
+        mymax = 0.73
         mytextx = 0.81
         mytexty = 0.79
         myname = f"plots_paper/plot_{experiment_name}_zoom"
@@ -814,13 +814,13 @@ def plot_experiment_zoom(experiment_name):
 completed_experiments = [
                         # "acsemployment", # old
                          "acsfoodstamps",
-                        #  "acsincome",
+                         "acsincome",
                         #  "acspubcov", # old
                         #  "acsunemployment", # old
                         #  "anes",
                         #  "assistments",
                         #  "brfss_blood_pressure",
-                        #  "brfss_diabetes",
+                         "brfss_diabetes",
                         #  "college_scorecard", # old
                         #  "diabetes_readmission",
                         #  "meps"

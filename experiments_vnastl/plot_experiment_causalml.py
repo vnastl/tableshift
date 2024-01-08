@@ -149,7 +149,7 @@ def get_results(experiment_name):
     feature_selection = []
     for experiment in experiments:
         file_info = []
-        RESULTS_DIR = Path(__file__).parents[0] / experiment
+        RESULTS_DIR = Path(__file__).parents[0]  / "results" / experiment
         for filename in os.listdir(RESULTS_DIR):
             if filename == ".DS_Store":
                 pass
@@ -184,7 +184,7 @@ def get_results(experiment_name):
                     causal_features.remove(domain_label)
                 eval_all = pd.concat([eval_all, eval_pd], ignore_index=True)
 
-    RESULTS_DIR = Path(__file__).parents[0]
+    RESULTS_DIR = Path(__file__).parents[0]  / "results" 
     filename = f"{experiment_name}_constant"
     if filename in os.listdir(RESULTS_DIR):
         with open(str(RESULTS_DIR / filename), "rb") as file:
@@ -270,7 +270,7 @@ def do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,axmin=[0.5,0.5],a
     points = pd.concat([points,new_row], ignore_index=True)
     points = points.to_numpy()
     hull = ConvexHull(points)
-    plt.fill(points[hull.vertices, 0], points[hull.vertices, 1], color=color_all,alpha=0.3)
+    plt.fill(points[hull.vertices, 0], points[hull.vertices, 1], color=color_all,alpha=0.1)
     
     ## Causal features
     eval_plot = eval_all[eval_all['features']=="causal"]
@@ -305,7 +305,7 @@ def do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,axmin=[0.5,0.5],a
     points = pd.concat([points,new_row], ignore_index=True)
     filled = points.to_numpy()
     hull = ConvexHull(filled,incremental=True)
-    plt.fill(filled[hull.vertices, 0], filled[hull.vertices, 1], color=color_causal,alpha=0.3)
+    plt.fill(filled[hull.vertices, 0], filled[hull.vertices, 1], color=color_causal,alpha=0.1)
 
     ## Causal ML
     eval_plot = eval_all[eval_all['features']=="all"]
@@ -339,7 +339,7 @@ def do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,axmin=[0.5,0.5],a
         shift = pd.concat([shift,new_row], ignore_index=True)
         filled = shift.to_numpy()
         hull = ConvexHull(filled,incremental=True)
-        plt.fill(filled[hull.vertices, 0], filled[hull.vertices, 1], color=color_ml,alpha=0.3)
+        plt.fill(filled[hull.vertices, 0], filled[hull.vertices, 1], color=color_ml,alpha=0.1)
 
     ## Constant
     shift = eval_constant
@@ -360,7 +360,7 @@ def do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,axmin=[0.5,0.5],a
     plt.fill_between([0, eval_constant['id_test'].values[0]],
                         [0,0],
                         [eval_constant['ood_test'].values[0],eval_constant['ood_test'].values[0]],
-                        color=color_constant, alpha=0.3)
+                        color=color_constant, alpha=0.1)
 
     # Get the lines and labels
     lines, labels = plt.gca().get_legend_handles_labels()
@@ -750,7 +750,7 @@ completed_experiments = [
                         #  "anes",
                         #  "assistments",
                         #  "brfss_blood_pressure",
-                        #  "brfss_diabetes",
+                         "brfss_diabetes",
                         #  "college_scorecard", # old
                         #  "diabetes_readmission",
                         #  "meps"

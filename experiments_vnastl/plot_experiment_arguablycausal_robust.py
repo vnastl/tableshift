@@ -17,7 +17,8 @@ from  statsmodels.stats.proportion import proportion_confint
 from paretoset import paretoset
 from scipy.spatial import ConvexHull
 
-from tableshift.datasets import ACS_INCOME_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER, ACS_FOODSTAMPS_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER
+from tableshift.datasets import ACS_INCOME_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER, ACS_FOODSTAMPS_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER,\
+    BRFSS_DIABETES_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER
 
 import warnings
 warnings.filterwarnings('ignore')
@@ -32,11 +33,13 @@ os.chdir("/Users/vnastl/Seafile/My Library/mpi project causal vs noncausal/table
 dic_experiments = {
     "acsincome": ["acsincome","acsincome_arguablycausal", "acsincome_arguablycausal_test_0"]+[f"acsincome_arguablycausal_test_{index}" for index in range(2,ACS_INCOME_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER-1)],
     "acsfoodstamps": ["acsfoodstamps","acsfoodstamps_arguablycausal"]+[f"acsfoodstamps_arguablycausal_test_{index}" for index in range(ACS_FOODSTAMPS_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER-1)],
+    "brfss_diabetes": ["brfss_diabetes","brfss_diabetes_arguablycausal"]+[f"brfss_diabetes_arguablycausal_test_{index}" for index in range(BRFSS_DIABETES_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER-1)],
 }
  #%%
 dic_robust_number = {
     "acsincome": ACS_INCOME_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER,
     "acsfoodstamps": ACS_FOODSTAMPS_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER,
+    "brfss_diabetes":BRFSS_DIABETES_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER,
 }
 
 dic_domain_label = {
@@ -125,8 +128,8 @@ dic_title = {
 # color_anticausal = "tab:grey"
 # color_constant = "tab:red"
 color_all = "#0173b2"
-color_arguablycausal = "#de8f05"
-color_robust = "#cc78bc"
+color_arguablycausal = "#d55e00"#  "#de8f05"
+color_robust = "#ece133"
 # color_arguablycausal = "#d55e00"
 # color_anticausal = "#029e73"
 color_constant = "#949494"
@@ -141,7 +144,7 @@ def get_results(experiment_name):
     feature_selection = []
     for experiment in experiments:
         file_info = []
-        RESULTS_DIR = Path(__file__).parents[0] / experiment
+        RESULTS_DIR = Path(__file__).parents[0] / "results" / experiment
         for filename in os.listdir(RESULTS_DIR):
             if filename == ".DS_Store":
                 pass
@@ -180,7 +183,7 @@ def get_results(experiment_name):
                     causal_features.remove(domain_label)
                 eval_all = pd.concat([eval_all, eval_pd], ignore_index=True)
 
-    RESULTS_DIR = Path(__file__).parents[0]
+    RESULTS_DIR = Path(__file__).parents[0] / "results" 
     filename = f"{experiment_name}_constant"
     if filename in os.listdir(RESULTS_DIR):
         with open(str(RESULTS_DIR / filename), "rb") as file:
@@ -264,7 +267,7 @@ def do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,axmin=[0.5,0.5],a
     points = pd.concat([points,new_row], ignore_index=True)
     points = points.to_numpy()
     hull = ConvexHull(points)
-    plt.fill(points[hull.vertices, 0], points[hull.vertices, 1], color=color_all,alpha=0.3, zorder = 0)
+    plt.fill(points[hull.vertices, 0], points[hull.vertices, 1], color=color_all,alpha=0.1, zorder = 0)
     
     ## Arguably causal features
     eval_plot = eval_all[eval_all['features']=="causal"]
@@ -298,7 +301,7 @@ def do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,axmin=[0.5,0.5],a
     points = pd.concat([points,new_row], ignore_index=True)
     filled = points.to_numpy()
     hull = ConvexHull(filled,incremental=True)
-    plt.fill(filled[hull.vertices, 0], filled[hull.vertices, 1], color=color_arguablycausal,alpha=0.3)
+    plt.fill(filled[hull.vertices, 0], filled[hull.vertices, 1], color=color_arguablycausal,alpha=0.1)
 
     ## robustness test
     for index in range(dic_robust_number[experiment_name]-1):
@@ -347,7 +350,7 @@ def do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,axmin=[0.5,0.5],a
     plt.fill_between([0, eval_constant['id_test'].values[0]],
                         [0,0],
                         [eval_constant['ood_test'].values[0],eval_constant['ood_test'].values[0]],
-                        color=color_constant, alpha=0.3)
+                        color=color_constant, alpha=0.1)
 
     # Get the lines and labels
     lines, labels = plt.gca().get_legend_handles_labels()
@@ -731,13 +734,13 @@ def plot_experiment_zoom(experiment_name):
 completed_experiments = [
                         # "acsemployment", # old
                          "acsfoodstamps",
-                        #  "acsincome",
+                         "acsincome",
                         #  "acspubcov", # old
                         #  "acsunemployment", # old
                         #  "anes",
                         #  "assistments",
                         #  "brfss_blood_pressure",
-                        #  "brfss_diabetes",
+                         "brfss_diabetes",
                         #  "college_scorecard", # old
                         #  "diabetes_readmission",
                         #  "meps"
