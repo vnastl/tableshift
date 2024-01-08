@@ -104,9 +104,10 @@ TASKS = [
 # for index in range(BRFSS_DIABETES_FEATURES_CAUSAL_SUBSETS_NUMBER):
 #         TASKS.append("brfss_diabetes_causal_test_"+f"{index}")
 
-for index in range(BRFSS_DIABETES_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
-        TASKS.append("brfss_diabetes_arguablycausal_test_"+f"{index}")
-
+# for index in range(BRFSS_DIABETES_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
+#         TASKS.append("brfss_diabetes_arguablycausal_test_"+f"{index}")
+TASKS.append("brfss_diabetes_arguablycausal_test_4")
+              
 # Useful directories
 if __name__ == '__main__':
     ROOT_DIR = Path("/home")
