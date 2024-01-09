@@ -90,6 +90,10 @@ _TASK_REGISTRY = {
         TaskConfig(BRFSSDataSource, BRFSS_BLOOD_PRESSURE_FEATURES),
     "brfss_blood_pressure_causal":
         TaskConfig(BRFSSDataSource, BRFSS_BLOOD_PRESSURE_FEATURES_CAUSAL),
+    "brfss_blood_pressure_arguablycausal":
+        TaskConfig(BRFSSDataSource, BRFSS_BLOOD_PRESSURE_FEATURES_ARGUABLYCAUSAL),
+    "brfss_blood_pressure_anticausal":
+        TaskConfig(BRFSSDataSource, BRFSS_BLOOD_PRESSURE_FEATURES_ANTICAUSAL),
     "communities_and_crime":
         TaskConfig(CommunitiesAndCrimeDataSource, CANDC_FEATURES),
     "compas":
@@ -298,6 +302,13 @@ for index, subset in enumerate(BRFSS_DIABETES_FEATURES_CAUSAL_SUBSETS):
 
 for index, superset in enumerate(BRFSS_DIABETES_FEATURES_ARGUABLYCAUSAL_SUPERSETS):
     _TASK_REGISTRY["brfss_diabetes_arguablycausal_test_"+f"{index}"] = TaskConfig(BRFSSDataSource, superset)
+
+for index, subset in enumerate(BRFSS_BLOOD_PRESSURE_FEATURES_CAUSAL_SUBSETS):
+    _TASK_REGISTRY["brfss_blood_pressure_causal_test_"+f"{index}"] = TaskConfig(BRFSSDataSource, subset)
+
+for index, superset in enumerate(BRFSS_BLOOD_PRESSURE_FEATURES_ARGUABLYCAUSAL_SUPERSETS):
+    _TASK_REGISTRY["brfss_blood_pressure_arguablycausal_test_"+f"{index}"] = TaskConfig(BRFSSDataSource, superset)
+
 
 def get_task_config(name: str) -> TaskConfig:
     if name in _TASK_REGISTRY:

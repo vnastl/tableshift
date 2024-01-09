@@ -12,7 +12,8 @@ import pandas as pd
 import json
 from tableshift.datasets import ACS_INCOME_FEATURES_CAUSAL_SUBSETS_NUMBER, ACS_INCOME_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER, \
     ACS_FOODSTAMPS_FEATURES_CAUSAL_SUBSETS_NUMBER, ACS_FOODSTAMPS_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER, \
-    BRFSS_DIABETES_FEATURES_CAUSAL_SUBSETS_NUMBER, BRFSS_DIABETES_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER
+    BRFSS_DIABETES_FEATURES_CAUSAL_SUBSETS_NUMBER, BRFSS_DIABETES_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER, \
+    BRFSS_BLOOD_PRESSURE_FEATURES_CAUSAL_SUBSETS_NUMBER, BRFSS_BLOOD_PRESSURE_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER
 
 
 if __name__ == '__main__':
@@ -106,8 +107,13 @@ TASKS = [
 
 # for index in range(BRFSS_DIABETES_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
 #         TASKS.append("brfss_diabetes_arguablycausal_test_"+f"{index}")
-TASKS.append("brfss_diabetes_arguablycausal_test_4")
               
+for index in range(BRFSS_BLOOD_PRESSURE_FEATURES_CAUSAL_SUBSETS_NUMBER):
+        TASKS.append("brfss_blood_pressure_causal_test_"+f"{index}")
+
+for index in range(BRFSS_BLOOD_PRESSURE_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
+        TASKS.append("brfss_blood_pressure_arguablycausal_test_"+f"{index}")
+
 # Useful directories
 if __name__ == '__main__':
     ROOT_DIR = Path("/home")
