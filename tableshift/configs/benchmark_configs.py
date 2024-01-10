@@ -13,7 +13,8 @@ from tableshift.datasets import ACS_INCOME_FEATURES_CAUSAL_SUBSETS_NUMBER, ACS_I
     ACS_FOODSTAMPS_FEATURES_CAUSAL_SUBSETS_NUMBER, ACS_FOODSTAMPS_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER, \
     BRFSS_DIABETES_FEATURES_CAUSAL_SUBSETS_NUMBER, BRFSS_DIABETES_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER, \
     BRFSS_BLOOD_PRESSURE_FEATURES_CAUSAL_SUBSETS_NUMBER, BRFSS_BLOOD_PRESSURE_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER, \
-    DIABETES_READMISSION_FEATURES_CAUSAL_NUMBER, DIABETES_READMISSION_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER
+    DIABETES_READMISSION_FEATURES_CAUSAL_NUMBER, DIABETES_READMISSION_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER,\
+    ANES_FEATURES_CAUSAL_NUMBER, ANES_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER
 from tableshift.datasets.mimic_extract import MIMIC_EXTRACT_STATIC_FEATURES, \
     MIMIC_EXTRACT_LOS_3_FEATURES_CAUSAL, MIMIC_EXTRACT_MORT_HOSP_FEATURES_CAUSAL
 from tableshift.datasets.mimic_extract_feature_lists import \
@@ -203,6 +204,19 @@ BENCHMARK_CONFIGS = {
                                                dropna=None),
         tabular_dataset_kwargs={}),
     "anes_causal": ExperimentConfig(
+        splitter=DomainSplitter(val_size=DEFAULT_ID_VAL_SIZE,
+                                ood_val_size=DEFAULT_OOD_VAL_SIZE,
+                                random_state=DEFAULT_RANDOM_STATE,
+                                id_test_size=DEFAULT_ID_TEST_SIZE,
+                                domain_split_varname='VCF0112',
+                                domain_split_ood_values=['3.0']),
+        # male vs. all others; white non-hispanic vs. others
+        grouper=Grouper({"VCF0104": ["1", ], "VCF0105a": ["1.0", ]},
+                        drop=False),
+        preprocessor_config=PreprocessorConfig(numeric_features="kbins",
+                                               dropna=None),
+        tabular_dataset_kwargs={}),
+    "anes_arguablycausal": ExperimentConfig(
         splitter=DomainSplitter(val_size=DEFAULT_ID_VAL_SIZE,
                                 ood_val_size=DEFAULT_OOD_VAL_SIZE,
                                 random_state=DEFAULT_RANDOM_STATE,
@@ -775,4 +789,31 @@ for index in range(DIABETES_READMISSION_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER
                                                                             # dimensionality from ~2400 -> 169 columns.
                                                                             # This is due to high cardinality of 'diag_*' features.
                                                                             preprocessor_config=PreprocessorConfig(min_frequency=0.01),
+                                                                            tabular_dataset_kwargs={})
+for index in range(ANES_FEATURES_CAUSAL_NUMBER):
+    BENCHMARK_CONFIGS["anes_causal_test_"+f"{index}"] = ExperimentConfig(
+                                                                            splitter=DomainSplitter(val_size=DEFAULT_ID_VAL_SIZE,
+                                                                                                    ood_val_size=DEFAULT_OOD_VAL_SIZE,
+                                                                                                    random_state=DEFAULT_RANDOM_STATE,
+                                                                                                    id_test_size=DEFAULT_ID_TEST_SIZE,
+                                                                                                    domain_split_varname='VCF0112',
+                                                                                                    domain_split_ood_values=['3.0']),
+                                                                            # male vs. all others; white non-hispanic vs. others
+                                                                            grouper=None,
+                                                                            preprocessor_config=PreprocessorConfig(numeric_features="kbins",
+                                                                                                                dropna=None),
+                                                                            tabular_dataset_kwargs={})
+for index in range(ANES_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
+    BENCHMARK_CONFIGS["anes_arguablycausal_test_"+f"{index}"] = ExperimentConfig(
+                                                                            splitter=DomainSplitter(val_size=DEFAULT_ID_VAL_SIZE,
+                                                                                                    ood_val_size=DEFAULT_OOD_VAL_SIZE,
+                                                                                                    random_state=DEFAULT_RANDOM_STATE,
+                                                                                                    id_test_size=DEFAULT_ID_TEST_SIZE,
+                                                                                                    domain_split_varname='VCF0112',
+                                                                                                    domain_split_ood_values=['3.0']),
+                                                                            # male vs. all others; white non-hispanic vs. others
+                                                                            grouper=Grouper({"VCF0104": ["1", ], "VCF0105a": ["1.0", ]},
+                                                                                            drop=False),
+                                                                            preprocessor_config=PreprocessorConfig(numeric_features="kbins",
+                                                                                                                dropna=None),
                                                                             tabular_dataset_kwargs={})

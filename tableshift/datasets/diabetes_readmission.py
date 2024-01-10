@@ -371,8 +371,6 @@ DIABETES_READMISSION_FEATURES_CAUSAL_SUBSETS = []
 for subset in causal_subsets:
     subset.append(target)
     subset.append(domain)
-    subset.append(Feature("IYEAR", float, "Year of BRFSS dataset.",
-            name_extended="Survey year"),)
     DIABETES_READMISSION_FEATURES_CAUSAL_SUBSETS.append(FeatureList(subset))
 DIABETES_READMISSION_FEATURES_CAUSAL_NUMBER = len(causal_subsets)
 

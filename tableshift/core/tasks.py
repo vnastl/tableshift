@@ -74,6 +74,8 @@ _TASK_REGISTRY = {
         TaskConfig(ANESDataSource, ANES_FEATURES),
     "anes_causal":
         TaskConfig(ANESDataSource, ANES_FEATURES_CAUSAL),
+    "anes_arguablycausal":
+        TaskConfig(ANESDataSource, ANES_FEATURES_ARGUABLYCAUSAL),
     "assistments":
         TaskConfig(AssistmentsDataSource, ASSISTMENTS_FEATURES),
     "assistments_causal":
@@ -317,6 +319,16 @@ for index, subset in enumerate(DIABETES_READMISSION_FEATURES_CAUSAL_SUBSETS):
 
 for index, superset in enumerate(DIABETES_READMISSION_FEATURES_ARGUABLYCAUSAL_SUPERSETS):
     _TASK_REGISTRY["diabetes_readmission_arguablycausal_test_"+f"{index}"] = TaskConfig(DiabetesReadmissionDataSource, superset)
+
+for index, subset in enumerate(ANES_FEATURES_CAUSAL_SUBSETS):
+    _TASK_REGISTRY["anes_causal_test_"+f"{index}"] = TaskConfig(ANESDataSource, subset)
+
+for index, superset in enumerate(ANES_FEATURES_ARGUABLYCAUSAL_SUPERSETS):
+    _TASK_REGISTRY["anes_arguablycausal_test_"+f"{index}"] = TaskConfig(ANESDataSource, superset)
+
+
+
+
 
 def get_task_config(name: str) -> TaskConfig:
     if name in _TASK_REGISTRY:
