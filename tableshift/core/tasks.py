@@ -104,6 +104,9 @@ _TASK_REGISTRY = {
     "diabetes_readmission_causal":
         TaskConfig(DiabetesReadmissionDataSource,
                    DIABETES_READMISSION_FEATURES_CAUSAL),
+    "diabetes_readmission_arguablycausal":
+        TaskConfig(DiabetesReadmissionDataSource,
+                   DIABETES_READMISSION_FEATURES_ARGUABLYCAUSAL),
     "german":
         TaskConfig(GermanDataSource, GERMAN_FEATURES),
     "heloc":
@@ -309,6 +312,11 @@ for index, subset in enumerate(BRFSS_BLOOD_PRESSURE_FEATURES_CAUSAL_SUBSETS):
 for index, superset in enumerate(BRFSS_BLOOD_PRESSURE_FEATURES_ARGUABLYCAUSAL_SUPERSETS):
     _TASK_REGISTRY["brfss_blood_pressure_arguablycausal_test_"+f"{index}"] = TaskConfig(BRFSSDataSource, superset)
 
+for index, subset in enumerate(DIABETES_READMISSION_FEATURES_CAUSAL_SUBSETS):
+    _TASK_REGISTRY["diabetes_readmission_causal_test_"+f"{index}"] = TaskConfig(DiabetesReadmissionDataSource, subset)
+
+for index, superset in enumerate(DIABETES_READMISSION_FEATURES_ARGUABLYCAUSAL_SUPERSETS):
+    _TASK_REGISTRY["diabetes_readmission_arguablycausal_test_"+f"{index}"] = TaskConfig(DiabetesReadmissionDataSource, superset)
 
 def get_task_config(name: str) -> TaskConfig:
     if name in _TASK_REGISTRY:
