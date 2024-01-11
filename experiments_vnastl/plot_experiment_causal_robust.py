@@ -17,8 +17,13 @@ from  statsmodels.stats.proportion import proportion_confint
 from paretoset import paretoset
 from scipy.spatial import ConvexHull
 
-from tableshift.datasets import ACS_INCOME_FEATURES_CAUSAL_SUBSETS_NUMBER, ACS_FOODSTAMPS_FEATURES_CAUSAL_SUBSETS_NUMBER,\
-    BRFSS_DIABETES_FEATURES_CAUSAL_SUBSETS_NUMBER
+from tableshift.datasets import ACS_INCOME_FEATURES_CAUSAL_SUBSETS_NUMBER, \
+    ACS_FOODSTAMPS_FEATURES_CAUSAL_SUBSETS_NUMBER,\
+    BRFSS_DIABETES_FEATURES_CAUSAL_SUBSETS_NUMBER, \
+    BRFSS_BLOOD_PRESSURE_FEATURES_CAUSAL_SUBSETS_NUMBER, \
+    DIABETES_READMISSION_FEATURES_CAUSAL_NUMBER, \
+    ANES_FEATURES_CAUSAL_NUMBER
+
 
 import warnings
 warnings.filterwarnings('ignore')
@@ -30,17 +35,29 @@ import os
 os.chdir("/Users/vnastl/Seafile/My Library/mpi project causal vs noncausal/tableshift")
 #%%
 
-dic_experiments = {
-    "acsincome": ["acsincome","acsincome_causal"]+[f"acsincome_causal_test_{index}" for index in range(ACS_INCOME_FEATURES_CAUSAL_SUBSETS_NUMBER-1)],
-    "acsfoodstamps": ["acsfoodstamps","acsfoodstamps_causal"]+[f"acsfoodstamps_causal_test_{index}" for index in range(ACS_FOODSTAMPS_FEATURES_CAUSAL_SUBSETS_NUMBER-1)],
-    "brfss_diabetes": ["brfss_diabetes","brfss_diabetes_causal"]+[f"brfss_diabetes_causal_test_{index}" for index in range(BRFSS_DIABETES_FEATURES_CAUSAL_SUBSETS_NUMBER-1)],
-}
- #%%
+def get_dic_experiments_value(name, superset):
+    return [name, f"{name}_causal"] + [f"{name}_causal_test_{index}" for index in range(superset)]
+
+
 dic_robust_number = {
     "acsincome": ACS_INCOME_FEATURES_CAUSAL_SUBSETS_NUMBER,
     "acsfoodstamps": ACS_FOODSTAMPS_FEATURES_CAUSAL_SUBSETS_NUMBER,
     "brfss_diabetes": BRFSS_DIABETES_FEATURES_CAUSAL_SUBSETS_NUMBER,
+    "brfss_blood_pressure": BRFSS_BLOOD_PRESSURE_FEATURES_CAUSAL_SUBSETS_NUMBER,
+    "diabetes_readmission":     DIABETES_READMISSION_FEATURES_CAUSAL_NUMBER,
+    "anes": ANES_FEATURES_CAUSAL_NUMBER,
 }
+
+dic_experiments = {
+    "acsincome": get_dic_experiments_value("acsincome", dic_robust_number["acsincome"]),
+    "acsfoodstamps": get_dic_experiments_value("acsfoodstamps", dic_robust_number["acsfoodstamps"]),
+    "brfss_diabetes": get_dic_experiments_value("brfss_diabetes", dic_robust_number["brfss_diabetes"]),
+    "brfss_blood_pressure": get_dic_experiments_value("brfss_blood_pressure", dic_robust_number["brfss_blood_pressure"]),
+    "diabetes_readmission": get_dic_experiments_value("diabetes_readmission", dic_robust_number["diabetes_readmission"]),
+    "anes": get_dic_experiments_value("anes", dic_robust_number["anes"]),
+}
+ #%%
+
 
 dic_domain_label = {
     "acsemployment":'SCHL',
@@ -737,12 +754,12 @@ completed_experiments = [
                         #  "acsincome",
                         #  "acspubcov", # old
                         #  "acsunemployment", # old
-                        #  "anes",
+                         "anes",
                         #  "assistments",
-                        #  "brfss_blood_pressure",
+                         "brfss_blood_pressure",
                          "brfss_diabetes",
                         #  "college_scorecard", # old
-                        #  "diabetes_readmission",
+                         "diabetes_readmission",
                         #  "meps"
                         #  "mimic_extract_mort_hosp",
                         #  "mimic_extract_los_3",

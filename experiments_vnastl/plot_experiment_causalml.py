@@ -26,26 +26,28 @@ plt.rcParams['savefig.dpi'] = 300
 import os
 os.chdir("/Users/vnastl/Seafile/My Library/mpi project causal vs noncausal/tableshift")
 #%%
+def get_dic_experiments_value(name):
+    return [name, f"{name}_causal"]
 
 dic_experiments = {
-    "acsemployment": ["acsemployment","acsemployment_causal",],
-    "acsfoodstamps": ["acsfoodstamps","acsfoodstamps_causal",],
-    "acsincome": ["acsincome","acsincome_causal",], #,"acsincome_anticausal"],
-    "acspubcov": ["acspubcov","acspubcov_causal"],
-    "acsunemployment": ["acsunemployment","acsunemployment_causal"],
-    "anes": ["anes","anes_causal"],
-    "assistments": ["assistments","assistments_causal"],
-    "brfss_blood_pressure": ["brfss_blood_pressure", "brfss_blood_pressure_causal"],
-    "brfss_diabetes": ["brfss_diabetes","brfss_diabetes_causal",],
-    "college_scorecard": ["college_scorecard","college_scorecard_causal",],
-    "diabetes_readmission": ["diabetes_readmission", "diabetes_readmission_causal"],
-    "meps": ["meps", "meps_causal"],
-    "mimic_extract_los_3": ["mimic_extract_los_3","mimic_extract_los_3_causal"],
-    "mimic_extract_mort_hosp": ["mimic_extract_mort_hosp","mimic_extract_mort_hosp_causal"],
-    "nhanes_lead": ["nhanes_lead", "nhanes_lead_causal"],
-    "physionet":["physionet","physionet_causal"],
-    "sipp": ["sipp", "sipp_causal"],
-}
+        "acsemployment": get_dic_experiments_value("acsemployment"),
+        "acsfoodstamps":  get_dic_experiments_value("acsfoodstamps"),
+        "acsincome": get_dic_experiments_value("acsincome"),
+        "acspubcov":  get_dic_experiments_value("acspubcov"),
+        "acsunemployment":  get_dic_experiments_value("acsunemployment"),
+        "anes": get_dic_experiments_value("anes"),
+        "assistments":  get_dic_experiments_value("assistments"),
+        # "brfss_blood_pressure": get_dic_experiments_value("brfss_blood_pressure"),
+        "brfss_diabetes": get_dic_experiments_value("brfss_diabetes"),
+        "college_scorecard":  get_dic_experiments_value("college_scorecard"),
+        "diabetes_readmission": get_dic_experiments_value("diabetes_readmission"),
+        "meps":  get_dic_experiments_value("meps"),
+        "mimic_extract_los_3":  get_dic_experiments_value("mimic_extract_los_3"),
+        "mimic_extract_mort_hosp":  get_dic_experiments_value("mimic_extract_mort_hosp"),
+        "nhanes_lead":  get_dic_experiments_value("nhanes_lead"),
+        "physionet": get_dic_experiments_value("physionet"),
+        "sipp":  get_dic_experiments_value("sipp"),
+    }
  #%%
 dic_domain_label = {
     "acsemployment":'SCHL',
@@ -743,16 +745,16 @@ def plot_experiment_zoom(experiment_name):
 
 completed_experiments = [
                         # "acsemployment", # old
-                         "acsfoodstamps",
-                         "acsincome",
+                        #  "acsfoodstamps",
+                        #  "acsincome",
                         #  "acspubcov", # old
                         #  "acsunemployment", # old
-                        #  "anes",
+                         "anes",
                         #  "assistments",
                         #  "brfss_blood_pressure",
                          "brfss_diabetes",
                         #  "college_scorecard", # old
-                        #  "diabetes_readmission",
+                         "diabetes_readmission",
                         #  "meps"
                         #  "mimic_extract_mort_hosp",
                         #  "mimic_extract_los_3",

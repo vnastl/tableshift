@@ -27,27 +27,28 @@ plt.rcParams['savefig.dpi'] = 300
 import os
 os.chdir("/Users/vnastl/Seafile/My Library/mpi project causal vs noncausal/tableshift")
 #%%
+def get_dic_experiments_value(name):
+    return [name, f"{name}_causal", f"{name}_arguablycausal"]
 
 dic_experiments = {
-    "acsemployment": ["acsemployment","acsemployment_causal", "acsemployment_anticausal"],
-    "acsfoodstamps": ["acsfoodstamps","acsfoodstamps_causal", "acsfoodstamps_arguablycausal"],
-    "acsincome": ["acsincome","acsincome_causal","acsincome_arguablycausal"],#"acsincome_anticausal"],
-    "acspubcov": ["acspubcov","acspubcov_causal"],
-    "acsunemployment": ["acsunemployment","acsunemployment_causal", "acsunemployment_arguablycausal", "acsunemployment_anticausal"],
-    "anes": ["anes","anes_causal"],
-    "assistments": ["assistments","assistments_causal"],
-    "brfss_blood_pressure": ["brfss_blood_pressure", "brfss_blood_pressure_causal"],
-    "brfss_diabetes": ["brfss_diabetes","brfss_diabetes_causal","brfss_diabetes_arguablycausal","brfss_diabetes_anticausal"],
-    "college_scorecard": ["college_scorecard","college_scorecard_causal","college_scorecard_causal_no_tuition_fee"],
-    "diabetes_readmission": ["diabetes_readmission", "diabetes_readmission_causal"],
-    "meps": ["meps", "meps_causal"],
-    "mimic_extract_los_3": ["mimic_extract_los_3","mimic_extract_los_3_causal"],
-    "mimic_extract_mort_hosp": ["mimic_extract_mort_hosp","mimic_extract_mort_hosp_causal"],
-    "nhanes_lead": ["nhanes_lead", "nhanes_lead_causal"],
-    "physionet":["physionet","physionet_causal", "physionet_anticausal"],
-    "sipp": ["sipp", "sipp_causal"],
+    "acsemployment": get_dic_experiments_value("acsemployment"),
+    "acsfoodstamps":  get_dic_experiments_value("acsfoodstamps"),
+    "acsincome": get_dic_experiments_value("acsincome"),
+    "acspubcov":  get_dic_experiments_value("acspubcov"),
+    "acsunemployment":  get_dic_experiments_value("acsunemployment"),
+    "anes": get_dic_experiments_value("anes"),
+    "assistments":  get_dic_experiments_value("assistments"),
+    "brfss_blood_pressure": get_dic_experiments_value("brfss_blood_pressure"),
+    "brfss_diabetes": get_dic_experiments_value("brfss_diabetes"),
+    "college_scorecard":  get_dic_experiments_value("college_scorecard"),
+    "diabetes_readmission": get_dic_experiments_value("diabetes_readmission"),
+    "meps":  get_dic_experiments_value("meps"),
+    "mimic_extract_los_3":  get_dic_experiments_value("mimic_extract_los_3"),
+    "mimic_extract_mort_hosp":  get_dic_experiments_value("mimic_extract_mort_hosp"),
+    "nhanes_lead":  get_dic_experiments_value("nhanes_lead"),
+    "physionet": get_dic_experiments_value("physionet"),
+    "sipp":  get_dic_experiments_value("sipp"),
 }
-anticausal = ["acsemployment", "acsunemployment", "physionet", "brfss_diabetes"]
 
 dic_domain_label = {
     "acsemployment":'SCHL',
@@ -692,7 +693,7 @@ def plot_experiment_zoom(experiment_name):
         do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,[mymin,mymin],[mymax,mymax])
 
     if experiment_name == "anes":
-        mymin = 0.58
+        mymin = 0.65
         mymax = 0.85
         mytextx = 0.58
         mytexty = 0.53
@@ -712,8 +713,8 @@ def plot_experiment_zoom(experiment_name):
         do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,[axminx,axminy],[mymax,mymax])
 
     elif experiment_name == "brfss_blood_pressure":
-        mymin = 0.55
-        mymax = 0.68
+        mymin = 0.61
+        mymax = 0.66
         mytextx = 0.55
         mytexty = 0.5
         myname = f"plots_paper/plot_{experiment_name}_zoom"
@@ -721,8 +722,8 @@ def plot_experiment_zoom(experiment_name):
         do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,[mymin,mymin],[mymax,mymax])
 
     elif experiment_name == "brfss_diabetes":
-        mymin = 0.58
-        mymax = 0.73
+        mymin = 0.55
+        mymax = 0.70
         mytextx = 0.81
         mytexty = 0.79
         myname = f"plots_paper/plot_{experiment_name}_zoom"
@@ -744,7 +745,7 @@ def plot_experiment_zoom(experiment_name):
         mymin = 0.5
         axminx = 0.55
         axminy = 0.5
-        mymax = 0.7
+        mymax = 0.66
         mytextx = 0.55
         mytexty = 0.45
         myname = f"plots_paper/plot_{experiment_name}_zoom"
@@ -813,16 +814,16 @@ def plot_experiment_zoom(experiment_name):
 
 completed_experiments = [
                         # "acsemployment", # old
-                         "acsfoodstamps",
-                         "acsincome",
+                        #  "acsfoodstamps",
+                        #  "acsincome",
                         #  "acspubcov", # old
                         #  "acsunemployment", # old
-                        #  "anes",
+                         "anes",
                         #  "assistments",
-                        #  "brfss_blood_pressure",
+                         "brfss_blood_pressure",
                          "brfss_diabetes",
                         #  "college_scorecard", # old
-                        #  "diabetes_readmission",
+                         "diabetes_readmission",
                         #  "meps"
                         #  "mimic_extract_mort_hosp",
                         #  "mimic_extract_los_3",

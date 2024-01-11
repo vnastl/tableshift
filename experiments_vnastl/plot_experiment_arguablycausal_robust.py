@@ -18,7 +18,10 @@ from paretoset import paretoset
 from scipy.spatial import ConvexHull
 
 from tableshift.datasets import ACS_INCOME_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER, ACS_FOODSTAMPS_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER,\
-    BRFSS_DIABETES_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER
+    BRFSS_DIABETES_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER,\
+    BRFSS_BLOOD_PRESSURE_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER, \
+    DIABETES_READMISSION_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER, \
+    ANES_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER
 
 import warnings
 warnings.filterwarnings('ignore')
@@ -30,17 +33,27 @@ import os
 os.chdir("/Users/vnastl/Seafile/My Library/mpi project causal vs noncausal/tableshift")
 #%%
 
-dic_experiments = {
-    "acsincome": ["acsincome","acsincome_arguablycausal", "acsincome_arguablycausal_test_0"]+[f"acsincome_arguablycausal_test_{index}" for index in range(2,ACS_INCOME_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER-1)],
-    "acsfoodstamps": ["acsfoodstamps","acsfoodstamps_arguablycausal"]+[f"acsfoodstamps_arguablycausal_test_{index}" for index in range(ACS_FOODSTAMPS_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER-1)],
-    "brfss_diabetes": ["brfss_diabetes","brfss_diabetes_arguablycausal"]+[f"brfss_diabetes_arguablycausal_test_{index}" for index in range(BRFSS_DIABETES_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER-1)],
-}
- #%%
+def get_dic_experiments_value(name, superset):
+    return [name, f"{name}_arguablycausal"] + [f"{name}_arguablycausal_test_{index}" for index in range(superset)]
+
 dic_robust_number = {
     "acsincome": ACS_INCOME_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER,
     "acsfoodstamps": ACS_FOODSTAMPS_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER,
-    "brfss_diabetes":BRFSS_DIABETES_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER,
+    "brfss_diabetes": BRFSS_DIABETES_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER,
+    "brfss_blood_pressure": BRFSS_BLOOD_PRESSURE_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER,
+    "diabetes_readmission": DIABETES_READMISSION_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER,
+    "anes": ANES_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER,
 }
+
+dic_experiments = {
+    "acsincome": get_dic_experiments_value("acsincome", dic_robust_number["acsincome"]),
+    "acsfoodstamps": get_dic_experiments_value("acsfoodstamps", dic_robust_number["acsfoodstamps"]),
+    "brfss_diabetes": get_dic_experiments_value("brfss_diabetes", dic_robust_number["brfss_diabetes"]),
+    "brfss_blood_pressure": get_dic_experiments_value("brfss_blood_pressure", dic_robust_number["brfss_blood_pressure"]),
+    "diabetes_readmission": get_dic_experiments_value("diabetes_readmission", dic_robust_number["diabetes_readmission"]),
+    "anes": get_dic_experiments_value("anes", dic_robust_number["anes"]),
+}
+ #%%
 
 dic_domain_label = {
     "acsemployment":'SCHL',
@@ -156,6 +169,10 @@ def get_results(experiment_name):
                 if 'causal' not in feature_selection: 
                     feature_selection.append('causal') 
                 return 'causal'
+            elif experiment[-2].isdigit():
+                if f'test{experiment[-2]}' not in feature_selection: 
+                    feature_selection.append(f'test{experiment[-2:]}')
+                return f'test{experiment[-2:]}'
             elif experiment[-1].isdigit():
                 if f'test{experiment[-1]}' not in feature_selection: 
                     feature_selection.append(f'test{experiment[-1]}')
@@ -304,7 +321,7 @@ def do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,axmin=[0.5,0.5],a
     plt.fill(filled[hull.vertices, 0], filled[hull.vertices, 1], color=color_arguablycausal,alpha=0.1)
 
     ## robustness test
-    for index in range(dic_robust_number[experiment_name]-1):
+    for index in range(dic_robust_number[experiment_name]):
         if (eval_all['features'] == f"test{index}").any():
             eval_plot = eval_all[eval_all['features']==f"test{index}"]
             eval_plot.sort_values('id_test',inplace=True)
@@ -395,10 +412,10 @@ def do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,axmin=[0.5,0.5],a
         plt.ylabel("shift gap")
         shift = pd.concat(dic_shift.values(), ignore_index=True)
         shift["gap"] = shift["id_test"] - shift["ood_test"]
-        barlist = plt.bar(shift["type"], shift["gap"], color=[color_all,color_arguablycausal]+[color_robust for index in range(dic_robust_number[experiment_name]-1)]+[color_constant])
+        barlist = plt.bar(shift["type"], shift["gap"], color=[color_all,color_arguablycausal]+[color_robust for index in range(dic_robust_number[experiment_name])]+[color_constant])
         barlist[0].set_hatch('--')
         barlist[1].set_hatch('oo')
-        for index in range(2,dic_robust_number[experiment_name]+1):
+        for index in range(2,dic_robust_number[experiment_name]+2):
             barlist[index].set_hatch('//')
         plt.xticks(rotation=45)
         plt.savefig(str(Path(__file__).parents[0]/f"{myname}_arguablycausal_robust_shift.pdf"), bbox_inches='tight')
@@ -612,7 +629,7 @@ def plot_experiment_zoom(experiment_name):
         do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,[mymin,mymin],[mymax,mymax])
 
     if experiment_name == "anes":
-        mymin = 0.58
+        mymin = 0.78
         mymax = 0.85
         mytextx = 0.58
         mytexty = 0.53
@@ -733,14 +750,14 @@ def plot_experiment_zoom(experiment_name):
 
 completed_experiments = [
                         # "acsemployment", # old
-                         "acsfoodstamps",
-                         "acsincome",
+                        #  "acsfoodstamps",
+                        #  "acsincome",
                         #  "acspubcov", # old
                         #  "acsunemployment", # old
-                        #  "anes",
+                         "anes",
                         #  "assistments",
                         #  "brfss_blood_pressure",
-                         "brfss_diabetes",
+                        #  "brfss_diabetes",
                         #  "college_scorecard", # old
                         #  "diabetes_readmission",
                         #  "meps"
