@@ -1068,25 +1068,25 @@ BRFSS_BLOOD_PRESSURE_FEATURES_CAUSAL = FeatureList(features=[
             value_mapping={1: "Male", 2: "Female"}),
     ################ Social and economic factors ################
     # Income
-    Feature("POVERTY", int,
-            description="Binary indicator for whether an individuals' income "
-                        "falls below the 2021 poverty guideline for family of "
-                        "four.",
-            name_extended="Binary indicator for whether an individuals' income "
-                          "falls below the 2021 poverty guideline for family of"
-                          " four",
-            value_mapping={1: "Yes", 0: "No"}),
-    # Type job status; related to early/late shifts which is a risk factor.
-    Feature("EMPLOY1", cat_dtype, """Current employment""",
-            name_extended="Current employment status",
-            na_values=(9,),
-            value_mapping={
-                1: 'Employed for wages', 2: 'Self-employed',
-                3: 'Out of work for 1 year or more',
-                4: 'Out of work for less than 1 year', 5: 'A homemaker',
-                6: 'A student',
-                7: 'Retired', 8: 'Unable to work', 9: 'Refused'
-            }),
+    # Feature("POVERTY", int,
+    #         description="Binary indicator for whether an individuals' income "
+    #                     "falls below the 2021 poverty guideline for family of "
+    #                     "four.",
+    #         name_extended="Binary indicator for whether an individuals' income "
+    #                       "falls below the 2021 poverty guideline for family of"
+    #                       " four",
+    #         value_mapping={1: "Yes", 0: "No"}),
+    # # Type job status; related to early/late shifts which is a risk factor.
+    # Feature("EMPLOY1", cat_dtype, """Current employment""",
+    #         name_extended="Current employment status",
+    #         na_values=(9,),
+    #         value_mapping={
+    #             1: 'Employed for wages', 2: 'Self-employed',
+    #             3: 'Out of work for 1 year or more',
+    #             4: 'Out of work for less than 1 year', 5: 'A homemaker',
+    #             6: 'A student',
+    #             7: 'Retired', 8: 'Unable to work', 9: 'Refused'
+    #         }),
     # Additional relevant features in BRFSS_SHARED_FEATURES.
 ])
 causal_features = BRFSS_BLOOD_PRESSURE_FEATURES_CAUSAL.features.copy()

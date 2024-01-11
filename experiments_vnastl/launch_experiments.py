@@ -64,8 +64,8 @@ TASKS = [
     # "brfss_diabetes_arguablycausal",
     # "brfss_diabetes_anticausal",
 
-    # "brfss_blood_pressure",
-    # "brfss_blood_pressure_causal",
+    "brfss_blood_pressure",
+    "brfss_blood_pressure_causal",
     # "brfss_blood_pressure_arguablycausal",
     # "brfss_blood_pressure_anticausal",
 
