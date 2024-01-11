@@ -737,7 +737,7 @@ for index in range(BRFSS_BLOOD_PRESSURE_FEATURES_CAUSAL_SUBSETS_NUMBER):
                                                                                                     domain_split_varname="BMI5CAT",
                                                                                                     # OOD values: [1 underweight, 2 normal weight], [3 overweight, 4 obese]
                                                                                                     domain_split_ood_values=['3.0', '4.0']),
-                                                                            grouper=Grouper({"PRACE1": [1, ], "SEX": [1, ]}, drop=False),
+                                                                            grouper=None,
                                                                             preprocessor_config=PreprocessorConfig(passthrough_columns=["IYEAR"]),
                                                                             tabular_dataset_kwargs={"name": "brfss_blood_pressure_causal_test_"+f"{index}",
                                                                                                     "task": "blood_pressure",
