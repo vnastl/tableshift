@@ -81,9 +81,9 @@ TASKS = [
     # "brfss_blood_pressure_arguablycausal",
     # "brfss_blood_pressure_anticausal",
 
-    "college_scorecard",
-    "college_scorecard_causal",
-    "college_scorecard_arguablycausal",
+    # "college_scorecard",
+    # "college_scorecard_causal",
+    # "college_scorecard_arguablycausal",
 
     # "nhanes_lead", 
     # "nhanes_lead_causal",
