@@ -752,6 +752,8 @@ BENCHMARK_CONFIGS = {
         tabular_dataset_kwargs={"name": "physionet_anticausal"}),
 }
 
+# Add configuration files for tests
+
 for index in range(ACS_INCOME_FEATURES_CAUSAL_SUBSETS_NUMBER):
     BENCHMARK_CONFIGS["acsincome_causal_test_"+f"{index}"] = ExperimentConfig(
                                                             splitter=DomainSplitter(val_size=DEFAULT_ID_VAL_SIZE,

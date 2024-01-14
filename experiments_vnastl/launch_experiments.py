@@ -21,7 +21,8 @@ from tableshift.datasets import ACS_INCOME_FEATURES_CAUSAL_SUBSETS_NUMBER, ACS_I
     ASSISTMENTS_FEATURES_CAUSAL_SUBSETS_NUMBER, ASSISTMENTS_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER,\
     COLLEGE_SCORECARD_FEATURES_CAUSAL_SUBSETS_NUMBER, COLLEGE_SCORECARD_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER,\
     MIMIC_EXTRACT_LOS_3_FEATURES_CAUSAL_SUBSETS, MIMIC_EXTRACT_LOS_3_FEATURES_CAUSAL_SUBSETS_NUMBER,\
-    MIMIC_EXTRACT_MORT_HOSP_FEATURES_CAUSAL_SUBSETS, MIMIC_EXTRACT_MORT_HOSP_FEATURES_CAUSAL_SUBSETS_NUMBER
+    MIMIC_EXTRACT_MORT_HOSP_FEATURES_CAUSAL_SUBSETS, MIMIC_EXTRACT_MORT_HOSP_FEATURES_CAUSAL_SUBSETS_NUMBER,\
+    SIPP_FEATURES_CAUSAL_SUBSETS_NUMBER, SIPP_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER
     # MIMIC_EXTRACT_MORT_HOSP_FEATURES_ARGUABLYCAUSAL_SUPERSETS, MIMIC_EXTRACT_MORT_HOSP_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER
     # MIMIC_EXTRACT_LOS_3_FEATURES_ARGUABLYCAUSAL_SUPERSETS, MIMIC_EXTRACT_LOS_3_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER,\
 
@@ -38,7 +39,7 @@ N_TRIALS    = 1
 # Cluster settings
 JOB_MIN_BID = 100    # htcondor bid (min. is 15 apparently...)
 JOB_CPUS = 1     # number of CPUs per experiment (per cluster job)
-JOB_MEMORY_GB =  256 #128   # GBs of memory
+JOB_MEMORY_GB =  128   # GBs of memory
 BIG_JOB_MEMORY_GB = 256
 
 VERBOSE = True
@@ -49,10 +50,10 @@ TASKS = [
     # "acsincome_arguablycausal",
     # "acsincome_anticausal",
 
-    "acspubcov",
+    # "acspubcov",
     # "acspubcov_causal",
-    "acspubcov_arguablycausal",
-    "acspubcov_arguablycausal_test_1"
+    # "acspubcov_arguablycausal",
+    # "acspubcov_arguablycausal_test_1"
 
     # "acsfoodstamps",
     # "acsfoodstamps_causal",
@@ -103,8 +104,10 @@ TASKS = [
     # "physionet", 
     # "physionet_causal",
 
-    # "sipp", 
-    # "sipp_causal",
+    "sipp", 
+    "sipp_causal",
+    "sipp_arguablycausal",
+    "sipp_anticausal",
 
     # "meps", 
     # "meps_causal",
@@ -183,7 +186,11 @@ TASKS = [
 # for index in range(MIMIC_EXTRACT_MORT_HOSP_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
 #         TASKS.append("mimic_extract_mort_hosp_arguablycausal_test_"+f"{index}")
 
+for index in range(SIPP_FEATURES_CAUSAL_SUBSETS_NUMBER):
+        TASKS.append("sipp_causal_test_"+f"{index}")
 
+for index in range(SIPP_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
+        TASKS.append("sipp_arguablycausal_test_"+f"{index}")
 
 # Useful directories
 if __name__ == '__main__':
