@@ -824,7 +824,7 @@ for index in range(ACS_PUBCOV_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
                                                                                                 domain_split_ood_values=['1.0']),
                                                                         grouper=Grouper({"RAC1P": [1, ], "SEX": [1, ]}, drop=False),
                                                                         preprocessor_config=PreprocessorConfig(),
-                                                                        tabular_dataset_kwargs={"acs_task": "acspubcov", "name": "acspubcov_causal_test_"+f"{index}",
+                                                                        tabular_dataset_kwargs={"acs_task": "acspubcov", "name": "acspubcov_arguablycausal_test_"+f"{index}",
                                                                                                 "years": ACS_YEARS})
 
 for index in range(ACS_UNEMPLOYMENT_FEATURES_CAUSAL_SUBSETS_NUMBER):
