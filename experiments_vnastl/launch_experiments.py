@@ -39,7 +39,7 @@ N_TRIALS    = 1
 # Cluster settings
 JOB_MIN_BID = 100    # htcondor bid (min. is 15 apparently...)
 JOB_CPUS = 1     # number of CPUs per experiment (per cluster job)
-JOB_MEMORY_GB = 256 # 128  # GBs of memory
+JOB_MEMORY_GB = 128  # GBs of memory
 BIG_JOB_MEMORY_GB = 256
 
 VERBOSE = True
@@ -106,8 +106,8 @@ TASKS = [
 
     # "sipp", 
     # "sipp_causal",
-    # "sipp_arguablycausal",
-    # "sipp_anticausal",
+    "sipp_arguablycausal",
+    "sipp_anticausal",
 
     # "meps", 
     # "meps_causal",
@@ -186,11 +186,11 @@ for index in range(ACS_UNEMPLOYMENT_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
 # for index in range(MIMIC_EXTRACT_MORT_HOSP_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
 #         TASKS.append("mimic_extract_mort_hosp_arguablycausal_test_"+f"{index}")
 
-# for index in range(SIPP_FEATURES_CAUSAL_SUBSETS_NUMBER):
-#         TASKS.append("sipp_causal_test_"+f"{index}")
+for index in range(SIPP_FEATURES_CAUSAL_SUBSETS_NUMBER):
+        TASKS.append("sipp_causal_test_"+f"{index}")
 
-# for index in range(SIPP_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
-#         TASKS.append("sipp_arguablycausal_test_"+f"{index}")
+for index in range(SIPP_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
+        TASKS.append("sipp_arguablycausal_test_"+f"{index}")
 
 # Useful directories
 if __name__ == '__main__':

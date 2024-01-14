@@ -299,6 +299,10 @@ _TASK_REGISTRY = {
         TaskConfig(SIPPDataSource, SIPP_FEATURES),
     'sipp_causal':
         TaskConfig(SIPPDataSource, SIPP_FEATURES_CAUSAL),
+    'sipp_arguablycausal':
+        TaskConfig(SIPPDataSource, SIPP_FEATURES_ARGUABLYCAUSAL),
+    'sipp_anticausal':
+        TaskConfig(SIPPDataSource, SIPP_FEATURES_ANTICAUSAL),
 }
 
 for index, subset in enumerate(ACS_INCOME_FEATURES_CAUSAL_SUBSETS):
@@ -373,7 +377,11 @@ for index, subset in enumerate(MIMIC_EXTRACT_MORT_HOSP_FEATURES_CAUSAL_SUBSETS):
 # for index, superset in enumerate(MIMIC_EXTRACT_MORT_HOSP_FEATURES_ARGUABLYCAUSAL_SUPERSETS):
 #     _TASK_REGISTRY["mimic_extract_mort_hosp_arguablycausal_test_"+f"{index}"] = TaskConfig(MIMICExtractDataSource, superset)
 
+for index, subset in enumerate(SIPP_FEATURES_CAUSAL_SUBSETS):
+    _TASK_REGISTRY["sipp_causal_test_"+f"{index}"] = TaskConfig(CollegeScorecardDataSource, subset)
 
+for index, superset in enumerate(SIPP_FEATURES_ARGUABLYCAUSAL_SUPERSETS):
+    _TASK_REGISTRY["sipp_arguablycausal_test_"+f"{index}"] = TaskConfig(CollegeScorecardDataSource, superset)
 
 
 
