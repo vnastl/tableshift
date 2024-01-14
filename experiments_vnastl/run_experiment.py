@@ -44,6 +44,7 @@ def main(experiment, dset, model, debug: bool):
         for test_split in test_splits:
             # Fetch predictions and labels for a sklearn model.
             X_te, y_te, _, _ = dset.get_pandas(test_split)
+            X_te = X_te.astype(float)
             yhat_te = estimator.predict(X_te)
 
             # Calculate accuracy
@@ -63,7 +64,7 @@ def main(experiment, dset, model, debug: bool):
             evaluation[test_split + "_balanced" + "_conf"] = balanced_acc_conf
             print(f"training completed! {test_split} balanced accuracy: {balanced_acc:.4f}")
 
-        with open(f'experiments_vnastl/{experiment}/{model}_eval.json', 'w') as f:
+        with open(f'experiments_vnastl/results/{experiment}/{model}_eval.json', 'w') as f:
             # Use json.dump to write the dictionary into the file
             evaluation["features"] = dset.predictors
             json.dump(evaluation, f)
@@ -71,7 +72,7 @@ def main(experiment, dset, model, debug: bool):
     else:
         # Case: pytorch estimator; eval is already performed + printed by train().
         print("training completed!")
-        with open(f'experiments_vnastl/{experiment}/{model}_eval.json', 'w') as f:
+        with open(f'experiments_vnastl/results/{experiment}/{model}_eval.json', 'w') as f:
             # Use json.dump to write the dictionary into the file
             evaluation = estimator.fit_metrics
             evaluation_balanced = estimator.fit_metrics_balanced
@@ -125,12 +126,12 @@ if __name__ == "__main__":
     # experiments = ["anes","anes_causal"]
     # experiments = ["assistments","assistments_causal"]
     # experiments.append("brfss_diabetes_causal")
-    experiments.append("brfss_diabetes_causal_test_0")
-    RESULTS_DIR = ROOT_DIR / f"brfss_diabetes_test_0"
-    RESULTS_DIR.mkdir(exist_ok=True, parents=False)
+    # experiments.append("brfss_diabetes_causal_test_0")
+    # RESULTS_DIR = ROOT_DIR / f"brfss_diabetes_test_0"
+    # RESULTS_DIR.mkdir(exist_ok=True, parents=False)
     # experiments = ["brfss_diabetes_causal","brfss_diabetes_anticausal"] #,"brfss_diabetes"]
     # experiments = ["brfss_blood_pressure_causal","brfss_blood_pressure"]
-    # experiments=["college_scorecard","college_scorecard_causal"]
+    experiments=["college_scorecard"] #,"college_scorecard_causal"]
     # experiments = ["nhanes_lead", "nhanes_lead_causal"]
     # experiments = ["diabetes_readmission"] #, "diabetes_readmission_causal"]
     # experiments = ["meps","meps_causal"]
@@ -146,12 +147,12 @@ if __name__ == "__main__":
         # X, y, _, _ = dset.get_pandas("train")
         models = [
             # "ft_transformer",
-            "histgbm",
+            # "histgbm",
             # "mlp",
             # "saint",
             # "tabtransformer",
             # "resnet",
-            # "xgb",
+            "xgb",
             # "aldro",
             # "dro",
             # "node",

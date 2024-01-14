@@ -156,10 +156,12 @@ def _train_sklearn(estimator, dset: TabularDataset,
                    tune_report_split: str = None):
     """Helper function to train a sklearn-type estimator."""
     X_tr, y_tr, _, d_tr = dset.get_pandas(split="train")
+    X_tr = X_tr.astype(float)
     if isinstance(estimator, ExponentiatedGradient):
         estimator.fit(X_tr, y_tr, d=d_tr)
     elif isinstance(estimator, WeightedCovariateShiftClassifier):
         X_ood_tr, y_ood_tr, _, _ = dset.get_pandas(split="ood_validation")
+        X_ood_tr = X_ood_tr.astype(float)
         estimator.fit(X_tr, y_tr, X_ood_tr)
     else:
         estimator.fit(X_tr, y_tr)
