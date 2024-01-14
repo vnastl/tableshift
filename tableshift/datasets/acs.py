@@ -729,7 +729,7 @@ ACS_PUBCOV_FEATURES_ARGUABLYCAUSAL = FeatureList(features=[
                 24: 'Doctorate degree',
             }),],
     documentation="https://www2.census.gov/programs-surveys/acs/tech_docs/pums/data_dict/PUMS_Data_Dictionary_2014-2018.pdf")
-arguablycausal_supersets = select_superset_plus_one(ACS_PUBCOV_FEATURES_ARGUABLYCAUSAL.features, ACS_PUBCOV_FEATURES.features)
+arguablycausal_supersets = select_superset_plus_one(ACS_PUBCOV_FEATURES_ARGUABLYCAUSAL.features, ACS_PUBCOV_FEATURES.features + ACS_SHARED_FEATURES)
 ACS_PUBCOV_FEATURES_ARGUABLYCAUSAL_SUPERSETS = []
 for superset in arguablycausal_supersets:
     ACS_PUBCOV_FEATURES_ARGUABLYCAUSAL_SUPERSETS.append(FeatureList(superset))
@@ -992,7 +992,7 @@ ACS_UNEMPLOYMENT_FEATURES_ARGUABLYCAUSAL = FeatureList(features=[
     documentation="https://www2.census.gov/programs-surveys/acs/tech_docs"
                   "/pums/data_dict/PUMS_Data_Dictionary_2019.pdf"
 )
-arguablycausal_supersets = select_superset_plus_one(ACS_UNEMPLOYMENT_FEATURES_ARGUABLYCAUSAL.features, ACS_UNEMPLOYMENT_FEATURES.features)
+arguablycausal_supersets = select_superset_plus_one(ACS_UNEMPLOYMENT_FEATURES_ARGUABLYCAUSAL.features, ACS_UNEMPLOYMENT_FEATURES.features+ ACS_SHARED_FEATURES)
 ACS_UNEMPLOYMENT_FEATURES_ARGUABLYCAUSAL_SUPERSETS = []
 for superset in arguablycausal_supersets:
     ACS_UNEMPLOYMENT_FEATURES_ARGUABLYCAUSAL_SUPERSETS.append(FeatureList(superset))
