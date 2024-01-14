@@ -1031,7 +1031,7 @@ for index in range(MIMIC_EXTRACT_LOS_3_FEATURES_CAUSAL_SUBSETS_NUMBER):
             passthrough_columns=[f for f in _MIMIC_EXTRACT_PASSTHROUGH_COLUMNS
                                  if f in MIMIC_EXTRACT_LOS_3_FEATURES_CAUSAL_SUBSETS[index].names]),
         tabular_dataset_kwargs={"task": "los_3",
-                                "name": "mimic_extract_los_3_causal_test_"+f"{index}"}),
+                                "name": "mimic_extract_los_3_causal_test_"+f"{index}"})
 # for index in range(MIMIC_EXTRACT_LOS_3_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
 #     BENCHMARK_CONFIGS["mimic_extract_los_3_arguablycausal_test_"+f"{index}"] = ExperimentConfig(
 #         splitter=DomainSplitter(val_size=DEFAULT_ID_VAL_SIZE,
@@ -1046,7 +1046,7 @@ for index in range(MIMIC_EXTRACT_LOS_3_FEATURES_CAUSAL_SUBSETS_NUMBER):
 #             passthrough_columns=[f for f in _MIMIC_EXTRACT_PASSTHROUGH_COLUMNS
 #                                  if f in MIMIC_EXTRACT_LOS_3_FEATURES_ARGUABLYCAUSAL_SUPERSETS[index].names]),
 #         tabular_dataset_kwargs={"task": "los_3",
-#                                 "name": "mimic_extract_los_3_arguablycausal_test_"+f"{index}"}),
+#                                 "name": "mimic_extract_los_3_arguablycausal_test_"+f"{index}"})
 
 
 for index in range(MIMIC_EXTRACT_MORT_HOSP_FEATURES_CAUSAL_SUBSETS_NUMBER):
@@ -1063,7 +1063,7 @@ for index in range(MIMIC_EXTRACT_MORT_HOSP_FEATURES_CAUSAL_SUBSETS_NUMBER):
             passthrough_columns=[f for f in _MIMIC_EXTRACT_PASSTHROUGH_COLUMNS
                                  if f in MIMIC_EXTRACT_MORT_HOSP_FEATURES_CAUSAL_SUBSETS[index].names]),
         tabular_dataset_kwargs={"task": "mort_hosp",
-                                "name": "mimic_extract_mort_hosp_causal_test_"+f"{index}"}),
+                                "name": "mimic_extract_mort_hosp_causal_test_"+f"{index}"})
 
 # for index in range(MIMIC_EXTRACT_MORT_HOSP_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
 #     BENCHMARK_CONFIGS["mimic_extract_mort_hosp_arguablycausal_test_"+f"{index}"] = ExperimentConfig(
@@ -1079,4 +1079,4 @@ for index in range(MIMIC_EXTRACT_MORT_HOSP_FEATURES_CAUSAL_SUBSETS_NUMBER):
 #             passthrough_columns=[f for f in _MIMIC_EXTRACT_PASSTHROUGH_COLUMNS
 #                                  if f in MIMIC_EXTRACT_MORT_HOSP_FEATURES_ARGUABLYCAUSAL_SUPERSETS[index].names]),
 #         tabular_dataset_kwargs={"task": "mort_hosp",
-#                                 "name": "mimic_extract_mort_hosp_arguablycausal_test_"+f"{index}"}),
+#                                 "name": "mimic_extract_mort_hosp_arguablycausal_test_"+f"{index}"})
