@@ -378,14 +378,12 @@ for index, subset in enumerate(MIMIC_EXTRACT_MORT_HOSP_FEATURES_CAUSAL_SUBSETS):
 #     _TASK_REGISTRY["mimic_extract_mort_hosp_arguablycausal_test_"+f"{index}"] = TaskConfig(MIMICExtractDataSource, superset)
 
 for index, subset in enumerate(SIPP_FEATURES_CAUSAL_SUBSETS):
-    _TASK_REGISTRY["sipp_causal_test_"+f"{index}"] = TaskConfig(CollegeScorecardDataSource, subset)
+    _TASK_REGISTRY["sipp_causal_test_"+f"{index}"] = TaskConfig(SIPPDataSource, subset)
 
 for index, superset in enumerate(SIPP_FEATURES_ARGUABLYCAUSAL_SUPERSETS):
-    _TASK_REGISTRY["sipp_arguablycausal_test_"+f"{index}"] = TaskConfig(CollegeScorecardDataSource, superset)
+    _TASK_REGISTRY["sipp_arguablycausal_test_"+f"{index}"] = TaskConfig(SIPPDataSource, superset)
 
 
-
-CollegeScorecardDataSource
 
 def get_task_config(name: str) -> TaskConfig:
     if name in _TASK_REGISTRY:
