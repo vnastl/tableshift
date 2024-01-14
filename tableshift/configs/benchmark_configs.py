@@ -14,7 +14,8 @@ from tableshift.datasets import ACS_INCOME_FEATURES_CAUSAL_SUBSETS_NUMBER, ACS_I
     BRFSS_DIABETES_FEATURES_CAUSAL_SUBSETS_NUMBER, BRFSS_DIABETES_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER, \
     BRFSS_BLOOD_PRESSURE_FEATURES_CAUSAL_SUBSETS_NUMBER, BRFSS_BLOOD_PRESSURE_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER, \
     DIABETES_READMISSION_FEATURES_CAUSAL_NUMBER, DIABETES_READMISSION_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER,\
-    ANES_FEATURES_CAUSAL_NUMBER, ANES_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER
+    ANES_FEATURES_CAUSAL_SUBSETS_NUMBER, ANES_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER,\
+    ASSISTMENTS_FEATURES_CAUSAL_SUBSETS_NUMBER, ASSISTMENTS_FEATURES_CAUSAL_SUBSETS, ASSISTMENTS_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER
 from tableshift.datasets.mimic_extract import MIMIC_EXTRACT_STATIC_FEATURES, \
     MIMIC_EXTRACT_LOS_3_FEATURES_CAUSAL, MIMIC_EXTRACT_MORT_HOSP_FEATURES_CAUSAL
 from tableshift.datasets.mimic_extract_feature_lists import \
@@ -522,6 +523,28 @@ BENCHMARK_CONFIGS = {
         ),
         tabular_dataset_kwargs={},
     ),
+    "assistments_arguablycausal": ExperimentConfig(
+        splitter=DomainSplitter(val_size=DEFAULT_ID_VAL_SIZE,
+                                ood_val_size=DEFAULT_OOD_VAL_SIZE,
+                                random_state=DEFAULT_RANDOM_STATE,
+                                id_test_size=DEFAULT_ID_TEST_SIZE,
+                                domain_split_varname='school_id',
+                                domain_split_ood_values=[5040.0,
+                                                         11502.0,
+                                                         11318.0,
+                                                         11976.0,
+                                                         12421.0,
+                                                         12379.0,
+                                                         11791.0,
+                                                         8359.0,
+                                                         12406.0,
+                                                         7594.0]),
+        grouper=None,
+        preprocessor_config=PreprocessorConfig(
+            passthrough_columns=["skill_id", "bottom_hint", "first_action"],
+        ),
+        tabular_dataset_kwargs={},
+    ),
 
     # College scorecard
     "college_scorecard": ExperimentConfig(
@@ -790,7 +813,7 @@ for index in range(DIABETES_READMISSION_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER
                                                                             # This is due to high cardinality of 'diag_*' features.
                                                                             preprocessor_config=PreprocessorConfig(min_frequency=0.01),
                                                                             tabular_dataset_kwargs={})
-for index in range(ANES_FEATURES_CAUSAL_NUMBER):
+for index in range(ANES_FEATURES_CAUSAL_SUBSETS_NUMBER):
     BENCHMARK_CONFIGS["anes_causal_test_"+f"{index}"] = ExperimentConfig(
                                                                             splitter=DomainSplitter(val_size=DEFAULT_ID_VAL_SIZE,
                                                                                                     ood_val_size=DEFAULT_OOD_VAL_SIZE,
@@ -817,3 +840,51 @@ for index in range(ANES_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
                                                                             preprocessor_config=PreprocessorConfig(numeric_features="kbins",
                                                                                                                 dropna=None),
                                                                             tabular_dataset_kwargs={})
+
+for index in range(ASSISTMENTS_FEATURES_CAUSAL_SUBSETS_NUMBER):
+    list_passthrough = [feature.name for feature in ASSISTMENTS_FEATURES_CAUSAL_SUBSETS[index] if feature.name in ["skill_id", "bottom_hint", "first_action"]]
+    BENCHMARK_CONFIGS["assistments_causal_test_"+f"{index}"] = ExperimentConfig(
+                                                                        splitter=DomainSplitter(val_size=DEFAULT_ID_VAL_SIZE,
+                                                                                                ood_val_size=DEFAULT_OOD_VAL_SIZE,
+                                                                                                random_state=DEFAULT_RANDOM_STATE,
+                                                                                                id_test_size=DEFAULT_ID_TEST_SIZE,
+                                                                                                domain_split_varname='school_id',
+                                                                                                domain_split_ood_values=[5040.0,
+                                                                                                                        11502.0,
+                                                                                                                        11318.0,
+                                                                                                                        11976.0,
+                                                                                                                        12421.0,
+                                                                                                                        12379.0,
+                                                                                                                        11791.0,
+                                                                                                                        8359.0,
+                                                                                                                        12406.0,
+                                                                                                                        7594.0]),
+                                                                        grouper=None,
+                                                                        preprocessor_config=PreprocessorConfig(
+                                                                            passthrough_columns=list_passthrough,
+                                                                        ),
+                                                                        tabular_dataset_kwargs={},
+                                                                    )
+for index in range(ASSISTMENTS_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
+    BENCHMARK_CONFIGS["assistments_arguablycausal_test_"+f"{index}"] = ExperimentConfig(
+                                                                        splitter=DomainSplitter(val_size=DEFAULT_ID_VAL_SIZE,
+                                                                                                ood_val_size=DEFAULT_OOD_VAL_SIZE,
+                                                                                                random_state=DEFAULT_RANDOM_STATE,
+                                                                                                id_test_size=DEFAULT_ID_TEST_SIZE,
+                                                                                                domain_split_varname='school_id',
+                                                                                                domain_split_ood_values=[5040.0,
+                                                                                                                        11502.0,
+                                                                                                                        11318.0,
+                                                                                                                        11976.0,
+                                                                                                                        12421.0,
+                                                                                                                        12379.0,
+                                                                                                                        11791.0,
+                                                                                                                        8359.0,
+                                                                                                                        12406.0,
+                                                                                                                        7594.0]),
+                                                                        grouper=None,
+                                                                        preprocessor_config=PreprocessorConfig(
+                                                                            passthrough_columns=["skill_id", "bottom_hint", "first_action"],
+                                                                        ),
+                                                                        tabular_dataset_kwargs={},
+                                                                    )

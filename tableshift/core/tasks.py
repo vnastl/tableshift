@@ -80,6 +80,8 @@ _TASK_REGISTRY = {
         TaskConfig(AssistmentsDataSource, ASSISTMENTS_FEATURES),
     "assistments_causal":
         TaskConfig(AssistmentsDataSource, ASSISTMENTS_FEATURES_CAUSAL),
+    "assistments_arguablycausal":
+        TaskConfig(AssistmentsDataSource, ASSISTMENTS_FEATURES_ARGUABLYCAUSAL),
     "brfss_diabetes":
         TaskConfig(BRFSSDataSource, BRFSS_DIABETES_FEATURES),
     "brfss_diabetes_causal":
@@ -325,6 +327,12 @@ for index, subset in enumerate(ANES_FEATURES_CAUSAL_SUBSETS):
 
 for index, superset in enumerate(ANES_FEATURES_ARGUABLYCAUSAL_SUPERSETS):
     _TASK_REGISTRY["anes_arguablycausal_test_"+f"{index}"] = TaskConfig(ANESDataSource, superset)
+
+for index, subset in enumerate(ASSISTMENTS_FEATURES_CAUSAL_SUBSETS):
+    _TASK_REGISTRY["assistments_causal_test_"+f"{index}"] = TaskConfig(AssistmentsDataSource, subset)
+
+for index, superset in enumerate(ASSISTMENTS_FEATURES_ARGUABLYCAUSAL_SUPERSETS):
+    _TASK_REGISTRY["assistments_arguablycausal_test_"+f"{index}"] = TaskConfig(AssistmentsDataSource, superset)
 
 
 

@@ -15,7 +15,8 @@ from tableshift.datasets import ACS_INCOME_FEATURES_CAUSAL_SUBSETS_NUMBER, ACS_I
     BRFSS_DIABETES_FEATURES_CAUSAL_SUBSETS_NUMBER, BRFSS_DIABETES_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER, \
     BRFSS_BLOOD_PRESSURE_FEATURES_CAUSAL_SUBSETS_NUMBER, BRFSS_BLOOD_PRESSURE_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER, \
     DIABETES_READMISSION_FEATURES_CAUSAL_NUMBER, DIABETES_READMISSION_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER, \
-    ANES_FEATURES_CAUSAL_NUMBER, ANES_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER
+    ANES_FEATURES_CAUSAL_NUMBER, ANES_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER,\
+    ASSISTMENTS_FEATURES_CAUSAL_SUBSETS_NUMBER, ASSISTMENTS_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER
 
 
 if __name__ == '__main__':
@@ -56,16 +57,17 @@ TASKS = [
     # "anes_causal",
     # "anes_arguablycausal",
 
-    # "assistments",
-    # "assistments_causal",
+    "assistments",
+    "assistments_causal",
+    "assistments_arguablycausal",
 
     # "brfss_diabetes",
     # "brfss_diabetes_causal",
     # "brfss_diabetes_arguablycausal",
     # "brfss_diabetes_anticausal",
 
-    "brfss_blood_pressure",
-    "brfss_blood_pressure_causal",
+    # "brfss_blood_pressure",
+    # "brfss_blood_pressure_causal",
     # "brfss_blood_pressure_arguablycausal",
     # "brfss_blood_pressure_anticausal",
 
@@ -114,8 +116,8 @@ TASKS = [
 # for index in range(BRFSS_DIABETES_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
         # TASKS.append("brfss_diabetes_arguablycausal_test_"+f"{index}")
               
-for index in range(BRFSS_BLOOD_PRESSURE_FEATURES_CAUSAL_SUBSETS_NUMBER):
-        TASKS.append("brfss_blood_pressure_causal_test_"+f"{index}")
+# for index in range(BRFSS_BLOOD_PRESSURE_FEATURES_CAUSAL_SUBSETS_NUMBER):
+#         TASKS.append("brfss_blood_pressure_causal_test_"+f"{index}")
 
 # for index in range(BRFSS_BLOOD_PRESSURE_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
 #         TASKS.append("brfss_blood_pressure_arguablycausal_test_"+f"{index}")
@@ -131,6 +133,12 @@ for index in range(BRFSS_BLOOD_PRESSURE_FEATURES_CAUSAL_SUBSETS_NUMBER):
 
 # for index in range(ANES_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
 #         TASKS.append("anes_arguablycausal_test_"+f"{index}")
+
+for index in range(ASSISTMENTS_FEATURES_CAUSAL_SUBSETS_NUMBER):
+        TASKS.append("assistments_causal_test_"+f"{index}")
+
+for index in range(ASSISTMENTS_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
+        TASKS.append("assistments_arguablycausal_test_"+f"{index}")
 
 # Useful directories
 if __name__ == '__main__':

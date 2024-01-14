@@ -664,7 +664,7 @@ for subset in causal_subsets:
     subset.append(target)
     subset.append(domain)
     ANES_FEATURES_CAUSAL_SUBSETS.append(FeatureList(subset))
-ANES_FEATURES_CAUSAL_NUMBER = len(causal_subsets)
+ANES_FEATURES_CAUSAL_SUBSETS_NUMBER = len(causal_subsets)
 
 
 ANES_FEATURES_ARGUABLYCAUSAL = FeatureList(features=[
