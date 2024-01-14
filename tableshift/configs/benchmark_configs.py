@@ -1065,7 +1065,7 @@ for index in range(MIMIC_EXTRACT_MORT_HOSP_FEATURES_CAUSAL_SUBSETS_NUMBER):
         tabular_dataset_kwargs={"task": "mort_hosp",
                                 "name": "mimic_extract_mort_hosp_causal_test_"+f"{index}"}),
 
-for index in range(MIMIC_EXTRACT_MORT_HOSP_FEATURES_ARGUABLYCAUSAL_SUPERSETS):
+for index in range(MIMIC_EXTRACT_MORT_HOSP_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
     BENCHMARK_CONFIGS["mimic_extract_mort_hosp_arguablycausal_test_"+f"{index}"] = ExperimentConfig(
         splitter=DomainSplitter(val_size=DEFAULT_ID_VAL_SIZE,
                                 ood_val_size=DEFAULT_OOD_VAL_SIZE,

@@ -17,7 +17,11 @@ from tableshift.datasets import ACS_INCOME_FEATURES_CAUSAL_SUBSETS_NUMBER, ACS_I
     DIABETES_READMISSION_FEATURES_CAUSAL_NUMBER, DIABETES_READMISSION_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER, \
     ANES_FEATURES_CAUSAL_SUBSETS_NUMBER, ANES_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER,\
     ASSISTMENTS_FEATURES_CAUSAL_SUBSETS_NUMBER, ASSISTMENTS_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER,\
-    COLLEGE_SCORECARD_FEATURES_CAUSAL_SUBSETS_NUMBER, COLLEGE_SCORECARD_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER
+    COLLEGE_SCORECARD_FEATURES_CAUSAL_SUBSETS_NUMBER, COLLEGE_SCORECARD_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER,\
+    MIMIC_EXTRACT_LOS_3_FEATURES_CAUSAL_SUBSETS, MIMIC_EXTRACT_LOS_3_FEATURES_CAUSAL_SUBSETS_NUMBER,\
+    MIMIC_EXTRACT_LOS_3_FEATURES_ARGUABLYCAUSAL_SUPERSETS, MIMIC_EXTRACT_LOS_3_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER,\
+    MIMIC_EXTRACT_MORT_HOSP_FEATURES_CAUSAL_SUBSETS, MIMIC_EXTRACT_MORT_HOSP_FEATURES_CAUSAL_SUBSETS_NUMBER,\
+    MIMIC_EXTRACT_MORT_HOSP_FEATURES_ARGUABLYCAUSAL_SUPERSETS, MIMIC_EXTRACT_MORT_HOSP_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER
 
 
 if __name__ == '__main__':
@@ -74,6 +78,7 @@ TASKS = [
 
     "college_scorecard",
     "college_scorecard_causal",
+    "college_scorecard_arguablycausal"
 
     # "nhanes_lead", 
     # "nhanes_lead_causal",
@@ -82,11 +87,13 @@ TASKS = [
     # "diabetes_readmission_causal",
     # "diabetes_readmission_arguablycausal",
 
-    # "mimic_extract_los_3",
-    # "mimic_extract_los_3_causal",
+    "mimic_extract_los_3",
+    "mimic_extract_los_3_causal",
+    "mimic_extract_los_3_arguablycausal",
 
-    # "mimic_extract_mort_hosp",
-    # "mimic_extract_mort_hosp_causal",
+    "mimic_extract_mort_hosp",
+    "mimic_extract_mort_hosp_causal",
+    "mimic_extract_mort_hosp_arguablycausal",
 
     # "physionet", 
     # "physionet_causal",
@@ -146,6 +153,20 @@ for index in range(COLLEGE_SCORECARD_FEATURES_CAUSAL_SUBSETS_NUMBER):
 
 for index in range(COLLEGE_SCORECARD_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
         TASKS.append("college_scorecard_arguablycausal_test_"+f"{index}")
+
+for index in range(MIMIC_EXTRACT_LOS_3_FEATURES_CAUSAL_SUBSETS_NUMBER):
+        TASKS.append("mimic_extract_los_3_causal_test_"+f"{index}")
+
+for index in range(MIMIC_EXTRACT_LOS_3_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
+        TASKS.append("mimic_extract_los_3_arguablycausal_test_"+f"{index}")
+
+for index in range(MIMIC_EXTRACT_MORT_HOSP_FEATURES_CAUSAL_SUBSETS_NUMBER):
+        TASKS.append("mimic_extract_mort_hosp_causal_test_"+f"{index}")
+
+for index in range(MIMIC_EXTRACT_MORT_HOSP_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
+        TASKS.append("mimic_extract_mort_hosp_arguablycausal_test_"+f"{index}")
+
+
 
 # Useful directories
 if __name__ == '__main__':
