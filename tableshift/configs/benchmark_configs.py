@@ -18,9 +18,9 @@ from tableshift.datasets import ACS_INCOME_FEATURES_CAUSAL_SUBSETS_NUMBER, ACS_I
     ASSISTMENTS_FEATURES_CAUSAL_SUBSETS_NUMBER, ASSISTMENTS_FEATURES_CAUSAL_SUBSETS, ASSISTMENTS_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER,\
     COLLEGE_SCORECARD_FEATURES_CAUSAL_SUBSETS_NUMBER, COLLEGE_SCORECARD_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER,\
     MIMIC_EXTRACT_LOS_3_FEATURES_CAUSAL_SUBSETS, MIMIC_EXTRACT_LOS_3_FEATURES_CAUSAL_SUBSETS_NUMBER,\
-    MIMIC_EXTRACT_LOS_3_FEATURES_ARGUABLYCAUSAL_SUPERSETS, MIMIC_EXTRACT_LOS_3_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER,\
-    MIMIC_EXTRACT_MORT_HOSP_FEATURES_CAUSAL_SUBSETS, MIMIC_EXTRACT_MORT_HOSP_FEATURES_CAUSAL_SUBSETS_NUMBER,\
-    MIMIC_EXTRACT_MORT_HOSP_FEATURES_ARGUABLYCAUSAL_SUPERSETS, MIMIC_EXTRACT_MORT_HOSP_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER
+    MIMIC_EXTRACT_MORT_HOSP_FEATURES_CAUSAL_SUBSETS, MIMIC_EXTRACT_MORT_HOSP_FEATURES_CAUSAL_SUBSETS_NUMBER
+    # MIMIC_EXTRACT_LOS_3_FEATURES_ARGUABLYCAUSAL_SUPERSETS, MIMIC_EXTRACT_LOS_3_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER,\
+    # MIMIC_EXTRACT_MORT_HOSP_FEATURES_ARGUABLYCAUSAL_SUPERSETS, MIMIC_EXTRACT_MORT_HOSP_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER
 from tableshift.datasets.mimic_extract import MIMIC_EXTRACT_STATIC_FEATURES, \
     MIMIC_EXTRACT_LOS_3_FEATURES_CAUSAL, MIMIC_EXTRACT_MORT_HOSP_FEATURES_CAUSAL,\
     MIMIC_EXTRACT_LOS_3_FEATURES_ARGUABLYCAUSAL, MIMIC_EXTRACT_MORT_HOSP_FEATURES_ARGUABLYCAUSAL
@@ -1032,21 +1032,21 @@ for index in range(MIMIC_EXTRACT_LOS_3_FEATURES_CAUSAL_SUBSETS_NUMBER):
                                  if f in MIMIC_EXTRACT_LOS_3_FEATURES_CAUSAL_SUBSETS[index].names]),
         tabular_dataset_kwargs={"task": "los_3",
                                 "name": "mimic_extract_los_3_causal_test_"+f"{index}"}),
-for index in range(MIMIC_EXTRACT_LOS_3_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
-    BENCHMARK_CONFIGS["mimic_extract_los_3_arguablycausal_test_"+f"{index}"] = ExperimentConfig(
-        splitter=DomainSplitter(val_size=DEFAULT_ID_VAL_SIZE,
-                                ood_val_size=DEFAULT_OOD_VAL_SIZE,
-                                random_state=DEFAULT_RANDOM_STATE,
-                                id_test_size=DEFAULT_ID_TEST_SIZE,
-                                domain_split_varname="insurance",
-                                domain_split_ood_values=["Medicare"]),
+# for index in range(MIMIC_EXTRACT_LOS_3_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
+#     BENCHMARK_CONFIGS["mimic_extract_los_3_arguablycausal_test_"+f"{index}"] = ExperimentConfig(
+#         splitter=DomainSplitter(val_size=DEFAULT_ID_VAL_SIZE,
+#                                 ood_val_size=DEFAULT_OOD_VAL_SIZE,
+#                                 random_state=DEFAULT_RANDOM_STATE,
+#                                 id_test_size=DEFAULT_ID_TEST_SIZE,
+#                                 domain_split_varname="insurance",
+#                                 domain_split_ood_values=["Medicare"]),
 
-        grouper=Grouper({"gender": ['M'], }, drop=False),
-        preprocessor_config=PreprocessorConfig(
-            passthrough_columns=[f for f in _MIMIC_EXTRACT_PASSTHROUGH_COLUMNS
-                                 if f in MIMIC_EXTRACT_LOS_3_FEATURES_ARGUABLYCAUSAL_SUPERSETS[index].names]),
-        tabular_dataset_kwargs={"task": "los_3",
-                                "name": "mimic_extract_los_3_arguablycausal_test_"+f"{index}"}),
+#         grouper=Grouper({"gender": ['M'], }, drop=False),
+#         preprocessor_config=PreprocessorConfig(
+#             passthrough_columns=[f for f in _MIMIC_EXTRACT_PASSTHROUGH_COLUMNS
+#                                  if f in MIMIC_EXTRACT_LOS_3_FEATURES_ARGUABLYCAUSAL_SUPERSETS[index].names]),
+#         tabular_dataset_kwargs={"task": "los_3",
+#                                 "name": "mimic_extract_los_3_arguablycausal_test_"+f"{index}"}),
 
 
 for index in range(MIMIC_EXTRACT_MORT_HOSP_FEATURES_CAUSAL_SUBSETS_NUMBER):
@@ -1065,18 +1065,18 @@ for index in range(MIMIC_EXTRACT_MORT_HOSP_FEATURES_CAUSAL_SUBSETS_NUMBER):
         tabular_dataset_kwargs={"task": "mort_hosp",
                                 "name": "mimic_extract_mort_hosp_causal_test_"+f"{index}"}),
 
-for index in range(MIMIC_EXTRACT_MORT_HOSP_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
-    BENCHMARK_CONFIGS["mimic_extract_mort_hosp_arguablycausal_test_"+f"{index}"] = ExperimentConfig(
-        splitter=DomainSplitter(val_size=DEFAULT_ID_VAL_SIZE,
-                                ood_val_size=DEFAULT_OOD_VAL_SIZE,
-                                random_state=DEFAULT_RANDOM_STATE,
-                                id_test_size=DEFAULT_ID_TEST_SIZE,
-                                domain_split_varname="insurance",
-                                domain_split_ood_values=["Medicare"]),
+# for index in range(MIMIC_EXTRACT_MORT_HOSP_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
+#     BENCHMARK_CONFIGS["mimic_extract_mort_hosp_arguablycausal_test_"+f"{index}"] = ExperimentConfig(
+#         splitter=DomainSplitter(val_size=DEFAULT_ID_VAL_SIZE,
+#                                 ood_val_size=DEFAULT_OOD_VAL_SIZE,
+#                                 random_state=DEFAULT_RANDOM_STATE,
+#                                 id_test_size=DEFAULT_ID_TEST_SIZE,
+#                                 domain_split_varname="insurance",
+#                                 domain_split_ood_values=["Medicare"]),
 
-        grouper=Grouper({"gender": ['M'], }, drop=False),
-        preprocessor_config=PreprocessorConfig(
-            passthrough_columns=[f for f in _MIMIC_EXTRACT_PASSTHROUGH_COLUMNS
-                                 if f in MIMIC_EXTRACT_MORT_HOSP_FEATURES_ARGUABLYCAUSAL_SUPERSETS[index].names]),
-        tabular_dataset_kwargs={"task": "mort_hosp",
-                                "name": "mimic_extract_mort_hosp_arguablycausal_test_"+f"{index}"}),
+#         grouper=Grouper({"gender": ['M'], }, drop=False),
+#         preprocessor_config=PreprocessorConfig(
+#             passthrough_columns=[f for f in _MIMIC_EXTRACT_PASSTHROUGH_COLUMNS
+#                                  if f in MIMIC_EXTRACT_MORT_HOSP_FEATURES_ARGUABLYCAUSAL_SUPERSETS[index].names]),
+#         tabular_dataset_kwargs={"task": "mort_hosp",
+#                                 "name": "mimic_extract_mort_hosp_arguablycausal_test_"+f"{index}"}),

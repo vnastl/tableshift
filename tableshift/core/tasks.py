@@ -349,14 +349,14 @@ for index, superset in enumerate(COLLEGE_SCORECARD_FEATURES_ARGUABLYCAUSAL_SUPER
 for index, subset in enumerate(MIMIC_EXTRACT_LOS_3_FEATURES_CAUSAL_SUBSETS):
     _TASK_REGISTRY["mimic_extract_los_3_causal_test_"+f"{index}"] = TaskConfig(MIMICExtractDataSource, subset)
 
-for index, superset in enumerate(COLLEGE_SCORECARD_FEATURES_ARGUABLYCAUSAL_SUPERSETS):
-    _TASK_REGISTRY["mimic_extract_los_3_arguablycausal_test_"+f"{index}"] = TaskConfig(MIMICExtractDataSource, superset)
+# for index, superset in enumerate(COLLEGE_SCORECARD_FEATURES_ARGUABLYCAUSAL_SUPERSETS):
+#     _TASK_REGISTRY["mimic_extract_los_3_arguablycausal_test_"+f"{index}"] = TaskConfig(MIMICExtractDataSource, superset)
 
 for index, subset in enumerate(MIMIC_EXTRACT_MORT_HOSP_FEATURES_CAUSAL_SUBSETS):
     _TASK_REGISTRY["mimic_extract_mort_hosp_causal_test_"+f"{index}"] = TaskConfig(MIMICExtractDataSource, subset)
 
-for index, superset in enumerate(MIMIC_EXTRACT_MORT_HOSP_FEATURES_ARGUABLYCAUSAL_SUPERSETS):
-    _TASK_REGISTRY["mimic_extract_mort_hosp_arguablycausal_test_"+f"{index}"] = TaskConfig(MIMICExtractDataSource, superset)
+# for index, superset in enumerate(MIMIC_EXTRACT_MORT_HOSP_FEATURES_ARGUABLYCAUSAL_SUPERSETS):
+#     _TASK_REGISTRY["mimic_extract_mort_hosp_arguablycausal_test_"+f"{index}"] = TaskConfig(MIMICExtractDataSource, superset)
 
 
 

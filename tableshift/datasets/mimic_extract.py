@@ -1592,11 +1592,11 @@ MIMIC_EXTRACT_LOS_3_FEATURES_ARGUABLYCAUSAL = FeatureList(features=[
     Feature("white_blood_cell_count_time_since_measured_22", int),
     Feature("white_blood_cell_count_time_since_measured_23", int),
 ])
-arguablycausal_supersets = select_superset_plus_one(MIMIC_EXTRACT_LOS_3_FEATURES_ARGUABLYCAUSAL.features, MIMIC_EXTRACT_LOS_3_FEATURES.features)
-MIMIC_EXTRACT_LOS_3_FEATURES_ARGUABLYCAUSAL_SUPERSETS = []
-for superset in arguablycausal_supersets:
-    MIMIC_EXTRACT_LOS_3_FEATURES_ARGUABLYCAUSAL_SUPERSETS.append(FeatureList(superset))
-MIMIC_EXTRACT_LOS_3_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER = len(arguablycausal_supersets)
+# arguablycausal_supersets = select_superset_plus_one(MIMIC_EXTRACT_LOS_3_FEATURES_ARGUABLYCAUSAL.features, MIMIC_EXTRACT_LOS_3_FEATURES.features)
+# MIMIC_EXTRACT_LOS_3_FEATURES_ARGUABLYCAUSAL_SUPERSETS = []
+# for superset in arguablycausal_supersets:
+#     MIMIC_EXTRACT_LOS_3_FEATURES_ARGUABLYCAUSAL_SUPERSETS.append(FeatureList(superset))
+# MIMIC_EXTRACT_LOS_3_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER = len(arguablycausal_supersets)
 
 
 MIMIC_EXTRACT_MORT_HOSP_FEATURES_CAUSAL = FeatureList(features=[
@@ -3137,11 +3137,11 @@ MIMIC_EXTRACT_MORT_HOSP_FEATURES_ARGUABLYCAUSAL = FeatureList(features=[
     Feature("white_blood_cell_count_time_since_measured_22", int),
     Feature("white_blood_cell_count_time_since_measured_23", int),
 ])
-arguablycausal_supersets = select_superset_plus_one(MIMIC_EXTRACT_MORT_HOSP_FEATURES_ARGUABLYCAUSAL.features, MIMIC_EXTRACT_MORT_HOSP_FEATURES.features)
-MIMIC_EXTRACT_MORT_HOSP_FEATURES_ARGUABLYCAUSAL_SUPERSETS = []
-for superset in arguablycausal_supersets:
-    MIMIC_EXTRACT_MORT_HOSP_FEATURES_ARGUABLYCAUSAL_SUPERSETS.append(FeatureList(superset))
-MIMIC_EXTRACT_MORT_HOSP_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER = len(arguablycausal_supersets)
+# arguablycausal_supersets = select_superset_plus_one(MIMIC_EXTRACT_MORT_HOSP_FEATURES_ARGUABLYCAUSAL.features, MIMIC_EXTRACT_MORT_HOSP_FEATURES.features)
+# MIMIC_EXTRACT_MORT_HOSP_FEATURES_ARGUABLYCAUSAL_SUPERSETS = []
+# for superset in arguablycausal_supersets:
+#     MIMIC_EXTRACT_MORT_HOSP_FEATURES_ARGUABLYCAUSAL_SUPERSETS.append(FeatureList(superset))
+# MIMIC_EXTRACT_MORT_HOSP_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER = len(arguablycausal_supersets)
 
 
 def simple_imputer(df: pd.DataFrame) -> pd.DataFrame:
