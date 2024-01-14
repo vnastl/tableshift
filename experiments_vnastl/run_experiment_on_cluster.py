@@ -133,6 +133,7 @@ def main(experiment, model, cache_dir, save_dir, debug: bool):
             # Get accuracy
             # Fetch predictions and labels for a sklearn model.
             X_te, y_te, _, _ = dset.get_pandas(test_split)
+            X_te = X_te.astype(float)
             nobs = len(y_te)
             acc = evaluation[test_split]
             count = nobs*acc
