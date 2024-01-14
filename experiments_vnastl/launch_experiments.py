@@ -38,7 +38,7 @@ N_TRIALS    = 1
 # Cluster settings
 JOB_MIN_BID = 100    # htcondor bid (min. is 15 apparently...)
 JOB_CPUS = 1     # number of CPUs per experiment (per cluster job)
-JOB_MEMORY_GB = 128   # GBs of memory
+JOB_MEMORY_GB =  256 #128   # GBs of memory
 BIG_JOB_MEMORY_GB = 256
 
 VERBOSE = True
@@ -49,9 +49,10 @@ TASKS = [
     # "acsincome_arguablycausal",
     # "acsincome_anticausal",
 
-    # "acspubcov",
+    "acspubcov",
     # "acspubcov_causal",
-    # "acspubcov_arguablycausal",
+    "acspubcov_arguablycausal",
+    "acspubcov_arguablycausal_test_1"
 
     # "acsfoodstamps",
     # "acsfoodstamps_causal",
@@ -164,11 +165,11 @@ TASKS = [
 # for index in range(ASSISTMENTS_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
 #         TASKS.append("assistments_arguablycausal_test_"+f"{index}")
 
-for index in range(COLLEGE_SCORECARD_FEATURES_CAUSAL_SUBSETS_NUMBER):
-        TASKS.append("college_scorecard_causal_test_"+f"{index}")
+# for index in range(COLLEGE_SCORECARD_FEATURES_CAUSAL_SUBSETS_NUMBER):
+#         TASKS.append("college_scorecard_causal_test_"+f"{index}")
 
-for index in range(COLLEGE_SCORECARD_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
-        TASKS.append("college_scorecard_arguablycausal_test_"+f"{index}")
+# for index in range(COLLEGE_SCORECARD_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
+#         TASKS.append("college_scorecard_arguablycausal_test_"+f"{index}")
 
 # for index in range(MIMIC_EXTRACT_LOS_3_FEATURES_CAUSAL_SUBSETS_NUMBER):
 #         TASKS.append("mimic_extract_los_3_causal_test_"+f"{index}")
