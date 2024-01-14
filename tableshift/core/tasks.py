@@ -143,12 +143,16 @@ _TASK_REGISTRY = {
         TaskConfig(MIMICExtractDataSource, MIMIC_EXTRACT_LOS_3_FEATURES),
     "mimic_extract_los_3_causal":
         TaskConfig(MIMICExtractDataSource, MIMIC_EXTRACT_LOS_3_FEATURES_CAUSAL),
+    "mimic_extract_los_3_arguablycausal":
+        TaskConfig(MIMICExtractDataSource, MIMIC_EXTRACT_LOS_3_FEATURES_ARGUABLYCAUSAL),
     "mimic_extract_los_3_selected":
         TaskConfig(MIMICExtractDataSource, MIMIC_EXTRACT_LOS_3_SELECTED_FEATURES),
     "mimic_extract_mort_hosp":
         TaskConfig(MIMICExtractDataSource, MIMIC_EXTRACT_MORT_HOSP_FEATURES),
     "mimic_extract_mort_hosp_causal":
         TaskConfig(MIMICExtractDataSource, MIMIC_EXTRACT_MORT_HOSP_FEATURES_CAUSAL),
+    "mimic_extract_mort_hosp_arguablycausal":
+        TaskConfig(MIMICExtractDataSource, MIMIC_EXTRACT_MORT_HOSP_FEATURES_ARGUABLYCAUSAL),
     "mimic_extract_mort_hosp_selected":
         TaskConfig(MIMICExtractDataSource, MIMIC_EXTRACT_MORT_HOSP_SELECTED_FEATURES),
     "mooc":
@@ -341,6 +345,19 @@ for index, subset in enumerate(COLLEGE_SCORECARD_FEATURES_CAUSAL_SUBSETS):
 
 for index, superset in enumerate(COLLEGE_SCORECARD_FEATURES_ARGUABLYCAUSAL_SUPERSETS):
     _TASK_REGISTRY["college_scorecard_arguablycausal_test_"+f"{index}"] = TaskConfig(CollegeScorecardDataSource, superset)
+
+for index, subset in enumerate(MIMIC_EXTRACT_LOS_3_FEATURES_CAUSAL_SUBSETS):
+    _TASK_REGISTRY["mimic_extract_los_3_causal_test_"+f"{index}"] = TaskConfig(MIMICExtractDataSource, subset)
+
+for index, superset in enumerate(COLLEGE_SCORECARD_FEATURES_ARGUABLYCAUSAL_SUPERSETS):
+    _TASK_REGISTRY["mimic_extract_los_3_arguablycausal_test_"+f"{index}"] = TaskConfig(MIMICExtractDataSource, superset)
+
+for index, subset in enumerate(MIMIC_EXTRACT_MORT_HOSP_FEATURES_CAUSAL_SUBSETS):
+    _TASK_REGISTRY["mimic_extract_mort_hosp_causal_test_"+f"{index}"] = TaskConfig(MIMICExtractDataSource, subset)
+
+for index, superset in enumerate(MIMIC_EXTRACT_MORT_HOSP_FEATURES_ARGUABLYCAUSAL_SUPERSETS):
+    _TASK_REGISTRY["mimic_extract_mort_hosp_arguablycausal_test_"+f"{index}"] = TaskConfig(MIMICExtractDataSource, superset)
+
 
 
 
