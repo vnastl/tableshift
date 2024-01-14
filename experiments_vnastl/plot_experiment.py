@@ -833,12 +833,12 @@ completed_experiments = [
                         #  "acsincome",
                         #  "acspubcov", # old
                         #  "acsunemployment", # old
-                         "anes",
+                        #  "anes",
                         #  "assistments",
                          "brfss_blood_pressure",
-                         "brfss_diabetes",
+                        #  "brfss_diabetes",
                         #  "college_scorecard", # old
-                         "diabetes_readmission",
+                        #  "diabetes_readmission",
                         #  "meps"
                         #  "mimic_extract_mort_hosp",
                         #  "mimic_extract_los_3",

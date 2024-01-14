@@ -234,7 +234,7 @@ def get_results(experiment_name):
     eval_all = pd.concat([eval_all, eval_pd], ignore_index=True)
 
         
-    eval_all.to_csv(str(Path(__file__).parents[0]/f"{experiment_name}_eval.csv"))
+    # eval_all.to_csv(str(Path(__file__).parents[0]/f"{experiment_name}_eval.csv"))
     # print(eval_all)
     return eval_all, causal_features
 
@@ -754,12 +754,12 @@ completed_experiments = [
                         #  "acsincome",
                         #  "acspubcov", # old
                         #  "acsunemployment", # old
-                         "anes",
+                        #  "anes",
                         #  "assistments",
                          "brfss_blood_pressure",
-                         "brfss_diabetes",
+                        #  "brfss_diabetes",
                         #  "college_scorecard", # old
-                         "diabetes_readmission",
+                        #  "diabetes_readmission",
                         #  "meps"
                         #  "mimic_extract_mort_hosp",
                         #  "mimic_extract_los_3",

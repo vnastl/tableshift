@@ -21,6 +21,7 @@ from scipy.spatial import ConvexHull
 import warnings
 warnings.filterwarnings('ignore')
 
+sns.set_style("white")
 plt.rcParams['figure.dpi'] = 300
 plt.rcParams['savefig.dpi'] = 300
 
@@ -484,7 +485,7 @@ def do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,axmin=[0.5,0.5],a
         plt.axhline(y=0,linewidth=1, color='k')
         plt.savefig(str(Path(__file__).parents[0]/f"{myname}_balanced_shift.pdf"), bbox_inches='tight')
         plt.show()
-        # sns.set_style("white")
+        # 
 
 # %%
 def plot_experiment(experiment_name):
@@ -818,12 +819,12 @@ completed_experiments = [
                         #  "acsincome",
                         #  "acspubcov", # old
                         #  "acsunemployment", # old
-                         "anes",
+                        #  "anes",
                         #  "assistments",
                          "brfss_blood_pressure",
-                         "brfss_diabetes",
+                        #  "brfss_diabetes",
                         #  "college_scorecard", # old
-                         "diabetes_readmission",
+                        #  "diabetes_readmission",
                         #  "meps"
                         #  "mimic_extract_mort_hosp",
                         #  "mimic_extract_los_3",

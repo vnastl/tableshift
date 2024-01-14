@@ -220,7 +220,7 @@ def get_results(experiment_name):
     eval_all = pd.concat([eval_all, eval_pd], ignore_index=True)
 
         
-    eval_all.to_csv(str(Path(__file__).parents[0]/f"{experiment_name}_eval.csv"))
+    # eval_all.to_csv(str(Path(__file__).parents[0]/f"{experiment_name}_eval.csv"))
     # print(eval_all)
     return eval_all, causal_features
 

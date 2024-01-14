@@ -17,7 +17,7 @@ if __name__ == '__main__':
 ####################################################
 #  START of: details on which experiments to run.  #
 ####################################################
-DG_TASKS = (
+NOT_DG_TASKS = (
     "acspubcov",
     "physionet", 
     "nhanes_lead",
@@ -46,7 +46,7 @@ DG_MODELS = (
 )
 
 def IS_TASK_DG(task):
-    for dg_task in DG_TASKS:
+    for dg_task in  NOT_DG_TASKS:
         if task.startswith(dg_task):
             return False
     return True
