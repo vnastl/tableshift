@@ -10,6 +10,7 @@ For more information on datasets and access in TableShift, see:
 """
 import pandas as pd
 from tableshift.core.features import Feature, FeatureList, cat_dtype
+from tableshift.datasets.robustness import select_subset_minus_one, select_superset_plus_one
 
 ################################################################################
 # Feature list
@@ -192,10 +193,84 @@ COLLEGE_SCORECARD_FEATURES_CAUSAL = FeatureList(features=[
         # Feature('CCSIZSET', cat_dtype, name_extended='Carnegie Classification -- size and setting'),
         Feature('HBCU', cat_dtype, name_extended='Flag for Historically Black College and University'),
         Feature('DISTANCEONLY', cat_dtype, name_extended='Flag for distance-education-only education'),
+        Feature('median_hh_inc', float, name_extended='Median household income',
+                na_values=('PrivacySuppressed',)),
+        Feature('poverty_rate', float, name_extended='Poverty rate, via Census data',
+                na_values=('PrivacySuppressed',)),
+        Feature('unemp_rate', float, name_extended='Unemployment rate, via Census data',
+                na_values=('PrivacySuppressed',)),
+])
+target = Feature('C150_4', int, is_target=True,
+                name_extended="Completion rate for first-time, full-time "
+                              "students at four-year institutions (150% of "
+                              "expected time to completion/6 years)")
+domain = Feature('CCBASIC', cat_dtype, name_extended='Carnegie Classification -- basic')
+
+causal_features = COLLEGE_SCORECARD_FEATURES_CAUSAL.features.copy()
+causal_features.remove(target)
+causal_features.remove(domain)
+causal_subsets = select_subset_minus_one(causal_features)
+COLLEGE_SCORECARD_FEATURES_CAUSAL_SUBSETS = []
+for subset in causal_subsets:
+    subset.append(target)
+    subset.append(domain)
+    COLLEGE_SCORECARD_FEATURES_CAUSAL_SUBSETS.append(FeatureList(subset))
+COLLEGE_SCORECARD_FEATURES_CAUSAL_SUBSETS_NUMBER = len(causal_subsets)
+
+COLLEGE_SCORECARD_FEATURES_ARGUABLYCAUSAL = FeatureList(features=[
+        Feature('C150_4', int, is_target=True,
+                name_extended="Completion rate for first-time, full-time "
+                              "students at four-year institutions (150% of "
+                              "expected time to completion/6 years)"),
+        Feature('AccredAgency', cat_dtype, name_extended='Accreditor for institution'),
+        Feature('HIGHDEG', cat_dtype, name_extended='Highest degree awarded',
+                value_mapping={
+                        0: "Non-degree-granting",
+                        1: "Certificate degree",
+                        2: "Associate degree",
+                        3: "Bachelor's degree",
+                        4: "Graduate degree"}),
+        Feature('CONTROL', cat_dtype, name_extended='Control of institution'),
+        Feature('region', cat_dtype, name_extended='Region (IPEDS)'),
+        Feature('LOCALE', cat_dtype, name_extended='Locale of institution'),
+        Feature('locale2', float, name_extended='Degree of urbanization of institution'),
+        Feature('CCBASIC', cat_dtype, name_extended='Carnegie Classification -- basic'),
+        # Feature('CCSIZSET', cat_dtype, name_extended='Carnegie Classification -- size and setting'),
+        Feature('HBCU', cat_dtype, name_extended='Flag for Historically Black College and University'),
+        Feature('DISTANCEONLY', cat_dtype, name_extended='Flag for distance-education-only education'),
+        Feature('median_hh_inc', float, name_extended='Median household income',
+                na_values=('PrivacySuppressed',)),
+        Feature('poverty_rate', float, name_extended='Poverty rate, via Census data',
+                na_values=('PrivacySuppressed',)),
+        Feature('unemp_rate', float, name_extended='Unemployment rate, via Census data',
+                na_values=('PrivacySuppressed',)),
         Feature('TUITIONFEE_IN', float, name_extended='In-state tuition and fees'),
         Feature('TUITIONFEE_OUT', float, name_extended='Out-of-state tuition and fees'),
         Feature('TUITIONFEE_PROG', float, name_extended='Tuition and fees for program-year institutions'),
+        Feature('ADM_RATE', float, name_extended='Admission rate'),
+        Feature('ADM_RATE_ALL', float, name_extended='Admission rate for all campuses rolled up to the 6-digit OPE ID'),
+        Feature('SATVRMID', float, name_extended='Midpoint of SAT scores at the institution (critical reading)'),
+        Feature('SATMTMID', float, name_extended='Midpoint of SAT scores at the institution (math)'),
+        Feature('SATWRMID', float, name_extended='Midpoint of SAT scores at the institution (writing)'),
+        Feature('ACTCMMID', float, name_extended='Midpoint of the ACT cumulative score'),
+        Feature('ACTENMID', float, name_extended='Midpoint of the ACT English score'),
+        Feature('ACTMTMID', float, name_extended='Midpoint of the ACT math score'),
+        Feature('ACTWRMID', float, name_extended='Midpoint of the ACT writing score'),
+        Feature('NPT4_PROG', float, name_extended='Average net price for the largest program at the institution for program-year institutions'),
+        Feature('COSTT4_A', float, name_extended='Average cost of attendance (academic year institutions)'),
+        Feature('COSTT4_P', float, name_extended='Average cost of attendance (program-year institutions)'),
+        Feature('loan_ever', float, name_extended='Share of students who received a federal loan while in school',
+                na_values=('PrivacySuppressed',)),
+        Feature('pell_ever', float, name_extended='Share of students who received a Pell Grant while in school',
+                na_values=('PrivacySuppressed',)),
 ])
+
+arguablycausal_supersets = select_superset_plus_one(COLLEGE_SCORECARD_FEATURES_ARGUABLYCAUSAL.features, COLLEGE_SCORECARD_FEATURES.features)
+COLLEGE_SCORECARD_FEATURES_ARGUABLYCAUSAL_SUPERSETS = []
+for superset in arguablycausal_supersets:
+    COLLEGE_SCORECARD_FEATURES_ARGUABLYCAUSAL_SUPERSETS.append(FeatureList(superset))
+COLLEGE_SCORECARD_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER = len(arguablycausal_supersets)
+
 
 def preprocess_college_scorecard(df:pd.DataFrame)->pd.DataFrame:
         df[COLLEGE_SCORECARD_FEATURES.target] = (df[COLLEGE_SCORECARD_FEATURES.target] > 0.5).astype(int)

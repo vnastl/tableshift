@@ -15,7 +15,8 @@ from tableshift.datasets import ACS_INCOME_FEATURES_CAUSAL_SUBSETS_NUMBER, ACS_I
     BRFSS_BLOOD_PRESSURE_FEATURES_CAUSAL_SUBSETS_NUMBER, BRFSS_BLOOD_PRESSURE_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER, \
     DIABETES_READMISSION_FEATURES_CAUSAL_NUMBER, DIABETES_READMISSION_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER,\
     ANES_FEATURES_CAUSAL_SUBSETS_NUMBER, ANES_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER,\
-    ASSISTMENTS_FEATURES_CAUSAL_SUBSETS_NUMBER, ASSISTMENTS_FEATURES_CAUSAL_SUBSETS, ASSISTMENTS_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER
+    ASSISTMENTS_FEATURES_CAUSAL_SUBSETS_NUMBER, ASSISTMENTS_FEATURES_CAUSAL_SUBSETS, ASSISTMENTS_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER,\
+    COLLEGE_SCORECARD_FEATURES_CAUSAL_SUBSETS_NUMBER, COLLEGE_SCORECARD_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER
 from tableshift.datasets.mimic_extract import MIMIC_EXTRACT_STATIC_FEATURES, \
     MIMIC_EXTRACT_LOS_3_FEATURES_CAUSAL, MIMIC_EXTRACT_MORT_HOSP_FEATURES_CAUSAL
 from tableshift.datasets.mimic_extract_feature_lists import \
@@ -607,6 +608,36 @@ BENCHMARK_CONFIGS = {
         ),
         tabular_dataset_kwargs={},
     ),
+    "college_scorecard_arguablycausal": ExperimentConfig(
+        splitter=DomainSplitter(val_size=DEFAULT_ID_VAL_SIZE,
+                                ood_val_size=DEFAULT_OOD_VAL_SIZE,
+                                random_state=DEFAULT_RANDOM_STATE,
+                                id_test_size=DEFAULT_ID_TEST_SIZE,
+                                domain_split_varname='CCBASIC',
+                                domain_split_ood_values=[
+                                    'Special Focus Institutions--Other special-focus institutions',
+                                    'Special Focus Institutions--Theological seminaries, Bible colleges, and other faith-related institutions',
+                                    "Associate's--Private For-profit 4-year Primarily Associate's",
+                                    'Baccalaureate Colleges--Diverse Fields',
+                                    'Special Focus Institutions--Schools of art, music, and design',
+                                    "Associate's--Private Not-for-profit",
+                                    "Baccalaureate/Associate's Colleges",
+                                    "Master's Colleges and Universities (larger programs)"]
+                                ),
+        grouper=None,
+        preprocessor_config=PreprocessorConfig(
+            # Several categorical features in college scorecard have > 10k
+            # unique values; so we label-encode instead of one-hot encoding.
+            categorical_features="label_encode",
+            # Some important numeric features are not reported by universities
+            # in a way that could be systematic (and we would like these included
+            # in the sample, not excluded), so we use kbins
+            numeric_features="kbins",
+            n_bins=100,
+            dropna=None,
+        ),
+        tabular_dataset_kwargs={},
+    ),
 
     # Childhood lead
     "nhanes_lead": ExperimentConfig(
@@ -885,6 +916,70 @@ for index in range(ASSISTMENTS_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
                                                                         grouper=None,
                                                                         preprocessor_config=PreprocessorConfig(
                                                                             passthrough_columns=["skill_id", "bottom_hint", "first_action"],
+                                                                        ),
+                                                                        tabular_dataset_kwargs={},
+                                                                    )
+
+
+for index in range(COLLEGE_SCORECARD_FEATURES_CAUSAL_SUBSETS_NUMBER):
+    BENCHMARK_CONFIGS["college_scorecard_causal_test_"+f"{index}"] = ExperimentConfig(
+                                                                        splitter=DomainSplitter(val_size=DEFAULT_ID_VAL_SIZE,
+                                                                                                ood_val_size=DEFAULT_OOD_VAL_SIZE,
+                                                                                                random_state=DEFAULT_RANDOM_STATE,
+                                                                                                id_test_size=DEFAULT_ID_TEST_SIZE,
+                                                                                                domain_split_varname='CCBASIC',
+                                                                                                domain_split_ood_values=[
+                                                                                                    'Special Focus Institutions--Other special-focus institutions',
+                                                                                                    'Special Focus Institutions--Theological seminaries, Bible colleges, and other faith-related institutions',
+                                                                                                    "Associate's--Private For-profit 4-year Primarily Associate's",
+                                                                                                    'Baccalaureate Colleges--Diverse Fields',
+                                                                                                    'Special Focus Institutions--Schools of art, music, and design',
+                                                                                                    "Associate's--Private Not-for-profit",
+                                                                                                    "Baccalaureate/Associate's Colleges",
+                                                                                                    "Master's Colleges and Universities (larger programs)"]
+                                                                                                ),
+                                                                        grouper=None,
+                                                                        preprocessor_config=PreprocessorConfig(
+                                                                            # Several categorical features in college scorecard have > 10k
+                                                                            # unique values; so we label-encode instead of one-hot encoding.
+                                                                            categorical_features="label_encode",
+                                                                            # Some important numeric features are not reported by universities
+                                                                            # in a way that could be systematic (and we would like these included
+                                                                            # in the sample, not excluded), so we use kbins
+                                                                            numeric_features="kbins",
+                                                                            n_bins=100,
+                                                                            dropna=None,
+                                                                        ),
+                                                                        tabular_dataset_kwargs={},
+                                                                    )
+for index in range(COLLEGE_SCORECARD_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
+    BENCHMARK_CONFIGS["college_scorecard_arguablycausal_test_"+f"{index}"] = ExperimentConfig(
+                                                                        splitter=DomainSplitter(val_size=DEFAULT_ID_VAL_SIZE,
+                                                                                                ood_val_size=DEFAULT_OOD_VAL_SIZE,
+                                                                                                random_state=DEFAULT_RANDOM_STATE,
+                                                                                                id_test_size=DEFAULT_ID_TEST_SIZE,
+                                                                                                domain_split_varname='CCBASIC',
+                                                                                                domain_split_ood_values=[
+                                                                                                    'Special Focus Institutions--Other special-focus institutions',
+                                                                                                    'Special Focus Institutions--Theological seminaries, Bible colleges, and other faith-related institutions',
+                                                                                                    "Associate's--Private For-profit 4-year Primarily Associate's",
+                                                                                                    'Baccalaureate Colleges--Diverse Fields',
+                                                                                                    'Special Focus Institutions--Schools of art, music, and design',
+                                                                                                    "Associate's--Private Not-for-profit",
+                                                                                                    "Baccalaureate/Associate's Colleges",
+                                                                                                    "Master's Colleges and Universities (larger programs)"]
+                                                                                                ),
+                                                                        grouper=None,
+                                                                        preprocessor_config=PreprocessorConfig(
+                                                                            # Several categorical features in college scorecard have > 10k
+                                                                            # unique values; so we label-encode instead of one-hot encoding.
+                                                                            categorical_features="label_encode",
+                                                                            # Some important numeric features are not reported by universities
+                                                                            # in a way that could be systematic (and we would like these included
+                                                                            # in the sample, not excluded), so we use kbins
+                                                                            numeric_features="kbins",
+                                                                            n_bins=100,
+                                                                            dropna=None,
                                                                         ),
                                                                         tabular_dataset_kwargs={},
                                                                     )

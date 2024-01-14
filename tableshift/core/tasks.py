@@ -282,6 +282,8 @@ _TASK_REGISTRY = {
         TaskConfig(CollegeScorecardDataSource, COLLEGE_SCORECARD_FEATURES),
     'college_scorecard_causal':
         TaskConfig(CollegeScorecardDataSource, COLLEGE_SCORECARD_FEATURES_CAUSAL),
+    'college_scorecard_arguablycausal':
+        TaskConfig(CollegeScorecardDataSource, COLLEGE_SCORECARD_FEATURES_ARGUABLYCAUSAL),
     'meps':
         TaskConfig(MEPSDataSource, MEPS_FEATURES),
     'meps_causal':
@@ -334,9 +336,16 @@ for index, subset in enumerate(ASSISTMENTS_FEATURES_CAUSAL_SUBSETS):
 for index, superset in enumerate(ASSISTMENTS_FEATURES_ARGUABLYCAUSAL_SUPERSETS):
     _TASK_REGISTRY["assistments_arguablycausal_test_"+f"{index}"] = TaskConfig(AssistmentsDataSource, superset)
 
+for index, subset in enumerate(COLLEGE_SCORECARD_FEATURES_CAUSAL_SUBSETS):
+    _TASK_REGISTRY["college_scorecard_causal_test_"+f"{index}"] = TaskConfig(CollegeScorecardDataSource, subset)
+
+for index, superset in enumerate(COLLEGE_SCORECARD_FEATURES_ARGUABLYCAUSAL_SUPERSETS):
+    _TASK_REGISTRY["college_scorecard_arguablycausal_test_"+f"{index}"] = TaskConfig(CollegeScorecardDataSource, superset)
 
 
 
+
+CollegeScorecardDataSource
 
 def get_task_config(name: str) -> TaskConfig:
     if name in _TASK_REGISTRY:
