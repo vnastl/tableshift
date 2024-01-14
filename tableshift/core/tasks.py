@@ -56,6 +56,9 @@ _TASK_REGISTRY = {
     "acspubcov_causal":
         TaskConfig(ACSDataSource,
                    ACS_PUBCOV_FEATURES_CAUSAL),
+    "acspubcov_arguablycausal":
+        TaskConfig(ACSDataSource,
+                   ACS_PUBCOV_FEATURES_ARGUABLYCAUSAL),
     "acsunemployment":
         TaskConfig(ACSDataSource,
                    ACS_UNEMPLOYMENT_FEATURES + ACS_SHARED_FEATURES),
@@ -309,6 +312,18 @@ for index, subset in enumerate(ACS_FOODSTAMPS_FEATURES_CAUSAL_SUBSETS):
 
 for index, superset in enumerate(ACS_FOODSTAMPS_FEATURES_ARGUABLYCAUSAL_SUPERSETS):
     _TASK_REGISTRY["acsfoodstamps_arguablycausal_test_"+f"{index}"] = TaskConfig(ACSDataSource, superset)
+
+for index, subset in enumerate(ACS_PUBCOV_FEATURES_CAUSAL_SUBSETS):
+    _TASK_REGISTRY["acspubcov_causal_test_"+f"{index}"] = TaskConfig(ACSDataSource, subset)
+
+for index, superset in enumerate(ACS_PUBCOV_FEATURES_ARGUABLYCAUSAL_SUPERSETS):
+    _TASK_REGISTRY["acspubcov_arguablycausal_test_"+f"{index}"] = TaskConfig(ACSDataSource, superset)
+
+for index, subset in enumerate(ACS_UNEMPLOYMENT_FEATURES_CAUSAL_SUBSETS):
+    _TASK_REGISTRY["acsunemployment_causal_test_"+f"{index}"] = TaskConfig(ACSDataSource, subset)
+
+for index, superset in enumerate(ACS_UNEMPLOYMENT_FEATURES_ARGUABLYCAUSAL_SUPERSETS):
+    _TASK_REGISTRY["acsunemployment_arguablycausal_test_"+f"{index}"] = TaskConfig(ACSDataSource, superset)
 
 for index, subset in enumerate(BRFSS_DIABETES_FEATURES_CAUSAL_SUBSETS):
     _TASK_REGISTRY["brfss_diabetes_causal_test_"+f"{index}"] = TaskConfig(BRFSSDataSource, subset)

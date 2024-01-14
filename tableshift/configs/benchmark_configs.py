@@ -11,6 +11,8 @@ from tableshift.core import Grouper, PreprocessorConfig, DomainSplitter
 from tableshift.datasets import BRFSS_YEARS, ACS_YEARS, NHANES_YEARS
 from tableshift.datasets import ACS_INCOME_FEATURES_CAUSAL_SUBSETS_NUMBER, ACS_INCOME_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER, \
     ACS_FOODSTAMPS_FEATURES_CAUSAL_SUBSETS_NUMBER, ACS_FOODSTAMPS_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER, \
+    ACS_PUBCOV_FEATURES_CAUSAL_SUBSETS_NUMBER, ACS_PUBCOV_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER,\
+    ACS_UNEMPLOYMENT_FEATURES_CAUSAL_SUBSETS_NUMBER, ACS_UNEMPLOYMENT_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER,\
     BRFSS_DIABETES_FEATURES_CAUSAL_SUBSETS_NUMBER, BRFSS_DIABETES_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER, \
     BRFSS_BLOOD_PRESSURE_FEATURES_CAUSAL_SUBSETS_NUMBER, BRFSS_BLOOD_PRESSURE_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER, \
     DIABETES_READMISSION_FEATURES_CAUSAL_NUMBER, DIABETES_READMISSION_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER,\
@@ -132,7 +134,18 @@ BENCHMARK_CONFIGS = {
                                 domain_split_ood_values=['1.0']),
         grouper=Grouper({"RAC1P": [1, ], "SEX": [1, ]}, drop=False),
         preprocessor_config=PreprocessorConfig(),
-        tabular_dataset_kwargs={"acs_task": "acspubcov_causal", "name": "acspubcov_causal",
+        tabular_dataset_kwargs={"acs_task": "acspubcov", "name": "acspubcov_causal",
+                                "years": ACS_YEARS}),
+    "acspubcov_arguablycausal": ExperimentConfig(
+        splitter=DomainSplitter(val_size=DEFAULT_ID_VAL_SIZE,
+                                ood_val_size=DEFAULT_OOD_VAL_SIZE,
+                                random_state=DEFAULT_RANDOM_STATE,
+                                id_test_size=DEFAULT_ID_TEST_SIZE,
+                                domain_split_varname="DIS",
+                                domain_split_ood_values=['1.0']),
+        grouper=Grouper({"RAC1P": [1, ], "SEX": [1, ]}, drop=False),
+        preprocessor_config=PreprocessorConfig(),
+        tabular_dataset_kwargs={"acs_task": "acspubcov", "name": "acspubcov_arguablycausal",
                                 "years": ACS_YEARS}),
 
     # Unemployment
@@ -786,7 +799,64 @@ for index in range(ACS_FOODSTAMPS_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
                                                                         grouper=Grouper({"RAC1P": [1, ], "SEX": [1, ]}, drop=False),
                                                                         preprocessor_config=PreprocessorConfig(),
                                                                         tabular_dataset_kwargs={"acs_task": "acsfoodstamps"})
-    
+for index in range(ACS_PUBCOV_FEATURES_CAUSAL_SUBSETS_NUMBER):
+    BENCHMARK_CONFIGS["acspubcov_causal_test_"+f"{index}"] = ExperimentConfig(
+                                                                        splitter=DomainSplitter(val_size=DEFAULT_ID_VAL_SIZE,
+                                                                                                ood_val_size=DEFAULT_OOD_VAL_SIZE,
+                                                                                                random_state=DEFAULT_RANDOM_STATE,
+                                                                                                id_test_size=DEFAULT_ID_TEST_SIZE,
+                                                                                                domain_split_varname="DIS",
+                                                                                                domain_split_ood_values=['1.0']),
+                                                                        grouper=None,
+                                                                        preprocessor_config=PreprocessorConfig(),
+                                                                        tabular_dataset_kwargs={"acs_task": "acspubcov", "name": "acspubcov_causal_test_"+f"{index}",
+                                                                                                "years": ACS_YEARS})
+
+for index in range(ACS_PUBCOV_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
+    BENCHMARK_CONFIGS["acspubcov_arguablycausal_test_"+f"{index}"] = ExperimentConfig(
+                                                                        splitter=DomainSplitter(val_size=DEFAULT_ID_VAL_SIZE,
+                                                                                                ood_val_size=DEFAULT_OOD_VAL_SIZE,
+                                                                                                random_state=DEFAULT_RANDOM_STATE,
+                                                                                                id_test_size=DEFAULT_ID_TEST_SIZE,
+                                                                                                domain_split_varname="DIS",
+                                                                                                domain_split_ood_values=['1.0']),
+                                                                        grouper=Grouper({"RAC1P": [1, ], "SEX": [1, ]}, drop=False),
+                                                                        preprocessor_config=PreprocessorConfig(),
+                                                                        tabular_dataset_kwargs={"acs_task": "acspubcov", "name": "acspubcov_causal_test_"+f"{index}",
+                                                                                                "years": ACS_YEARS})
+
+for index in range(ACS_UNEMPLOYMENT_FEATURES_CAUSAL_SUBSETS_NUMBER):
+    BENCHMARK_CONFIGS["acsunemployment_causal_test_"+f"{index}"] = ExperimentConfig(
+                                                                        splitter=DomainSplitter(val_size=DEFAULT_ID_VAL_SIZE,
+                                                                                                ood_val_size=DEFAULT_OOD_VAL_SIZE,
+                                                                                                random_state=DEFAULT_RANDOM_STATE,
+                                                                                                id_test_size=DEFAULT_ID_TEST_SIZE,
+                                                                                                domain_split_varname='SCHL',
+                                                                                                # No high school diploma vs. GED/diploma or higher.
+                                                                                                domain_split_ood_values=['01', '02', '03', '04',
+                                                                                                                        '05', '06', '07', '08',
+                                                                                                                        '09', '10', '11', '12',
+                                                                                                                        '13', '14', '15']),
+                                                                        grouper=None,
+                                                                        preprocessor_config=PreprocessorConfig(),
+                                                                        tabular_dataset_kwargs={"acs_task": "acsunemployment"})
+
+for index in range(ACS_UNEMPLOYMENT_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
+    BENCHMARK_CONFIGS["acsunemployment_arguablycausal_test_"+f"{index}"] = ExperimentConfig(
+                                                                        splitter=DomainSplitter(val_size=DEFAULT_ID_VAL_SIZE,
+                                                                                                ood_val_size=DEFAULT_OOD_VAL_SIZE,
+                                                                                                random_state=DEFAULT_RANDOM_STATE,
+                                                                                                id_test_size=DEFAULT_ID_TEST_SIZE,
+                                                                                                domain_split_varname='SCHL',
+                                                                                                # No high school diploma vs. GED/diploma or higher.
+                                                                                                domain_split_ood_values=['01', '02', '03', '04',
+                                                                                                                        '05', '06', '07', '08',
+                                                                                                                        '09', '10', '11', '12',
+                                                                                                                        '13', '14', '15']),
+                                                                        grouper=Grouper({"RAC1P": [1, ], "SEX": [1, ]}, drop=False),
+                                                                        preprocessor_config=PreprocessorConfig(),
+                                                                        tabular_dataset_kwargs={"acs_task": "acsunemployment"})
+
 
 for index in range(BRFSS_DIABETES_FEATURES_CAUSAL_SUBSETS_NUMBER):
     BENCHMARK_CONFIGS["brfss_diabetes_causal_test_"+f"{index}"] = ExperimentConfig(
