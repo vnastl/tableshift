@@ -259,10 +259,10 @@ def do_plot(experiment_name,mymin,myname):
         f"{dic_title[experiment_name]}")
     plt.xlabel(f"in-domain accuracy\n({dic_id_domain[experiment_name]})")
     plt.ylabel(f"out-of-domain accuracy\n({dic_ood_domain[experiment_name]})")
-    ## Constant
-    shift = eval_constant
-    shift["type"] = "constant"
-    dic_shift["constant"] = shift
+
+    #############################################################################
+    # plot errorbars and shift gap for constant
+    #############################################################################
     errors = plt.errorbar(
             x=eval_constant['id_test'],
             y=eval_constant['ood_test'],
@@ -272,7 +272,10 @@ def do_plot(experiment_name,mymin,myname):
             markersize=7, capsize=3, label="constant")
     plt.hlines(y=eval_constant['ood_test'].values[0], xmin=eval_constant['ood_test'].values[0], xmax=eval_constant['id_test'].values[0],
                 color=color_constant, linewidth=3, alpha=0.7)
-    ## All features
+    
+    #############################################################################
+    # plot errorbars and shift gap for all features
+    #############################################################################
     eval_plot = eval_all[eval_all['features']=="all"]
     eval_plot.sort_values('id_test',inplace=True)
     # Calculate the pareto set
@@ -296,7 +299,9 @@ def do_plot(experiment_name,mymin,myname):
     plt.hlines(y=shift["ood_test"], xmin=shift["ood_test"], xmax=shift['id_test'],
                color=color_all, linewidth=3, alpha=0.7)
     
-    ## Causal features
+    #############################################################################
+    # plot errorbars and shift gap for causal features
+    #############################################################################
     eval_plot = eval_all[eval_all['features']=="causal"]
     eval_plot.sort_values('id_test',inplace=True)
     # Calculate the pareto set
@@ -320,7 +325,9 @@ def do_plot(experiment_name,mymin,myname):
     plt.hlines(y=shift["ood_test"], xmin=shift["ood_test"], xmax=shift['id_test'],
                color=color_causal, linewidth=3, alpha=0.7)
 
-    ## Arguably causal features
+    #############################################################################
+    # plot errorbars and shift gap for arguablycausal features
+    #############################################################################
     if (eval_all['features'] == "arguablycausal").any():
         eval_plot = eval_all[eval_all['features']=="arguablycausal"]
         eval_plot.sort_values('id_test',inplace=True)
@@ -344,7 +351,10 @@ def do_plot(experiment_name,mymin,myname):
         dic_shift["arguablycausal"] = shift
         plt.hlines(y=shift["ood_test"], xmin=shift["ood_test"], xmax=shift['id_test'],
                 color=color_arguablycausal, linewidth=3, alpha=0.7)
-
+        
+    #############################################################################
+    # plot errorbars and shift gap for anticausal features
+    #############################################################################
     if (eval_all['features'] == "anticausal").any():
         eval_plot = eval_all[eval_all['features']=="anticausal"]
         eval_plot.sort_values('id_test',inplace=True)
@@ -371,7 +381,9 @@ def do_plot(experiment_name,mymin,myname):
         plt.hlines(y=shift["ood_test"], xmin=shift["ood_test"], xmax=shift['id_test'],
                 color=color_anticausal, linewidth=3, alpha=0.7)
 
-    ## Constant
+    #############################################################################
+    # plot pareto dominated area for constant
+    #############################################################################
     xmin, xmax = plt.xlim()
     ymin, ymax = plt.ylim()
     plt.plot([xmin, eval_constant['id_test'].values[0]],
@@ -380,8 +392,14 @@ def do_plot(experiment_name,mymin,myname):
     plt.plot([eval_constant['id_test'].values[0], eval_constant['id_test'].values[0]],
                 [ymin,eval_constant['ood_test'].values[0]],
                 color=color_constant,linestyle="dotted")
+    plt.fill_between([xmin, eval_constant['id_test'].values[0]],
+                     [ymin,ymin],
+                     [eval_constant['ood_test'].values[0],eval_constant['ood_test'].values[0]],
+                        color=color_constant, alpha=0.1)
     
-    ## All features
+    #############################################################################
+    # plot pareto dominated area for all features
+    #############################################################################
     eval_plot = eval_all[eval_all['features']=="all"]
     eval_plot.sort_values('id_test',inplace=True)
     # Calculate the pareto set
@@ -399,7 +417,10 @@ def do_plot(experiment_name,mymin,myname):
     points = points.to_numpy()
     hull = ConvexHull(points)
     plt.fill(points[hull.vertices, 0], points[hull.vertices, 1], color=color_all,alpha=0.1)
-    ## Causal features
+
+    #############################################################################
+    # plot pareto dominated area for causal features
+    #############################################################################
     eval_plot = eval_all[eval_all['features']=="causal"]
     eval_plot.sort_values('id_test',inplace=True)
     # Calculate the pareto set
@@ -419,6 +440,10 @@ def do_plot(experiment_name,mymin,myname):
     points = points.to_numpy()
     hull = ConvexHull(points)
     plt.fill(points[hull.vertices, 0], points[hull.vertices, 1], color=color_causal,alpha=0.1)
+
+    #############################################################################
+    # plot pareto dominated area for arguablycausal features
+    #############################################################################
     if (eval_all['features'] == "arguablycausal").any():
         eval_plot = eval_all[eval_all['features']=="arguablycausal"]
         eval_plot.sort_values('id_test',inplace=True)
@@ -437,6 +462,10 @@ def do_plot(experiment_name,mymin,myname):
         points = points.to_numpy()
         hull = ConvexHull(points)
         plt.fill(points[hull.vertices, 0], points[hull.vertices, 1], color=color_arguablycausal,alpha=0.1)
+
+    #############################################################################
+    # plot pareto dominated area for anticausal features
+    #############################################################################
     if (eval_all['features'] == "anticausal").any():
         eval_plot = eval_all[eval_all['features']=="anticausal"]
         eval_plot.sort_values('id_test',inplace=True)
@@ -456,11 +485,10 @@ def do_plot(experiment_name,mymin,myname):
         points = points.to_numpy()
         hull = ConvexHull(points)
         plt.fill(points[hull.vertices, 0], points[hull.vertices, 1], color=color_anticausal,alpha=0.1)
-    plt.fill_between([xmin, eval_constant['id_test'].values[0]],
-                     [ymin,ymin],
-                     [eval_constant['ood_test'].values[0],eval_constant['ood_test'].values[0]],
-                        color=color_constant, alpha=0.1)
-
+    
+    #############################################################################
+    # Add legend & diagonal, save plot
+    #############################################################################
     # Get the lines and labels
     lines, labels = plt.gca().get_legend_handles_labels()
 
@@ -486,26 +514,54 @@ def do_plot(experiment_name,mymin,myname):
         plt.savefig(f"{str(Path(__file__).parents[0]/myname)}.pdf", bbox_inches='tight')
         plt.show()
 
-    if not myname.endswith("zoom"):
-        plt.title(
-        f"{dic_title[experiment_name]}")
-        plt.ylabel("shift gap")
-        shift = pd.concat(dic_shift.values(), ignore_index=True)
-        shift["gap"] = shift["id_test"] - shift["ood_test"]
-        if (eval_all['features'] == "arguablycausal").any():
-            if (eval_all['features'] == "anticausal").any():
-                barlist = plt.bar(shift["type"], shift["gap"], color=[color_all,color_causal,color_arguablycausal,color_anticausal,color_constant])
-                plt.savefig(str(Path(__file__).parents[0]/f"{myname}_anticausal_shift.pdf"), bbox_inches='tight')
-                plt.show()
-            else:
-                barlist = plt.bar(shift["type"], shift["gap"], color=[color_all,color_causal,color_arguablycausal,color_constant])
-                plt.savefig(str(Path(__file__).parents[0]/f"{myname}_shift.pdf"), bbox_inches='tight')
-                plt.show()
+    #############################################################################
+    # Plot shift gap as bars
+    #############################################################################
+    plt.title(
+    f"{dic_title[experiment_name]}")
+    plt.ylabel("shift gap")
+
+    # add constant shift gap
+    shift = eval_constant
+    shift["type"] = "constant"
+    dic_shift["constant"] = shift
+
+    shift = pd.concat(dic_shift.values(), ignore_index=True)
+    shift["gap"] = shift["id_test"] - shift["ood_test"]
+    if (eval_all['features'] == "arguablycausal").any():
+        if (eval_all['features'] == "anticausal").any():
+            barlist = plt.bar(shift["type"], shift["gap"], color=[color_all,color_causal,color_arguablycausal,color_anticausal,color_constant])
+            plt.savefig(str(Path(__file__).parents[0]/f"{myname}_anticausal_shift.pdf"), bbox_inches='tight')
+            plt.show()
         else:
-            barlist = plt.bar(shift["type"], shift["gap"], color=[color_all,color_causal,color_constant])
+            barlist = plt.bar(shift["type"], shift["gap"], color=[color_all,color_causal,color_arguablycausal,color_constant])
             plt.savefig(str(Path(__file__).parents[0]/f"{myname}_shift.pdf"), bbox_inches='tight')
             plt.show()
-        # sns.set_style("white")
+    else:
+        barlist = plt.bar(shift["type"], shift["gap"], color=[color_all,color_causal,color_constant])
+        plt.savefig(str(Path(__file__).parents[0]/f"{myname}_shift.pdf"), bbox_inches='tight')
+        plt.show()
+
+    #############################################################################
+    # Plot shift gap vs accuarcy
+    #############################################################################
+    if (eval_all['features'] == "arguablycausal").any():
+        plt.title(
+        f"{dic_title[experiment_name]}")
+        plt.xlabel("1 - shift gap")
+        plt.ylabel("out-of-domain accuracy")
+        markers = {'constant': 'D','all': 's', 'causal': 'o', 'arguablycausal':'^'}
+        for type, marker in markers.items():
+            if type == 'arguablycausal':
+                type_shift = shift[shift['type']=='arguably\ncausal']
+            else:
+                type_shift = shift[shift['type']==type]
+            plt.scatter(1-type_shift["gap"],type_shift["ood_test"],
+                        color=eval(f"color_{type}"),
+                        s=100,
+                        marker=marker)
+        plt.savefig(str(Path(__file__).parents[0]/f"{myname}_shift_accuracy.pdf"), bbox_inches='tight')
+        plt.show()
 
 # %%
 def plot_experiment(experiment_name):
@@ -540,7 +596,7 @@ def plot_experiment(experiment_name):
         do_plot(experiment_name,mymin,myname)
 
     elif experiment_name == "assistments":
-        mymin = 0.4 if ANTICAUSAL else 0.56
+        mymin = 0.4 if ANTICAUSAL else 0.5
         myname = f"plots_paper/plot_{experiment_name}"
         do_plot(experiment_name,mymin,myname)
 

@@ -16,6 +16,8 @@ from tableshift import get_dataset
 from  statsmodels.stats.proportion import proportion_confint
 from paretoset import paretoset
 from scipy.spatial import ConvexHull
+
+from experiments_vnastl.plot_config_colors import *
 from tableshift.datasets import ACS_INCOME_FEATURES_CAUSAL_SUBSETS_NUMBER, ACS_INCOME_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER, \
     ACS_FOODSTAMPS_FEATURES_CAUSAL_SUBSETS_NUMBER, ACS_FOODSTAMPS_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER, \
     ACS_PUBCOV_FEATURES_CAUSAL_SUBSETS_NUMBER, ACS_PUBCOV_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER,\
@@ -157,18 +159,6 @@ dic_title = {
     "physionet": 'Tableshift: Sepsis', # ICU length of stay
     "sipp": 'SIPP: Poverty',
 }
-
-# color_all = "tab:blue"
-# color_causal = "tab:orange"
-# color_arguablycausal = "tab:green"
-# color_anticausal = "tab:grey"
-# color_constant = "tab:red"
-color_all = "#0173b2"
-color_causal = "#de8f05"
-color_causal_robust = "#cc78bc"
-# color_arguablycausal = "#d55e00"
-# color_anticausal = "#029e73"
-color_constant = "#949494"
 sns.set_style("white")
 
 def get_results(experiment_name):
@@ -263,7 +253,7 @@ def get_results(experiment_name):
 
 #%%
 
-def do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,axmin=[0.5,0.5],axmax=[1.0,1.0]):
+def do_plot(experiment_name,mymin,myname):
 
     eval_all, causal_features = get_results(experiment_name)
     eval_constant = eval_all[eval_all['features']=="constant"]
@@ -273,7 +263,23 @@ def do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,axmin=[0.5,0.5],a
         f"{dic_title[experiment_name]}")
     plt.xlabel(f"in-domain accuracy\n({dic_id_domain[experiment_name]})")
     plt.ylabel(f"out-of-domain accuracy\n({dic_ood_domain[experiment_name]})")
-    ## All features
+
+    #############################################################################
+    # plot errorbars and shift gap for constant
+    #############################################################################
+    errors = plt.errorbar(
+            x=eval_constant['id_test'],
+            y=eval_constant['ood_test'],
+            xerr=eval_constant['id_test_ub']-eval_constant['id_test'],
+            yerr=eval_constant['ood_test_ub']-eval_constant['ood_test'], fmt="D",
+            color=color_constant, ecolor=color_constant,
+            markersize=7, capsize=3, label="constant")
+    plt.hlines(y=eval_constant['ood_test'].values[0], xmin=eval_constant['ood_test'].values[0], xmax=eval_constant['id_test'].values[0],
+                color=color_constant, linewidth=3, alpha=0.7)
+    
+    #############################################################################
+    # plot errorbars and shift gap for all features
+    #############################################################################
     eval_plot = eval_all[eval_all['features']=="all"]
     eval_plot.sort_values('id_test',inplace=True)
     # Calculate the pareto set
@@ -283,33 +289,23 @@ def do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,axmin=[0.5,0.5],a
     points = points[points["id_test"] >= eval_constant['id_test'].values[0]]
     markers = eval_plot[mask]
     markers = markers[markers["id_test"] >= eval_constant['id_test'].values[0]]
-    # if not myname.endswith("zoom"):
-    #     print(markers["model"].values)
     errors = plt.errorbar(
                 x=markers['id_test'],
                 y=markers['ood_test'],
                 xerr=markers['id_test_ub']-markers['id_test'],
                 yerr=markers['ood_test_ub']-markers['ood_test'], fmt="s",
-                color=color_all, ecolor=color_all, label="top all features")
+                color=color_all, ecolor=color_all,
+                markersize=7, capsize=3, label="top all features")
     # highlight bar
     shift = points[points["ood_test"] == points["ood_test"].max()]
     shift["type"] = "all"
     dic_shift["all"] = shift
     plt.hlines(y=shift["ood_test"], xmin=shift["ood_test"], xmax=shift['id_test'],
-               color=color_all, linewidth=3, alpha=0.7  )
-    # get extra points for the plot
-    new_row = pd.DataFrame({'id_test':[mymin,max(points['id_test'])], 'ood_test':[max(points['ood_test']),mymin]},)
-    points = pd.concat([points,new_row], ignore_index=True)
-    points.sort_values('id_test',inplace=True)
-    plt.plot(points['id_test'],points['ood_test'],color=color_all,linestyle="dotted")
-
-    new_row = pd.DataFrame({'id_test':[mymin], 'ood_test':[mymin]},)
-    points = pd.concat([points,new_row], ignore_index=True)
-    points = points.to_numpy()
-    hull = ConvexHull(points)
-    plt.fill(points[hull.vertices, 0], points[hull.vertices, 1], color=color_all,alpha=0.1, zorder = 0)
+               color=color_all, linewidth=3, alpha=0.7)
     
-    ## Causal features
+    #############################################################################
+    # plot errorbars and shift gap for causal features
+    #############################################################################
     eval_plot = eval_all[eval_all['features']=="causal"]
     eval_plot.sort_values('id_test',inplace=True)
     # Calculate the pareto set
@@ -323,28 +319,20 @@ def do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,axmin=[0.5,0.5],a
                 x=markers['id_test'],
                 y=markers['ood_test'],
                 xerr=markers['id_test_ub']-markers['id_test'],
-                yerr=markers['ood_test_ub']-markers['ood_test'], fmt="o", 
-                color=color_causal, ecolor=color_causal, label="top causal features")
+                yerr=markers['ood_test_ub']-markers['ood_test'], fmt="o",
+                color=color_causal, ecolor=color_causal,
+                markersize=7, capsize=3, label="top causal features")
     # highlight bar
     shift = points[points["ood_test"] == points["ood_test"].max()]
     shift["type"] = "causal"
     dic_shift["causal"] = shift
     plt.hlines(y=shift["ood_test"], xmin=shift["ood_test"], xmax=shift['id_test'],
                color=color_causal, linewidth=3, alpha=0.7)
-    # get extra points for the plot
-    new_row = pd.DataFrame({'id_test':[mymin,max(points['id_test'])], 'ood_test':[max(points['ood_test']),mymin]},)
-    points = pd.concat([points,new_row], ignore_index=True)
-    points.sort_values('id_test',inplace=True)
-    plt.plot(points['id_test'],points['ood_test'],color=color_causal,linestyle="dotted")
 
-    new_row = pd.DataFrame({'id_test':[mymin], 'ood_test':[mymin]},)
-    points = pd.concat([points,new_row], ignore_index=True)
-    filled = points.to_numpy()
-    hull = ConvexHull(filled,incremental=True)
-    plt.fill(filled[hull.vertices, 0], filled[hull.vertices, 1], color=color_causal,alpha=0.1)
-
-    ## robustness test
-    for index in range(dic_robust_number[experiment_name]-1):
+    #############################################################################
+    # plot errorbars and shift gap for robustness tests
+    #############################################################################
+    for index in range(dic_robust_number[experiment_name]):
         if (eval_all['features'] == f"test{index}").any():
             eval_plot = eval_all[eval_all['features']==f"test{index}"]
             eval_plot.sort_values('id_test',inplace=True)
@@ -362,6 +350,7 @@ def do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,axmin=[0.5,0.5],a
                         y=markers['ood_test'],
                         xerr=markers['id_test_ub']-markers['id_test'],
                         yerr=markers['ood_test_ub']-markers['ood_test'], fmt="v",
+                        markersize=7, capsize=3,
                         color=color_causal_robust, ecolor=color_causal_robust, zorder = 1,
                         label="robustness test for causal features")
             # highlight bar
@@ -369,29 +358,70 @@ def do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,axmin=[0.5,0.5],a
             shift["type"] = f"test {index}"
             dic_shift[f"test{index}"] = shift
             plt.hlines(y=shift["ood_test"], xmin=shift["ood_test"], xmax=shift['id_test'],
-                    color=color_causal_robust, linewidth=3, alpha=0.7  )
-
-    ## Constant
-    shift = eval_constant
-    shift["type"] = "constant"
-    dic_shift["constant"] = shift
-    errors = plt.errorbar(
-            x=eval_constant['id_test'],
-            y=eval_constant['ood_test'],
-            xerr=eval_constant['id_test_ub']-eval_constant['id_test'],
-            yerr=eval_constant['ood_test_ub']-eval_constant['ood_test'], fmt="D",
-            color=color_constant, ecolor=color_constant, label="constant")
-    plt.plot([0, eval_constant['id_test'].values[0]],
+                    color=color_causal_robust, linewidth=2, alpha=0.7, zorder = 0)
+            
+    #############################################################################
+    # plot pareto dominated area for constant
+    #############################################################################
+    xmin, xmax = plt.xlim()
+    ymin, ymax = plt.ylim()
+    plt.plot([xmin, eval_constant['id_test'].values[0]],
                 [eval_constant['ood_test'].values[0],eval_constant['ood_test'].values[0]],
                 color=color_constant,linestyle="dotted")
     plt.plot([eval_constant['id_test'].values[0], eval_constant['id_test'].values[0]],
-                [0,eval_constant['ood_test'].values[0]],
+                [ymin,eval_constant['ood_test'].values[0]],
                 color=color_constant,linestyle="dotted")
-    plt.fill_between([0, eval_constant['id_test'].values[0]],
-                        [0,0],
-                        [eval_constant['ood_test'].values[0],eval_constant['ood_test'].values[0]],
+    plt.fill_between([xmin, eval_constant['id_test'].values[0]],
+                     [ymin,ymin],
+                     [eval_constant['ood_test'].values[0],eval_constant['ood_test'].values[0]],
                         color=color_constant, alpha=0.1)
+    #############################################################################
+    # plot pareto dominated area for all features
+    #############################################################################
+    eval_plot = eval_all[eval_all['features']=="all"]
+    eval_plot.sort_values('id_test',inplace=True)
+    # Calculate the pareto set
+    points = eval_plot[['id_test','ood_test']]
+    mask = paretoset(points, sense=["max", "max"])
+    points = points[mask]
+    points = points[points["id_test"] >= eval_constant['id_test'].values[0]]
+    #get extra points for the plot
+    new_row = pd.DataFrame({'id_test':[xmin,max(points['id_test'])], 'ood_test':[max(points['ood_test']),ymin]},)
+    points = pd.concat([points,new_row], ignore_index=True)
+    points.sort_values('id_test',inplace=True)
+    plt.plot(points['id_test'],points['ood_test'],color=color_all,linestyle="dotted")
+    new_row = pd.DataFrame({'id_test':[xmin], 'ood_test':[ymin]},)
+    points = pd.concat([points,new_row], ignore_index=True)
+    points = points.to_numpy()
+    hull = ConvexHull(points)
+    plt.fill(points[hull.vertices, 0], points[hull.vertices, 1], color=color_all,alpha=0.1)
 
+    #############################################################################
+    # plot pareto dominated area for causal features
+    #############################################################################
+    eval_plot = eval_all[eval_all['features']=="causal"]
+    eval_plot.sort_values('id_test',inplace=True)
+    # Calculate the pareto set
+    points = eval_plot[['id_test','ood_test']]
+    mask = paretoset(points, sense=["max", "max"])
+    points = points[mask]
+    points = points[points["id_test"] >= eval_constant['id_test'].values[0]]
+    markers = eval_plot[mask]
+    markers = markers[markers["id_test"] >= eval_constant['id_test'].values[0]]
+    #get extra points for the plot
+    new_row = pd.DataFrame({'id_test':[xmin,max(points['id_test'])], 'ood_test':[max(points['ood_test']),ymin]},)
+    points = pd.concat([points,new_row], ignore_index=True)
+    points.sort_values('id_test',inplace=True)
+    plt.plot(points['id_test'],points['ood_test'],color=color_causal,linestyle="dotted")
+    new_row = pd.DataFrame({'id_test':[xmin], 'ood_test':[ymin]},)
+    points = pd.concat([points,new_row], ignore_index=True)
+    points = points.to_numpy()
+    hull = ConvexHull(points)
+    plt.fill(points[hull.vertices, 0], points[hull.vertices, 1], color=color_causal,alpha=0.1)
+    
+    #############################################################################
+    # Add legend & diagonal, save plot
+    #############################################################################
     # Get the lines and labels
     lines, labels = plt.gca().get_legend_handles_labels()
 
@@ -405,370 +435,120 @@ def do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,axmin=[0.5,0.5],a
     # Create a legend with only distinct labels
     plt.legend(newLines, newLabels, loc='upper left')
 
-    # Plot the diagonal line
-    plt.plot([0, 1], [0, 1], color='black')
-
-    plt.xlim((axmin[0],axmax[0]))
-    plt.ylim((axmin[1],axmax[1]))
-
-    # # Add text below the plot
-    # if (eval_all['features'] == "arguablycausal").any():
-    #     print(f'Causal features: {causal_features} \nArguably causal features: {extra_features}')
-    # else:
-    #     # plt.text(mytextx, mytexty,f'Causal features: {causal_features}')
-    #     print(f'Causal features: {causal_features}')
-    # if (eval_all['features'] == "anticausal").any():
-    #     # plt.text(mytextx, mytexty,f'Causal features: {causal_features} \n Anticausal features: {extra_features}')
-    #     print(f'Anticausal features: {extra_features}')
-    # if experiment_name == 'college_scorecard':
-    #     # plt.text(mytextx, mytexty,f'Causal features: {causal_features} \n Causal features without tuition: {extra_features}')
-    #     print(f'Causal features without tuition: {extra_features}')
-        
+   # Plot the diagonal line
+    start_lim = max(xmin, ymin)
+    end_lim = min(xmax, ymax)
+    plt.plot([start_lim, end_lim], [start_lim, end_lim], color='black')
     
     plt.savefig(f"{str(Path(__file__).parents[0]/myname)}_causal_robust.pdf", bbox_inches='tight')
     plt.show()
 
-    if not myname.endswith("zoom"):
-        # sns.set_style("whitegrid")
-        plt.title(
-        f"{dic_title[experiment_name]}")
-        plt.ylabel("shift gap")
-        shift = pd.concat(dic_shift.values(), ignore_index=True)
-        shift["gap"] = shift["id_test"] - shift["ood_test"]
-        barlist = plt.bar(shift["type"], shift["gap"], color=[color_all,color_causal]+[color_causal_robust for index in range(dic_robust_number[experiment_name]-1)]+[color_constant])
-        barlist[0].set_hatch('--')
-        barlist[1].set_hatch('oo')
-        for index in range(2,dic_robust_number[experiment_name]+1):
-            barlist[index].set_hatch('//')
-        plt.xticks(rotation=45)
-        plt.savefig(str(Path(__file__).parents[0]/f"{myname}_causal_robust_shift.pdf"), bbox_inches='tight')
-        plt.show()
-        # sns.set_style("white")
+    #############################################################################
+    # Plot shift gap as bars
+    #############################################################################
+    plt.title(
+    f"{dic_title[experiment_name]}")
+    plt.ylabel("shift gap")
+
+    # add constant
+    shift = eval_constant
+    shift["type"] = "constant"
+    dic_shift["constant"] = shift
+
+    shift = pd.concat(dic_shift.values(), ignore_index=True)
+    shift["gap"] = shift["id_test"] - shift["ood_test"]
+    barlist = plt.bar(shift["type"], shift["gap"], color=[color_all,color_causal]+[color_causal_robust for index in range(dic_robust_number[experiment_name])]+[color_constant])
+    plt.xticks(rotation=90)
+    plt.savefig(str(Path(__file__).parents[0]/f"{myname}_causal_robust_shift.pdf"), bbox_inches='tight')
+    plt.show()
 
 # %%
 def plot_experiment(experiment_name):
     if experiment_name == "acsemployment":
         mymin = 0.45
-        mymax = 1
-        mytextx = 0.45
-        mytexty = 0.32
         myname = f"plots_paper/plot_folktable_acsemployment"
-
-        do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,[mymin,mymin],[mymax,mymax])
-
+        do_plot(experiment_name,mymin,myname)
+        
     elif experiment_name == "acsfoodstamps":
         mymin = 0.5
-        mymax = 1
-        mytextx = 0.5
-        mytexty = 0.4
         myname = f"plots_paper/plot_{experiment_name}"
-
-        do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,[mymin,mymin],[mymax,mymax])
+        do_plot(experiment_name,mymin,myname)
 
     elif experiment_name == "acsincome":
         mymin = 0.5
-        mymax = 1
-        mytextx = 0.5
-        mytexty = 0.4
         myname = f"plots_paper/plot_{experiment_name}"
-
-        do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,[mymin,mymin],[mymax,mymax])
+        do_plot(experiment_name,mymin,myname)
 
     elif experiment_name == "acspubcov":
         mymin = 0.2
-        mymax = 1
-        mytextx = 0.2
-        mytexty = 0.05
         myname = f"plots_paper/plot_{experiment_name}"
-
-        do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,[mymin,mymin],[mymax,mymax])
+        do_plot(experiment_name,mymin,myname)
 
     elif experiment_name == "acsunemployment":
         mymin = 0.5
-        mymax = 1
-        mytextx = 0.5
-        mytexty = 0.4
-        myname = f"plots_paper/plot_acsunemployment"
-
-        do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,[mymin,mymin],[mymax,mymax])
+        myname = f"plots_paper/plot_{experiment_name}"
+        do_plot(experiment_name,mymin,myname)
 
     elif experiment_name == "anes":
         mymin = 0.5
-        mymax = 1
-        mytextx = 0.5
-        mytexty = 0.4
         myname = f"plots_paper/plot_{experiment_name}"
-
-        do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,[mymin,mymin],[mymax,mymax])
+        do_plot(experiment_name,mymin,myname)
 
     elif experiment_name == "assistments":
         mymin = 0.4
-        mymax = 1
-        mytextx = 0.4
-        mytexty = 0.3
         myname = f"plots_paper/plot_{experiment_name}"
-
-        do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,[mymin,mymin],[mymax,mymax])
+        do_plot(experiment_name,mymin,myname)
 
     elif experiment_name == "brfss_diabetes":
         mymin = 0.5
-        mymax = 1
-        mytextx = 0.5
-        mytexty = 0.4
         myname = f"plots_paper/plot_{experiment_name}"
-
-        do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,[mymin,mymin],[mymax,mymax])
+        do_plot(experiment_name,mymin,myname)
 
     elif experiment_name == "brfss_blood_pressure":
         mymin = 0.5
-        mymax = 1
-        mytextx = 0.5
-        mytexty = 0.4
         myname = f"plots_paper/plot_{experiment_name}"
-
-        do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,[mymin,mymin],[mymax,mymax])
+        do_plot(experiment_name,mymin,myname)
 
     elif experiment_name == "college_scorecard":
         mymin = 0.5
-        mymax = 1
-        mytextx = 0.5
-        mytexty = 0.4
         myname = f"plots_paper/plot_{experiment_name}"
-
-        do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,[mymin,mymin],[mymax,mymax])
+        do_plot(experiment_name,mymin,myname)
 
     elif experiment_name == "diabetes_readmission":
         mymin = 0.5
-        mymax = 1
-        mytextx = 0.5
-        mytexty = 0.4
         myname = f"plots_paper/plot_{experiment_name}"
-
-        do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,[mymin,mymin],[mymax,mymax])
+        do_plot(experiment_name,mymin,myname)
 
     elif experiment_name == "meps":
         mymin = 0.5
-        mymax = 1
-        mytextx = 0.5
-        mytexty = 0.4
         myname = f"plots_paper/plot_{experiment_name}"
-
-        do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,[mymin,mymin],[mymax,mymax])
+        do_plot(experiment_name,mymin,myname)
 
     elif experiment_name == "mimic_extract_los_3":
         mymin = 0.5
-        mymax = 1
-        mytextx = 0.5
-        mytexty = 0.4
         myname = f"plots_paper/plot_{experiment_name}"
-
-        do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,[mymin,mymin],[mymax,mymax])
+        do_plot(experiment_name,mymin,myname)
 
     elif experiment_name == "mimic_extract_mort_hosp":
         mymin = 0.5
-        mymax = 1
-        mytextx = 0.5
-        mytexty = 0.4
         myname = f"plots_paper/plot_{experiment_name}"
-
-        do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,[mymin,mymin],[mymax,mymax])
+        do_plot(experiment_name,mymin,myname)
 
     elif experiment_name == "nhanes_lead":
         mymin = 0.5
-        mymax = 1
-        mytextx = 0.5
-        mytexty = 0.4
         myname = f"plots_paper/plot_{experiment_name}"
-
-        do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,[mymin,mymin],[mymax,mymax])
+        do_plot(experiment_name,mymin,myname)
 
 
     elif experiment_name == "physionet":
         mymin = 0.5
-        mymax = 1
-        mytextx = 0.5
-        mytexty = 0.4
         myname = f"plots_paper/plot_{experiment_name}"
-
-        do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,[mymin,mymin],[mymax,mymax])
+        do_plot(experiment_name,mymin,myname)
 
     elif experiment_name == "sipp":
         mymin = 0.5
-        mymax = 1
-        mytextx = 0.5
-        mytexty = 0.4
         myname = f"plots_paper/plot_{experiment_name}"
-
-        do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,[mymin,mymin],[mymax,mymax])
-
-# %% ZOOM
-def plot_experiment_zoom(experiment_name):
-    if experiment_name == "acsemployment":
-        mymin = 0.90
-        axmin = 0.94
-        mymax = 1
-        mytextx = 0.94
-        mytexty = 0.925
-        myname = f"plots_paper/plot_folktable_acsemployment_zoom"
-
-        do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,[axmin,axmin],[mymax,mymax])
-
-    elif experiment_name == "acsfoodstamps":
-        mymin = 0.75
-        mymax = 0.82
-        mytextx = 0.75
-        mytexty = 0.73
-        myname = f"plots_paper/plot_{experiment_name}_zoom"
-
-        do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,[mymin,mymin],[mymax,mymax])
-
-    elif experiment_name == "acsincome":
-        mymin = 0.59
-        mymax = 0.73
-        mytextx = 0.58
-        mytexty = 0.55
-        myname = f"plots_paper/plot_{experiment_name}_zoom"
-
-        do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,[mymin,mymin],[mymax,mymax])
-
-    elif experiment_name == "acspubcov":
-        mymin = 0.2
-        axminx = 0.58
-        axminy = 0.35
-        mymax = 0.83
-        mytextx = 0.58
-        mytexty = 0.25
-        myname = f"plots_paper/plot_{experiment_name}_zoom"
-
-        do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,[axminx,axminy],[mymax,mymax])
-
-    elif experiment_name == "acsunemployment":
-        mymin = 0.94
-        mymax = 0.98
-        mytextx = 0.94
-        mytexty = 0.93
-        myname = f"plots_paper/plot_acsunemployment_zoom"
-
-        do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,[mymin,mymin],[mymax,mymax])
-
-    if experiment_name == "anes":
-        mymin = 0.58
-        mymax = 0.85
-        mytextx = 0.58
-        mytexty = 0.53
-        myname = f"plots_paper/plot_{experiment_name}_zoom"
-
-        do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,[mymin,mymin],[mymax,mymax])
-
-    elif experiment_name == "assistments":
-        mymin = 0.4
-        axminx = 0.68
-        axminy = 0.43 
-        mymax = 0.96
-        mytextx = 0.68
-        mytexty = 0.35
-        myname = f"plots_paper/plot_{experiment_name}_zoom"
-
-        do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,[axminx,axminy],[mymax,mymax])
-
-    elif experiment_name == "brfss_blood_pressure":
-        mymin = 0.55
-        mymax = 0.68
-        mytextx = 0.55
-        mytexty = 0.5
-        myname = f"plots_paper/plot_{experiment_name}_zoom"
-
-        do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,[mymin,mymin],[mymax,mymax])
-
-    elif experiment_name == "brfss_diabetes":
-        mymin = 0.81
-        mymax = 0.88
-        mytextx = 0.81
-        mytexty = 0.79
-        myname = f"plots_paper/plot_{experiment_name}_zoom"
-
-        do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,[mymin,mymin],[mymax,mymax])
-
-    elif experiment_name == "college_scorecard":
-        mymin = 0.65
-        axminx = 0.86
-        axminy = 0.65 
-        mymax = 0.96
-        mytextx = 0.86
-        mytexty = 0.58
-        myname = f"plots_paper/plot_{experiment_name}_zoom"
-
-        do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,[axminx,axminy],[mymax,mymax])
-
-    elif experiment_name == "diabetes_readmission":
-        mymin = 0.5
-        axminx = 0.55
-        axminy = 0.5
-        mymax = 0.7
-        mytextx = 0.55
-        mytexty = 0.45
-        myname = f"plots_paper/plot_{experiment_name}_zoom"
-
-        do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,[axminx,axminy],[mymax,mymax])
-
-    elif experiment_name == "meps":
-        mymin = 0.5
-        mymax = 0.85
-        mytextx = 0.5
-        mytexty = 0.4
-        myname = f"plots_paper/plot_{experiment_name}_zoom"
-
-        do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,[mymin,mymin],[mymax,mymax])
-
-    elif experiment_name == "mimic_extract_los_3":
-        mymin = 0.5
-        mymax = 0.71
-        mytextx = 0.5
-        mytexty = 0.45
-        myname = f"plots_paper/plot_{experiment_name}_zoom"
-
-        do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,[mymin,mymin],[mymax,mymax])
-
-    elif experiment_name == "mimic_extract_mort_hosp":
-        mymin = 0.85
-        mymax = 0.95
-        mytextx = 0.85
-        mytexty = 0.82
-        myname = f"plots_paper/plot_{experiment_name}_zoom"
-
-        do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,[mymin,mymin],[mymax,mymax])
-
-    elif experiment_name == "nhanes_lead":
-        mymin = 0.91
-        mymax = 0.98
-        mytextx = 0.90
-        mytexty = 0.9
-        myname = f"plots_paper/plot_{experiment_name}_zoom"
-
-        do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,[mymin,mymin],[mymax,mymax])
-
-    elif experiment_name == "physionet":
-        mymin = 0.92
-        # axminx = 0.985
-        # axminy = 0.92
-        # axmaxy = 0.93
-        mymax = 0.99
-        mytextx = 0.985
-        mytexty = 0.918
-        myname = f"plots_paper/plot_{experiment_name}_zoom"
-
-        do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,[mymin,mymin],[mymax,mymax])
-
-    elif experiment_name == "sipp":
-        mymin = 0.4
-        mymax = 0.95
-        mytextx = 0.4
-        mytexty = 0.3
-        myname = f"plots_paper/plot_{experiment_name}_zoom"
-
-        do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,[mymin,mymin],[mymax,mymax])
-
-
+        do_plot(experiment_name,mymin,myname)
 # %%
 
 completed_experiments = [
@@ -792,4 +572,3 @@ completed_experiments = [
                          ]
 for experiment_name in completed_experiments:
     plot_experiment(experiment_name)
-    plot_experiment_zoom(experiment_name)
