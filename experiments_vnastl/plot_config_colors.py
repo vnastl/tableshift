@@ -1,0 +1,8 @@
+color_all = "#407899" #"#0173b2"
+color_causal = "#EB9A28" #"#de8f05"
+color_arguablycausal = "#00BDFF" #ABE1FF" #"#d55e00"
+color_anticausal = "#B5618A" #"#029e73"
+color_constant = "#384955" #"#949494"
+color_causal_robust = "#FFEBCC"  #"#cc78bc"
+color_arguablycausal_robust = "#FFEBCC" #"#ece133"
+color_ml = "#77ACCF" #"#029e73"

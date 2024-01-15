@@ -685,8 +685,8 @@ def plot_experiment_zoom(experiment_name):
         do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,[axminx,axminy],[mymax,mymax])
 
     elif experiment_name == "acsunemployment":
-        mymin = 0.94
-        mymax = 0.98
+        mymin = 0.5
+        mymax = 0.96
         mytextx = 0.94
         mytexty = 0.93
         myname = f"plots_paper/plot_acsunemployment_zoom"
@@ -732,15 +732,13 @@ def plot_experiment_zoom(experiment_name):
         do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,[mymin,mymin],[mymax,mymax])
 
     elif experiment_name == "college_scorecard":
-        mymin = 0.65
-        axminx = 0.86
-        axminy = 0.65 
-        mymax = 0.96
+        mymin = 0.5
+        mymax = 0.9
         mytextx = 0.86
         mytexty = 0.58
         myname = f"plots_paper/plot_{experiment_name}_zoom"
 
-        do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,[axminx,axminy],[mymax,mymax])
+        do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,[mymin,mymin],[mymax,mymax])
 
     elif experiment_name == "diabetes_readmission":
         mymin = 0.5
@@ -772,8 +770,8 @@ def plot_experiment_zoom(experiment_name):
         do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,[mymin,mymin],[mymax,mymax])
 
     elif experiment_name == "mimic_extract_mort_hosp":
-        mymin = 0.85
-        mymax = 0.95
+        mymin = 0.5
+        mymax = 0.7
         mytextx = 0.85
         mytexty = 0.82
         myname = f"plots_paper/plot_{experiment_name}_zoom"
@@ -815,22 +813,22 @@ def plot_experiment_zoom(experiment_name):
 
 completed_experiments = [
                         # "acsemployment", # old
-                        #  "acsfoodstamps",
-                        #  "acsincome",
+                         "acsfoodstamps",
+                         "acsincome",
                         #  "acspubcov", # old
-                        #  "acsunemployment", # old
-                        #  "anes",
+                         "acsunemployment", # old
+                         "anes",
                         #  "assistments",
                          "brfss_blood_pressure",
-                        #  "brfss_diabetes",
-                        #  "college_scorecard", # old
-                        #  "diabetes_readmission",
+                         "brfss_diabetes",
+                         "college_scorecard", # old
+                         "diabetes_readmission",
                         #  "meps"
-                        #  "mimic_extract_mort_hosp",
-                        #  "mimic_extract_los_3",
+                         "mimic_extract_mort_hosp",
+                         "mimic_extract_los_3",
                         #  "nhanes_lead",
                         #  "physionet", # old 
-                        #  "sipp",
+                         "sipp",
                          ]
 for experiment_name in completed_experiments:
     plot_experiment(experiment_name)

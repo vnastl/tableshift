@@ -16,14 +16,19 @@ from tableshift import get_dataset
 from  statsmodels.stats.proportion import proportion_confint
 from paretoset import paretoset
 from scipy.spatial import ConvexHull
-
-from tableshift.datasets import ACS_INCOME_FEATURES_CAUSAL_SUBSETS_NUMBER, \
-    ACS_FOODSTAMPS_FEATURES_CAUSAL_SUBSETS_NUMBER,\
-    BRFSS_DIABETES_FEATURES_CAUSAL_SUBSETS_NUMBER, \
-    BRFSS_BLOOD_PRESSURE_FEATURES_CAUSAL_SUBSETS_NUMBER, \
-    DIABETES_READMISSION_FEATURES_CAUSAL_NUMBER, \
-    ANES_FEATURES_CAUSAL_NUMBER
-
+from tableshift.datasets import ACS_INCOME_FEATURES_CAUSAL_SUBSETS_NUMBER, ACS_INCOME_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER, \
+    ACS_FOODSTAMPS_FEATURES_CAUSAL_SUBSETS_NUMBER, ACS_FOODSTAMPS_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER, \
+    ACS_PUBCOV_FEATURES_CAUSAL_SUBSETS_NUMBER, ACS_PUBCOV_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER,\
+    ACS_UNEMPLOYMENT_FEATURES_CAUSAL_SUBSETS_NUMBER, ACS_UNEMPLOYMENT_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER,\
+    BRFSS_DIABETES_FEATURES_CAUSAL_SUBSETS_NUMBER, BRFSS_DIABETES_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER, \
+    BRFSS_BLOOD_PRESSURE_FEATURES_CAUSAL_SUBSETS_NUMBER, BRFSS_BLOOD_PRESSURE_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER, \
+    DIABETES_READMISSION_FEATURES_CAUSAL_NUMBER, DIABETES_READMISSION_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER, \
+    ANES_FEATURES_CAUSAL_SUBSETS_NUMBER, ANES_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER,\
+    ASSISTMENTS_FEATURES_CAUSAL_SUBSETS_NUMBER, ASSISTMENTS_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER,\
+    COLLEGE_SCORECARD_FEATURES_CAUSAL_SUBSETS_NUMBER, COLLEGE_SCORECARD_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER,\
+    MIMIC_EXTRACT_LOS_3_FEATURES_CAUSAL_SUBSETS, MIMIC_EXTRACT_LOS_3_FEATURES_CAUSAL_SUBSETS_NUMBER,\
+    MIMIC_EXTRACT_MORT_HOSP_FEATURES_CAUSAL_SUBSETS, MIMIC_EXTRACT_MORT_HOSP_FEATURES_CAUSAL_SUBSETS_NUMBER,\
+    SIPP_FEATURES_CAUSAL_SUBSETS_NUMBER, SIPP_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER
 
 import warnings
 warnings.filterwarnings('ignore')
@@ -45,7 +50,14 @@ dic_robust_number = {
     "brfss_diabetes": BRFSS_DIABETES_FEATURES_CAUSAL_SUBSETS_NUMBER,
     "brfss_blood_pressure": BRFSS_BLOOD_PRESSURE_FEATURES_CAUSAL_SUBSETS_NUMBER,
     "diabetes_readmission":     DIABETES_READMISSION_FEATURES_CAUSAL_NUMBER,
-    "anes": ANES_FEATURES_CAUSAL_NUMBER,
+    "anes": ANES_FEATURES_CAUSAL_SUBSETS_NUMBER,
+    "acsunemployment": ACS_UNEMPLOYMENT_FEATURES_CAUSAL_SUBSETS_NUMBER,
+    "assistments": ASSISTMENTS_FEATURES_CAUSAL_SUBSETS_NUMBER,
+    "college_scorecard": COLLEGE_SCORECARD_FEATURES_CAUSAL_SUBSETS_NUMBER,
+    "diabetes_readmission": DIABETES_READMISSION_FEATURES_CAUSAL_NUMBER,
+    "mimic_extract_los_3": MIMIC_EXTRACT_LOS_3_FEATURES_CAUSAL_SUBSETS_NUMBER,
+    "mimic_extract_mort_hosp": MIMIC_EXTRACT_MORT_HOSP_FEATURES_CAUSAL_SUBSETS_NUMBER,
+    "sipp": SIPP_FEATURES_CAUSAL_SUBSETS_NUMBER,
 }
 
 dic_experiments = {
@@ -55,6 +67,13 @@ dic_experiments = {
     "brfss_blood_pressure": get_dic_experiments_value("brfss_blood_pressure", dic_robust_number["brfss_blood_pressure"]),
     "diabetes_readmission": get_dic_experiments_value("diabetes_readmission", dic_robust_number["diabetes_readmission"]),
     "anes": get_dic_experiments_value("anes", dic_robust_number["anes"]),
+    "acsunemployment":  get_dic_experiments_value("acsunemployment", dic_robust_number["acsunemployment"]),
+    "assistments":  get_dic_experiments_value("assistments", dic_robust_number["assistments"]),
+    "college_scorecard":  get_dic_experiments_value("college_scorecard", dic_robust_number["college_scorecard"]),
+    "diabetes_readmission": get_dic_experiments_value("diabetes_readmission", dic_robust_number["diabetes_readmission"]),
+    "mimic_extract_los_3":  get_dic_experiments_value("mimic_extract_los_3", dic_robust_number["mimic_extract_los_3"]),
+    "mimic_extract_mort_hosp":  get_dic_experiments_value("mimic_extract_mort_hosp", dic_robust_number["mimic_extract_mort_hosp"]),
+    "sipp":  get_dic_experiments_value("sipp", dic_robust_number["sipp"]),
 }
  #%%
 
@@ -146,7 +165,7 @@ dic_title = {
 # color_constant = "tab:red"
 color_all = "#0173b2"
 color_causal = "#de8f05"
-color_robust = "#cc78bc"
+color_causal_robust = "#cc78bc"
 # color_arguablycausal = "#d55e00"
 # color_anticausal = "#029e73"
 color_constant = "#949494"
@@ -173,6 +192,10 @@ def get_results(experiment_name):
                 if 'causal' not in feature_selection: 
                     feature_selection.append('causal') 
                 return 'causal'
+            elif experiment[-2].isdigit():
+                if f'test{experiment[-2]}' not in feature_selection: 
+                    feature_selection.append(f'test{experiment[-2:]}')
+                return f'test{experiment[-2:]}'
             elif experiment[-1].isdigit():
                 if f'test{experiment[-1]}' not in feature_selection: 
                     feature_selection.append(f'test{experiment[-1]}')
@@ -339,14 +362,14 @@ def do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,axmin=[0.5,0.5],a
                         y=markers['ood_test'],
                         xerr=markers['id_test_ub']-markers['id_test'],
                         yerr=markers['ood_test_ub']-markers['ood_test'], fmt="v",
-                        color=color_robust, ecolor=color_robust, zorder = 1,
+                        color=color_causal_robust, ecolor=color_causal_robust, zorder = 1,
                         label="robustness test for causal features")
             # highlight bar
             shift = points[points["ood_test"] == points["ood_test"].max()]
             shift["type"] = f"test {index}"
             dic_shift[f"test{index}"] = shift
             plt.hlines(y=shift["ood_test"], xmin=shift["ood_test"], xmax=shift['id_test'],
-                    color=color_robust, linewidth=3, alpha=0.7  )
+                    color=color_causal_robust, linewidth=3, alpha=0.7  )
 
     ## Constant
     shift = eval_constant
@@ -412,7 +435,7 @@ def do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,axmin=[0.5,0.5],a
         plt.ylabel("shift gap")
         shift = pd.concat(dic_shift.values(), ignore_index=True)
         shift["gap"] = shift["id_test"] - shift["ood_test"]
-        barlist = plt.bar(shift["type"], shift["gap"], color=[color_all,color_causal]+[color_robust for index in range(dic_robust_number[experiment_name]-1)]+[color_constant])
+        barlist = plt.bar(shift["type"], shift["gap"], color=[color_all,color_causal]+[color_causal_robust for index in range(dic_robust_number[experiment_name]-1)]+[color_constant])
         barlist[0].set_hatch('--')
         barlist[1].set_hatch('oo')
         for index in range(2,dic_robust_number[experiment_name]+1):
@@ -750,22 +773,22 @@ def plot_experiment_zoom(experiment_name):
 
 completed_experiments = [
                         # "acsemployment", # old
-                        #  "acsfoodstamps",
-                        #  "acsincome",
+                         "acsfoodstamps",
+                         "acsincome",
                         #  "acspubcov", # old
-                        #  "acsunemployment", # old
-                        #  "anes",
+                         "acsunemployment", # old
+                         "anes",
                         #  "assistments",
                          "brfss_blood_pressure",
-                        #  "brfss_diabetes",
-                        #  "college_scorecard", # old
-                        #  "diabetes_readmission",
+                         "brfss_diabetes",
+                         "college_scorecard", # old
+                         "diabetes_readmission",
                         #  "meps"
-                        #  "mimic_extract_mort_hosp",
+                         "mimic_extract_mort_hosp",
                         #  "mimic_extract_los_3",
                         #  "nhanes_lead",
                         #  "physionet", # old 
-                        #  "sipp",
+                         "sipp",
                          ]
 for experiment_name in completed_experiments:
     plot_experiment(experiment_name)

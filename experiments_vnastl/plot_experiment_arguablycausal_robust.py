@@ -142,7 +142,7 @@ dic_title = {
 # color_constant = "tab:red"
 color_all = "#0173b2"
 color_arguablycausal = "#d55e00"#  "#de8f05"
-color_robust = "#ece133"
+color_arguablycausal_robust = "#ece133"
 # color_arguablycausal = "#d55e00"
 # color_anticausal = "#029e73"
 color_constant = "#949494"
@@ -339,14 +339,14 @@ def do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,axmin=[0.5,0.5],a
                         y=markers['ood_test'],
                         xerr=markers['id_test_ub']-markers['id_test'],
                         yerr=markers['ood_test_ub']-markers['ood_test'], fmt="v",
-                        color=color_robust, ecolor=color_robust, zorder = 1,
+                        color=color_arguablycausal_robust, ecolor=color_arguablycausal_robust, zorder = 1,
                         label="robustness test for arguably causal features")
             # highlight bar
             shift = points[points["ood_test"] == points["ood_test"].max()]
             shift["type"] = f"test {index}"
             dic_shift[f"test{index}"] = shift
             plt.hlines(y=shift["ood_test"], xmin=shift["ood_test"], xmax=shift['id_test'],
-                    color=color_robust, linewidth=3, alpha=0.7  )
+                    color=color_arguablycausal_robust, linewidth=3, alpha=0.7  )
 
     ## Constant
     shift = eval_constant
@@ -412,7 +412,7 @@ def do_plot(experiment_name,mymin,mymax,mytextx,mytexty,myname,axmin=[0.5,0.5],a
         plt.ylabel("shift gap")
         shift = pd.concat(dic_shift.values(), ignore_index=True)
         shift["gap"] = shift["id_test"] - shift["ood_test"]
-        barlist = plt.bar(shift["type"], shift["gap"], color=[color_all,color_arguablycausal]+[color_robust for index in range(dic_robust_number[experiment_name])]+[color_constant])
+        barlist = plt.bar(shift["type"], shift["gap"], color=[color_all,color_arguablycausal]+[color_arguablycausal_robust for index in range(dic_robust_number[experiment_name])]+[color_constant])
         barlist[0].set_hatch('--')
         barlist[1].set_hatch('oo')
         for index in range(2,dic_robust_number[experiment_name]+2):
