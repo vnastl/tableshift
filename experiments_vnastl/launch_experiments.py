@@ -84,6 +84,11 @@ TASKS = [
 
     # "college_scorecard",
     # "college_scorecard_causal",
+    "college_scorecard_causal_test_1",
+    "college_scorecard_causal_test_2",
+    "college_scorecard_causal_test_5",
+    "college_scorecard_causal_test_6",
+    "college_scorecard_causal_test_7",
     # "college_scorecard_arguablycausal",
 
     # "nhanes_lead", 
@@ -109,9 +114,9 @@ TASKS = [
     # "sipp_arguablycausal",
     # "sipp_anticausal",
 
-    "meps", 
-    "meps_causal",
-    "meps_arguablycausal"
+    # "meps", 
+    # "meps_causal",
+    # "meps_arguablycausal"
 ]
 
 # Robustness checks
@@ -193,8 +198,8 @@ TASKS = [
 # for index in range(SIPP_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
 #         TASKS.append("sipp_arguablycausal_test_"+f"{index}")
 
-for index in range(MEPS_FEATURES_CAUSAL_SUBSETS_NUMBER):
-        TASKS.append("meps_causal_test_"+f"{index}")
+# for index in range(MEPS_FEATURES_CAUSAL_SUBSETS_NUMBER):
+#         TASKS.append("meps_causal_test_"+f"{index}")
 
 # for index in range(MEPS_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
 #         TASKS.append("meps_arguablycausal_test_"+f"{index}")
