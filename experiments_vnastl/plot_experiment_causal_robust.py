@@ -567,8 +567,8 @@ completed_experiments = [
                         #  "college_scorecard", # old
                         #  "diabetes_readmission",
                         # #  "meps"
-                        #  "mimic_extract_mort_hosp",
-                         "mimic_extract_los_3",
+                         "mimic_extract_mort_hosp",
+                        #  "mimic_extract_los_3",
                         #  "nhanes_lead",
                         #  "physionet", # old 
                          "sipp",
