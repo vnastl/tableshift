@@ -1143,6 +1143,8 @@ ACS_FOODSTAMPS_FEATURES_CAUSAL = FeatureList(features=[
     DEAR_FEATURE,
     DEYE_FEATURE,
     DREM_FEATURE,
+    Feature('ST', cat_dtype, "State Code based on 2010 Census definitions.",
+            name_extended="State"),
 ],
     documentation="https://www2.census.gov/programs-surveys/acs/tech_docs"
                   "/pums/data_dict/PUMS_Data_Dictionary_2019.pdf"
@@ -1239,6 +1241,8 @@ ACS_FOODSTAMPS_FEATURES_ARGUABLYCAUSAL = FeatureList(features=[
     DEAR_FEATURE,
     DEYE_FEATURE,
     DREM_FEATURE,
+    Feature('ST', cat_dtype, "State Code based on 2010 Census definitions.",
+            name_extended="State"),
     ## Arguably causal features
     ENG_FEATURE,
     FER_FEATURE,
