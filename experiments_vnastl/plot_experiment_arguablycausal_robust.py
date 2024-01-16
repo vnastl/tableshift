@@ -256,8 +256,8 @@ def do_plot(experiment_name,mymin,myname):
 
     plt.title(
         f"{dic_title[experiment_name]}")
-    plt.xlabel(f"in-domain accuracy\n({dic_id_domain[experiment_name]})")
-    plt.ylabel(f"out-of-domain accuracy\n({dic_ood_domain[experiment_name]})")
+    plt.xlabel(f"in-domain accuracy") #\n({dic_id_domain[experiment_name]})")
+    plt.ylabel(f"out-of-domain accuracy") #\n({dic_ood_domain[experiment_name]})")
     #############################################################################
     # plot errorbars and shift gap for constant
     #############################################################################
@@ -321,7 +321,7 @@ def do_plot(experiment_name,mymin,myname):
     shift["type"] = "arguably\ncausal"
     dic_shift["arguablycausal"] = shift
     plt.hlines(y=shift["ood_test"], xmin=shift["ood_test"], xmax=shift['id_test'],
-               color=color_causal, linewidth=3, alpha=0.7)
+               color=color_arguablycausal, linewidth=3, alpha=0.7)
 
             
     #############################################################################
@@ -353,7 +353,7 @@ def do_plot(experiment_name,mymin,myname):
             shift["type"] = f"test {index}"
             dic_shift[f"test{index}"] = shift
             plt.hlines(y=shift["ood_test"], xmin=shift["ood_test"], xmax=shift['id_test'],
-                    color=color_causal_robust, linewidth=2, alpha=0.7, zorder = 0)
+                    color=color_arguablycausal_robust, linewidth=2, alpha=0.7, zorder = 0)
     #############################################################################
     # plot pareto dominated area for constant
     #############################################################################
@@ -406,12 +406,12 @@ def do_plot(experiment_name,mymin,myname):
     new_row = pd.DataFrame({'id_test':[xmin,max(points['id_test'])], 'ood_test':[max(points['ood_test']),ymin]},)
     points = pd.concat([points,new_row], ignore_index=True)
     points.sort_values('id_test',inplace=True)
-    plt.plot(points['id_test'],points['ood_test'],color=color_causal,linestyle="dotted")
+    plt.plot(points['id_test'],points['ood_test'],color=color_arguablycausal,linestyle="dotted")
     new_row = pd.DataFrame({'id_test':[xmin], 'ood_test':[ymin]},)
     points = pd.concat([points,new_row], ignore_index=True)
     points = points.to_numpy()
     hull = ConvexHull(points)
-    plt.fill(points[hull.vertices, 0], points[hull.vertices, 1], color=color_causal,alpha=0.1)
+    plt.fill(points[hull.vertices, 0], points[hull.vertices, 1], color=color_arguablycausal,alpha=0.1)
 
     #############################################################################
     # Add legend & diagonal, save plot

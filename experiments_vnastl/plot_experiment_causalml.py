@@ -219,8 +219,8 @@ def do_plot(experiment_name,mymin,myname):
 
     plt.title(
         f"{dic_title[experiment_name]}")
-    plt.xlabel(f"in-domain accuracy\n({dic_id_domain[experiment_name]})")
-    plt.ylabel(f"out-of-domain accuracy\n({dic_ood_domain[experiment_name]})")
+    plt.xlabel(f"in-domain accuracy") #\n({dic_id_domain[experiment_name]})")
+    plt.ylabel(f"out-of-domain accuracy") #\n({dic_ood_domain[experiment_name]})")
     
     ##############################################################################
     # plot errorbars and shift gap for constant
@@ -293,23 +293,24 @@ def do_plot(experiment_name,mymin,myname):
     # plot errorbars and shift gap for causal ml
     #############################################################################
     eval_plot = eval_all[eval_all['features']=="all"]
-    eval_plot = eval_plot[eval_plot['model'].isin(['irm', 'vrex'])]
-    eval_plot.sort_values('model',inplace=True)
+    # eval_plot = eval_plot[eval_plot['model'].isin(['irm', 'vrex'])]
+    # eval_plot.sort_values('model',inplace=True)
 
-    points = eval_plot
-    errors = plt.errorbar(
-                x=points['id_test'],
-                y=points['ood_test'],
-                xerr=points['id_test_ub']-points['id_test'],
-                yerr=points['ood_test_ub']-points['ood_test'], fmt="^",
-                color=color_ml, ecolor=color_ml, label="causal ml")
-    # highlight bar
     for causalml in ["irm","vrex"]:
+        points = eval_plot[eval_plot['model']==causalml]
+        errors = plt.errorbar(
+                    x=points['id_test'],
+                    y=points['ood_test'],
+                    xerr=points['id_test_ub']-points['id_test'],
+                    yerr=points['ood_test_ub']-points['ood_test'], fmt="^",
+                    color=eval(f"color_{causalml}"), ecolor=eval(f"color_{causalml}"), label="causal ml")
+        # highlight bar
+    
         shift = points[points['model']==causalml]
         shift["type"] = causalml
         dic_shift[causalml] = shift
         plt.hlines(y=shift["ood_test"], xmin=shift["ood_test"], xmax=shift['id_test'],
-                color=color_ml, linewidth=3, alpha=0.7  )
+                color=eval(f"color_{causalml}"), linewidth=3, alpha=0.7  )
 
     #############################################################################
     # plot pareto dominated area for constant
@@ -408,7 +409,7 @@ def do_plot(experiment_name,mymin,myname):
     
     shift = pd.concat(dic_shift.values(), ignore_index=True)
     shift["gap"] = shift["id_test"] - shift["ood_test"]
-    barlist = plt.bar(shift["type"], shift["gap"], color=[color_all,color_causal]+[color_ml for index in range(2)]+[color_constant])
+    barlist = plt.bar(shift["type"], shift["gap"], color=[color_all,color_causal]+[color_irm,color_vrex]+[color_constant])
     plt.savefig(str(Path(__file__).parents[0]/f"{myname}_causalml_shift.pdf"), bbox_inches='tight')
     plt.show()
 

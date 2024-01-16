@@ -261,8 +261,8 @@ def do_plot(experiment_name,mymin,myname):
 
     plt.title(
         f"{dic_title[experiment_name]}")
-    plt.xlabel(f"in-domain accuracy\n({dic_id_domain[experiment_name]})")
-    plt.ylabel(f"out-of-domain accuracy\n({dic_ood_domain[experiment_name]})")
+    plt.xlabel(f"in-domain accuracy") #\n({dic_id_domain[experiment_name]})")
+    plt.ylabel(f"out-of-domain accuracy") #\n({dic_ood_domain[experiment_name]})")
 
     #############################################################################
     # plot errorbars and shift gap for constant

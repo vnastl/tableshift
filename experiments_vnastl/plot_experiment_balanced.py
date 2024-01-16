@@ -101,7 +101,7 @@ dic_ood_domain = {
     "assistments": '10 new schools',
     "brfss_blood_pressure":'Overweight and obese',
     "brfss_diabetes": 'Non white',
-    "college_scorecard": "\nSpecial Focus Institutions [Faith-related, art & design and other fields],\n Baccalaureate/Associates Colleges,\n Master's Colleges and Universities [larger programs]",
+    "college_scorecard": "Special Focus Institutions [Faith-related, art & design and other fields],\n Baccalaureate/Associates Colleges,\n Master's Colleges and Universities [larger programs]",
     "diabetes_readmission": 'Emergency Room',
     "meps": 'Private insurance',
     "mimic_extract_los_3": 'Medicare',
@@ -220,8 +220,8 @@ def do_plot(experiment_name,mymin,myname):
 
     plt.title(
         f"{dic_title[experiment_name]}")
-    plt.xlabel(f"in-domain balanced accuracy\n({dic_id_domain[experiment_name]})")
-    plt.ylabel(f"out-of-domain balanced accuracy\n({dic_ood_domain[experiment_name]})")
+    plt.xlabel(f"in-domain accuracy") #\n({dic_id_domain[experiment_name]})")
+    plt.ylabel(f"out-of-domain accuracy") #\n({dic_ood_domain[experiment_name]})")
 
     #############################################################################
     # plot errorbars and shift gap for constant

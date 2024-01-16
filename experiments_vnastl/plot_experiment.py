@@ -29,7 +29,7 @@ import os
 os.chdir("/Users/vnastl/Seafile/My Library/mpi project causal vs noncausal/tableshift")
 #%%
 
-ANTICAUSAL = False
+ANTICAUSAL = True
 
 # %%
 def get_dic_experiments_value(name):
@@ -39,7 +39,7 @@ def get_dic_experiments_value_anticausal(name):
 if ANTICAUSAL:
     dic_experiments = {
         "acsincome": get_dic_experiments_value_anticausal("acsincome"),
-        "acsemployment": get_dic_experiments_value_anticausal("acsemployment"),
+        "acsunemployment": get_dic_experiments_value_anticausal("acsunemployment"),
         "brfss_diabetes": get_dic_experiments_value_anticausal("brfss_diabetes"),
         "brfss_blood_pressure": get_dic_experiments_value_anticausal("brfss_blood_pressure"),
         "sipp": get_dic_experiments_value_anticausal("sipp")
@@ -115,7 +115,7 @@ dic_ood_domain = {
     "assistments": '10 new schools',
     "brfss_blood_pressure":'Overweight and obese',
     "brfss_diabetes": 'Non white',
-    "college_scorecard": "\nSpecial Focus Institutions [Faith-related, art & design and other fields],\n Baccalaureate/Associates Colleges,\n Master's Colleges and Universities [larger programs]",
+    "college_scorecard": "Special Focus Institutions [Faith-related, art & design and other fields],\n Baccalaureate/Associates Colleges,\n Master's Colleges and Universities [larger programs]",
     "diabetes_readmission": 'Emergency Room',
     "meps": 'Private insurance',
     "mimic_extract_los_3": 'Medicare',
@@ -254,11 +254,12 @@ def do_plot(experiment_name,mymin,myname):
     eval_all, causal_features, extra_features = get_results(experiment_name)
     eval_constant = eval_all[eval_all['features']=="constant"]
     dic_shift = {}
+    dic_shift_acc ={}
 
     plt.title(
         f"{dic_title[experiment_name]}")
-    plt.xlabel(f"in-domain accuracy\n({dic_id_domain[experiment_name]})")
-    plt.ylabel(f"out-of-domain accuracy\n({dic_ood_domain[experiment_name]})")
+    plt.xlabel(f"in-domain accuracy") #\n({dic_id_domain[experiment_name]})")
+    plt.ylabel(f"out-of-domain accuracy") #\n({dic_ood_domain[experiment_name]})")
 
     #############################################################################
     # plot errorbars and shift gap for constant
@@ -272,7 +273,11 @@ def do_plot(experiment_name,mymin,myname):
             markersize=7, capsize=3, label="constant")
     plt.hlines(y=eval_constant['ood_test'].values[0], xmin=eval_constant['ood_test'].values[0], xmax=eval_constant['id_test'].values[0],
                 color=color_constant, linewidth=3, alpha=0.7)
-    
+    # get pareto set for shift vs accuracy
+    shift_acc = eval_constant
+    shift_acc["type"] = "constant"
+    shift_acc["gap"] = shift_acc["id_test"] - shift_acc["ood_test"]
+    dic_shift_acc["constant"] = shift_acc
     #############################################################################
     # plot errorbars and shift gap for all features
     #############################################################################
@@ -298,7 +303,12 @@ def do_plot(experiment_name,mymin,myname):
     dic_shift["all"] = shift
     plt.hlines(y=shift["ood_test"], xmin=shift["ood_test"], xmax=shift['id_test'],
                color=color_all, linewidth=3, alpha=0.7)
-    
+    # get pareto set for shift vs accuracy
+    shift_acc = eval_plot[mask]
+    shift_acc["type"] = "all"
+    shift_acc["gap"] = shift_acc["id_test"] - shift_acc["ood_test"]
+    dic_shift_acc["all"] = shift_acc
+
     #############################################################################
     # plot errorbars and shift gap for causal features
     #############################################################################
@@ -324,7 +334,11 @@ def do_plot(experiment_name,mymin,myname):
     dic_shift["causal"] = shift
     plt.hlines(y=shift["ood_test"], xmin=shift["ood_test"], xmax=shift['id_test'],
                color=color_causal, linewidth=3, alpha=0.7)
-
+    # get pareto set for shift vs accuracy
+    shift_acc = eval_plot[mask]
+    shift_acc["type"] = "causal"
+    shift_acc["gap"] = shift_acc["id_test"] - shift_acc["ood_test"]
+    dic_shift_acc["causal"] = shift_acc
     #############################################################################
     # plot errorbars and shift gap for arguablycausal features
     #############################################################################
@@ -351,7 +365,11 @@ def do_plot(experiment_name,mymin,myname):
         dic_shift["arguablycausal"] = shift
         plt.hlines(y=shift["ood_test"], xmin=shift["ood_test"], xmax=shift['id_test'],
                 color=color_arguablycausal, linewidth=3, alpha=0.7)
-        
+        # get pareto set for shift vs accuracy
+        shift_acc = eval_plot[mask]
+        shift_acc["type"] = "arguablycausal"
+        shift_acc["gap"] = shift_acc["id_test"] - shift_acc["ood_test"]
+        dic_shift_acc["arguablycausal"] = shift_acc
     #############################################################################
     # plot errorbars and shift gap for anticausal features
     #############################################################################
@@ -550,16 +568,56 @@ def do_plot(experiment_name,mymin,myname):
         f"{dic_title[experiment_name]}")
         plt.xlabel("1 - shift gap")
         plt.ylabel("out-of-domain accuracy")
+        shift_acc = pd.concat(dic_shift_acc.values(), ignore_index=True)
         markers = {'constant': 'D','all': 's', 'causal': 'o', 'arguablycausal':'^'}
         for type, marker in markers.items():
-            if type == 'arguablycausal':
-                type_shift = shift[shift['type']=='arguably\ncausal']
-            else:
-                type_shift = shift[shift['type']==type]
-            plt.scatter(1-type_shift["gap"],type_shift["ood_test"],
-                        color=eval(f"color_{type}"),
-                        s=100,
-                        marker=marker)
+            type_shift = shift_acc[shift_acc['type']==type]
+            type_shift['id_test_var'] = ((type_shift['id_test_ub']-type_shift['id_test']))**2
+            type_shift['ood_test_var'] = ((type_shift['ood_test_ub']-type_shift['ood_test']))**2
+            type_shift['gap_var'] = type_shift['id_test_var']+type_shift['ood_test_var']
+
+            # Get markers
+            plt.errorbar(x=1-type_shift["gap"],
+                         y=type_shift["ood_test"],
+                         xerr= type_shift['gap_var']**0.5,
+                         yerr=type_shift['ood_test_ub']-type_shift['ood_test'],
+                        color=eval(f"color_{type}"), ecolor=eval(f"color_{type}"),
+                        fmt=marker, markersize=7, capsize=3,  label=f"{type}",
+                        zorder=3)
+        xmin, xmax = plt.xlim()
+        ymin, ymax = plt.ylim()
+        for type, marker in markers.items():
+            type_shift = shift_acc[shift_acc['type']==type]
+            # Get 1 - shift gap
+            type_shift["1-gap"] = 1-type_shift['gap']
+            # Calculate the pareto set
+            points = type_shift[['1-gap','ood_test']]
+            mask = paretoset(points, sense=["max", "max"])
+            points = points[mask]
+            #get extra points for the plot
+            new_row = pd.DataFrame({'1-gap':[xmin,max(points['1-gap'])], 'ood_test':[max(points['ood_test']),ymin]},)
+            points = pd.concat([points,new_row], ignore_index=True)
+            points.sort_values('1-gap',inplace=True)
+            plt.plot(points['1-gap'],points['ood_test'],color=eval(f"color_{type}"),linestyle="dotted")
+            new_row = pd.DataFrame({'1-gap':[xmin], 'ood_test':[ymin]},)
+            points = pd.concat([points,new_row], ignore_index=True)
+            points = points.to_numpy()
+            hull = ConvexHull(points)
+            plt.fill(points[hull.vertices, 0], points[hull.vertices, 1], color=eval(f"color_{type}"),alpha=0.1)
+            
+        # Get the lines and labels
+        lines, labels = plt.gca().get_legend_handles_labels()
+
+        # Remove duplicates
+        newLabels, newLines = [], []
+        for line, label in zip(lines, labels):
+            if label not in newLabels:
+                newLabels.append(label)
+                newLines.append(line)
+            
+        # Create a legend with only distinct labels
+        plt.legend(newLines, newLabels, loc='upper left')
+            # TODO add pareto dominate lines & areas, see constant, maybe even add the multiple paretos
         plt.savefig(str(Path(__file__).parents[0]/f"{myname}_shift_accuracy.pdf"), bbox_inches='tight')
         plt.show()
 
