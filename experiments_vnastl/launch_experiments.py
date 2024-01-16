@@ -68,9 +68,9 @@ TASKS = [
     # "anes_causal",
     # "anes_arguablycausal",
 
-    # "assistments",
-    # "assistments_causal",
-    # "assistments_arguablycausal",
+    "assistments",
+    "assistments_causal",
+    "assistments_arguablycausal",
 
     # "brfss_diabetes",
     # "brfss_diabetes_causal",
@@ -82,9 +82,9 @@ TASKS = [
     # "brfss_blood_pressure_arguablycausal",
     # "brfss_blood_pressure_anticausal",
 
-    # "college_scorecard",
-    # "college_scorecard_causal",
-    # "college_scorecard_arguablycausal",
+    "college_scorecard",
+    "college_scorecard_causal",
+    "college_scorecard_arguablycausal",
 
     # "nhanes_lead", 
     # "nhanes_lead_causal",
@@ -129,14 +129,14 @@ TASKS = [
 # for index in range(ACS_PUBCOV_FEATURES_CAUSAL_SUBSETS_NUMBER):
 #         TASKS.append("acspubcov_causal_test_"+f"{index}")
 
-for index in range(ACS_PUBCOV_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
-    TASKS.append("acspubcov_arguablycausal_test_"+f"{index}")
+# for index in range(ACS_PUBCOV_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
+#     TASKS.append("acspubcov_arguablycausal_test_"+f"{index}")
 
 # for index in range(ACS_UNEMPLOYMENT_FEATURES_CAUSAL_SUBSETS_NUMBER):
 #         TASKS.append("acsunemployment_causal_test_"+f"{index}")
 
-for index in range(ACS_UNEMPLOYMENT_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
-        TASKS.append("acsunemployment_arguablycausal_test_"+f"{index}")
+# for index in range(ACS_UNEMPLOYMENT_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
+#         TASKS.append("acsunemployment_arguablycausal_test_"+f"{index}")
 
 # for index in range(BRFSS_DIABETES_FEATURES_CAUSAL_SUBSETS_NUMBER):
 #         TASKS.append("brfss_diabetes_causal_test_"+f"{index}")
@@ -186,11 +186,11 @@ for index in range(ACS_UNEMPLOYMENT_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
 # for index in range(MIMIC_EXTRACT_MORT_HOSP_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
 #         TASKS.append("mimic_extract_mort_hosp_arguablycausal_test_"+f"{index}")
 
-for index in range(SIPP_FEATURES_CAUSAL_SUBSETS_NUMBER):
-        TASKS.append("sipp_causal_test_"+f"{index}")
+# for index in range(SIPP_FEATURES_CAUSAL_SUBSETS_NUMBER):
+#         TASKS.append("sipp_causal_test_"+f"{index}")
 
-for index in range(SIPP_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
-        TASKS.append("sipp_arguablycausal_test_"+f"{index}")
+# for index in range(SIPP_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
+#         TASKS.append("sipp_arguablycausal_test_"+f"{index}")
 
 # Useful directories
 if __name__ == '__main__':
