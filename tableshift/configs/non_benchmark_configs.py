@@ -9,7 +9,8 @@ from tableshift.configs.experiment_defaults import DEFAULT_ID_TEST_SIZE, \
     DEFAULT_OOD_VAL_SIZE, DEFAULT_ID_VAL_SIZE, DEFAULT_RANDOM_STATE
 from tableshift.core import RandomSplitter, Grouper, PreprocessorConfig, \
     DomainSplitter, FixedSplitter
-from tableshift.datasets import SIPP_FEATURES_CAUSAL_SUBSETS_NUMBER, SIPP_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER
+from tableshift.datasets import SIPP_FEATURES_CAUSAL_SUBSETS_NUMBER, SIPP_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER,\
+    MEPS_FEATURES_CAUSAL_SUBSETS_NUMBER, MEPS_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER
 
 GRINSTAJN_TEST_SIZE = 0.21
 
@@ -348,11 +349,21 @@ NON_BENCHMARK_CONFIGS = {
                                 random_state=DEFAULT_RANDOM_STATE,
                                 id_test_size=DEFAULT_ID_TEST_SIZE,
                                 domain_split_varname="INSCOV19",
-                                domain_split_ood_values=['1.0']),
+                                domain_split_ood_values=['0.0']),
         grouper=Grouper({"SEX": ['1.0', ]}, drop=False),
         preprocessor_config=PreprocessorConfig(),
         tabular_dataset_kwargs={}),
     "meps_causal": ExperimentConfig(
+        splitter=DomainSplitter(val_size=DEFAULT_ID_VAL_SIZE,
+                                ood_val_size=DEFAULT_OOD_VAL_SIZE,
+                                random_state=DEFAULT_RANDOM_STATE,
+                                id_test_size=DEFAULT_ID_TEST_SIZE,
+                                domain_split_varname="INSCOV19",
+                                domain_split_ood_values=['0.0']),
+        grouper=Grouper({"SEX": ['1.0', ]}, drop=False),
+        preprocessor_config=PreprocessorConfig(),
+        tabular_dataset_kwargs={}),
+    "meps_arguablycausal": ExperimentConfig(
         splitter=DomainSplitter(val_size=DEFAULT_ID_VAL_SIZE,
                                 ood_val_size=DEFAULT_OOD_VAL_SIZE,
                                 random_state=DEFAULT_RANDOM_STATE,
@@ -431,3 +442,26 @@ for index in range(SIPP_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
         preprocessor_config=PreprocessorConfig(),
         tabular_dataset_kwargs={})
 
+for index in range(MEPS_FEATURES_CAUSAL_SUBSETS_NUMBER):
+    NON_BENCHMARK_CONFIGS["meps_causal_test_"+f"{index}"] = ExperimentConfig(
+        splitter=DomainSplitter(val_size=DEFAULT_ID_VAL_SIZE,
+                                ood_val_size=DEFAULT_OOD_VAL_SIZE,
+                                random_state=DEFAULT_RANDOM_STATE,
+                                id_test_size=DEFAULT_ID_TEST_SIZE,
+                                domain_split_varname="INSCOV19",
+                                domain_split_ood_values=['0.0']),
+        grouper=None,
+        preprocessor_config=PreprocessorConfig(),
+        tabular_dataset_kwargs={})
+    
+for index in range(MEPS_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
+    NON_BENCHMARK_CONFIGS["meps_arguablycausal_test_"+f"{index}"] = ExperimentConfig(
+        splitter=DomainSplitter(val_size=DEFAULT_ID_VAL_SIZE,
+                                ood_val_size=DEFAULT_OOD_VAL_SIZE,
+                                random_state=DEFAULT_RANDOM_STATE,
+                                id_test_size=DEFAULT_ID_TEST_SIZE,
+                                domain_split_varname="INSCOV19",
+                                domain_split_ood_values=['0.0']),
+        grouper=Grouper({"SEX": ['1.0', ]}, drop=False),
+        preprocessor_config=PreprocessorConfig(),
+        tabular_dataset_kwargs={})

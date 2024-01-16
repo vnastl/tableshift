@@ -295,6 +295,8 @@ _TASK_REGISTRY = {
         TaskConfig(MEPSDataSource, MEPS_FEATURES),
     'meps_causal':
         TaskConfig(MEPSDataSource, MEPS_FEATURES_CAUSAL),
+    'meps_arguablycausal':
+        TaskConfig(MEPSDataSource, MEPS_FEATURES_ARGUABLYCAUSAL),
     'sipp':
         TaskConfig(SIPPDataSource, SIPP_FEATURES),
     'sipp_causal':
@@ -383,6 +385,11 @@ for index, subset in enumerate(SIPP_FEATURES_CAUSAL_SUBSETS):
 for index, superset in enumerate(SIPP_FEATURES_ARGUABLYCAUSAL_SUPERSETS):
     _TASK_REGISTRY["sipp_arguablycausal_test_"+f"{index}"] = TaskConfig(SIPPDataSource, superset)
 
+for index, subset in enumerate(MEPS_FEATURES_CAUSAL_SUBSETS):
+    _TASK_REGISTRY["meps_causal_test_"+f"{index}"] = TaskConfig(MEPSDataSource, subset)
+
+for index, superset in enumerate(MEPS_FEATURES_ARGUABLYCAUSAL_SUPERSETS):
+    _TASK_REGISTRY["meps_arguablycausal_test_"+f"{index}"] = TaskConfig(MEPSDataSource, superset)
 
 
 def get_task_config(name: str) -> TaskConfig:
