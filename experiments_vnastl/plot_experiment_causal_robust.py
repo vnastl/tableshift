@@ -182,6 +182,9 @@ def get_results(experiment_name):
                 if 'causal' not in feature_selection: 
                     feature_selection.append('causal') 
                 return 'causal'
+            elif experiment.endswith('_los_3'):
+                feature_selection.append('all')
+                return 'all'
             elif experiment[-2].isdigit():
                 if f'test{experiment[-2]}' not in feature_selection: 
                     feature_selection.append(f'test{experiment[-2:]}')
@@ -553,19 +556,19 @@ def plot_experiment(experiment_name):
 
 completed_experiments = [
                         # "acsemployment", # old
-                         "acsfoodstamps",
-                         "acsincome",
-                        #  "acspubcov", # old
-                         "acsunemployment", # old
-                         "anes",
-                        #  "assistments",
-                         "brfss_blood_pressure",
-                         "brfss_diabetes",
-                         "college_scorecard", # old
-                         "diabetes_readmission",
-                        #  "meps"
-                         "mimic_extract_mort_hosp",
-                        #  "mimic_extract_los_3",
+                        #  "acsfoodstamps",
+                        #  "acsincome",
+                        # #  "acspubcov", # old
+                        #  "acsunemployment", # old
+                        #  "anes",
+                        # #  "assistments",
+                        #  "brfss_blood_pressure",
+                        #  "brfss_diabetes",
+                        #  "college_scorecard", # old
+                        #  "diabetes_readmission",
+                        # #  "meps"
+                        #  "mimic_extract_mort_hosp",
+                         "mimic_extract_los_3",
                         #  "nhanes_lead",
                         #  "physionet", # old 
                          "sipp",
