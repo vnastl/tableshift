@@ -96,6 +96,7 @@ def main(experiment, model, cache_dir, save_dir, debug: bool):
         for test_split in test_splits:
             # Fetch predictions and labels for a sklearn model.
             X_te, y_te, _, _ = dset.get_pandas(test_split)
+            X_te = X_te.astype(float)
             yhat_te = estimator.predict(X_te)
 
             # Calculate accuracy

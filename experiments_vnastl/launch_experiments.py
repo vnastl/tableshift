@@ -54,9 +54,9 @@ TASKS = [
     # "acspubcov_causal",
     # "acspubcov_arguablycausal",
 
-    "acsfoodstamps",
-    "acsfoodstamps_causal",
-    "acsfoodstamps_arguablycausal",
+    # "acsfoodstamps",
+    # "acsfoodstamps_causal",
+    # "acsfoodstamps_arguablycausal",
 
     # "acsunemployment",
     # "acsunemployment_causal",
@@ -81,9 +81,9 @@ TASKS = [
     # "brfss_blood_pressure_arguablycausal",
     # "brfss_blood_pressure_anticausal",
 
-    # "college_scorecard",
-    # "college_scorecard_causal",
-    # "college_scorecard_arguablycausal",
+    "college_scorecard",
+    "college_scorecard_causal",
+    "college_scorecard_arguablycausal",
 
     # "nhanes_lead", 
     # "nhanes_lead_causal",
@@ -119,11 +119,11 @@ TASKS = [
 # for index in range(ACS_INCOME_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
 #         TASKS.append("acsincome_arguablycausal_test_"+f"{index}")
 
-for index in range(ACS_FOODSTAMPS_FEATURES_CAUSAL_SUBSETS_NUMBER):
-        TASKS.append("acsfoodstamps_causal_test_"+f"{index}")
+# for index in range(ACS_FOODSTAMPS_FEATURES_CAUSAL_SUBSETS_NUMBER):
+#         TASKS.append("acsfoodstamps_causal_test_"+f"{index}")
 
-for index in range(ACS_FOODSTAMPS_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
-        TASKS.append("acsfoodstamps_arguablycausal_test_"+f"{index}")
+# for index in range(ACS_FOODSTAMPS_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
+#         TASKS.append("acsfoodstamps_arguablycausal_test_"+f"{index}")
 
 # for index in range(ACS_PUBCOV_FEATURES_CAUSAL_SUBSETS_NUMBER):
 #         TASKS.append("acspubcov_causal_test_"+f"{index}")
@@ -161,11 +161,11 @@ for index in range(ACS_FOODSTAMPS_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
 # for index in range(ANES_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
 #         TASKS.append("anes_arguablycausal_test_"+f"{index}")
 
-# for index in range(ASSISTMENTS_FEATURES_CAUSAL_SUBSETS_NUMBER):
-#         TASKS.append("assistments_causal_test_"+f"{index}")
+for index in range(ASSISTMENTS_FEATURES_CAUSAL_SUBSETS_NUMBER):
+        TASKS.append("assistments_causal_test_"+f"{index}")
 
-# for index in range(ASSISTMENTS_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
-#         TASKS.append("assistments_arguablycausal_test_"+f"{index}")
+for index in range(ASSISTMENTS_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
+        TASKS.append("assistments_arguablycausal_test_"+f"{index}")
 
 # for index in range(COLLEGE_SCORECARD_FEATURES_CAUSAL_SUBSETS_NUMBER):
 #         TASKS.append("college_scorecard_causal_test_"+f"{index}")
