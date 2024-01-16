@@ -39,7 +39,7 @@ N_TRIALS    = 1
 # Cluster settings
 JOB_MIN_BID = 100    # htcondor bid (min. is 15 apparently...)
 JOB_CPUS = 1     # number of CPUs per experiment (per cluster job)
-JOB_MEMORY_GB = 128  # GBs of memory
+JOB_MEMORY_GB = 256*2 #128  # GBs of memory
 BIG_JOB_MEMORY_GB = 256
 
 VERBOSE = True
@@ -50,10 +50,9 @@ TASKS = [
     # "acsincome_arguablycausal",
     # "acsincome_anticausal",
 
-    # "acspubcov",
-    # "acspubcov_causal",
-    # "acspubcov_arguablycausal",
-    # "acspubcov_arguablycausal_test_1"
+    "acspubcov",
+    "acspubcov_causal",
+    "acspubcov_arguablycausal",
 
     # "acsfoodstamps",
     # "acsfoodstamps_causal",
@@ -68,9 +67,9 @@ TASKS = [
     # "anes_causal",
     # "anes_arguablycausal",
 
-    "assistments",
-    "assistments_causal",
-    "assistments_arguablycausal",
+    # "assistments",
+    # "assistments_causal",
+    # "assistments_arguablycausal",
 
     # "brfss_diabetes",
     # "brfss_diabetes_causal",
@@ -82,9 +81,9 @@ TASKS = [
     # "brfss_blood_pressure_arguablycausal",
     # "brfss_blood_pressure_anticausal",
 
-    "college_scorecard",
-    "college_scorecard_causal",
-    "college_scorecard_arguablycausal",
+    # "college_scorecard",
+    # "college_scorecard_causal",
+    # "college_scorecard_arguablycausal",
 
     # "nhanes_lead", 
     # "nhanes_lead_causal",
@@ -126,11 +125,11 @@ TASKS = [
 # for index in range(ACS_FOODSTAMPS_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
 #         TASKS.append("acsfoodstamps_arguablycausal_test_"+f"{index}")
 
-# for index in range(ACS_PUBCOV_FEATURES_CAUSAL_SUBSETS_NUMBER):
-#         TASKS.append("acspubcov_causal_test_"+f"{index}")
+for index in range(ACS_PUBCOV_FEATURES_CAUSAL_SUBSETS_NUMBER):
+        TASKS.append("acspubcov_causal_test_"+f"{index}")
 
-# for index in range(ACS_PUBCOV_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
-#     TASKS.append("acspubcov_arguablycausal_test_"+f"{index}")
+for index in range(ACS_PUBCOV_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
+    TASKS.append("acspubcov_arguablycausal_test_"+f"{index}")
 
 # for index in range(ACS_UNEMPLOYMENT_FEATURES_CAUSAL_SUBSETS_NUMBER):
 #         TASKS.append("acsunemployment_causal_test_"+f"{index}")
