@@ -35,9 +35,9 @@ if __name__ == '__main__':
     import classad
 
 # Number of task to run per algorithm, per dataset
-N_TRIALS    = 10
+# N_TRIALS    = 10
 # N_TRIALS    = 30
-# N_TRIALS    = 100
+N_TRIALS    = 100
 
 # Cluster settings
 JOB_MIN_BID = 100    # htcondor bid (min. is 15 apparently...)
@@ -48,36 +48,36 @@ BIG_JOB_MEMORY_GB = 256
 VERBOSE = True
 
 TASKS = [
-    # "acsincome",
-    # "acsincome_causal",
-    # "acsincome_arguablycausal",
-    # "acsincome_anticausal",
+    "acsincome",
+    "acsincome_causal",
+    "acsincome_arguablycausal",
+    "acsincome_anticausal",
 
     # "acspubcov",
     # "acspubcov_causal",
     # "acspubcov_arguablycausal",
 
-    # "acsfoodstamps",
-    # "acsfoodstamps_causal",
-    # "acsfoodstamps_arguablycausal",
+    "acsfoodstamps",
+    "acsfoodstamps_causal",
+    "acsfoodstamps_arguablycausal",
 
     # "acsunemployment",
     # "acsunemployment_causal",
     # "acsunemployment_arguablycausal",
     # "acsunemployment_anticausal",
 
-    # "anes",
-    # "anes_causal",
-    # "anes_arguablycausal",
+    "anes",
+    "anes_causal",
+    "anes_arguablycausal",
 
     # "assistments",
     # "assistments_causal",
     # "assistments_arguablycausal",
 
-    # "brfss_diabetes",
-    # "brfss_diabetes_causal",
-    # "brfss_diabetes_arguablycausal",
-    # "brfss_diabetes_anticausal",
+    "brfss_diabetes",
+    "brfss_diabetes_causal",
+    "brfss_diabetes_arguablycausal",
+    "brfss_diabetes_anticausal",
 
     # "brfss_blood_pressure",
     # "brfss_blood_pressure_causal",
@@ -92,7 +92,7 @@ TASKS = [
     # "nhanes_lead_causal",
     # "nhanes_lead_arguablycausal",
 
-    "diabetes_readmission", 
+    # "diabetes_readmission", 
     # "diabetes_readmission_causal",
     # "diabetes_readmission_arguablycausal",
 
@@ -108,14 +108,14 @@ TASKS = [
     # "physionet_causal",
     # "physionet_arguablycausal",
 
-    # "sipp", 
-    # "sipp_causal",
-    # "sipp_arguablycausal",
-    # "sipp_anticausal",
+    "sipp", 
+    "sipp_causal",
+    "sipp_arguablycausal",
+    "sipp_anticausal",
 
-    # "meps", 
-    # "meps_causal",
-    # "meps_arguablycausal",
+    "meps", 
+    "meps_causal",
+    "meps_arguablycausal",
 ]
 
 # Robustness checks
