@@ -74,10 +74,10 @@ TASKS = [
     # "assistments_causal",
     # "assistments_arguablycausal",
 
-    "brfss_diabetes",
-    "brfss_diabetes_causal",
-    "brfss_diabetes_arguablycausal",
-    "brfss_diabetes_anticausal",
+    # "brfss_diabetes",
+    # "brfss_diabetes_causal",
+    # "brfss_diabetes_arguablycausal",
+    # "brfss_diabetes_anticausal",
 
     # "brfss_blood_pressure",
     # "brfss_blood_pressure_causal",
@@ -113,9 +113,9 @@ TASKS = [
     # "sipp_arguablycausal",
     # "sipp_anticausal",
 
-    "meps", 
-    "meps_causal",
-    "meps_arguablycausal",
+    # "meps", 
+    # "meps_causal",
+    # "meps_arguablycausal",
 ]
 
 # Robustness checks
