@@ -340,7 +340,7 @@ if __name__ == '__main__':
 
         # Submit `n_trials` jobs to the scheduler
         schedd = htcondor.Schedd()
-        submit_result = schedd.submit(job_description, count=exp_obj.n_trials)
+        submit_result = schedd.submit(job_description, count=1)
 
         if VERBOSE:
             print(
@@ -355,8 +355,7 @@ if __name__ == '__main__':
     # For each task
     print(
             f"\n*** *** ***\n"
-            f"Launching {len(all_task)} * {N_TRIALS} = "
-            f"{N_TRIALS * len(all_task)} "
+            f"Launching {len(all_task)}
             f"tasks"
             f"\n*** *** ***\n"
         )
