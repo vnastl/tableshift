@@ -174,8 +174,8 @@ _TASK_REGISTRY = {
         TaskConfig(PhysioNetDataSource, PHYSIONET_FEATURES),
     "physionet_causal":
         TaskConfig(PhysioNetDataSource, PHYSIONET_FEATURES_CAUSAL),
-    "physionet_anticausal":
-        TaskConfig(PhysioNetDataSource, PHYSIONET_FEATURES_ANTICAUSAL),
+    "physionet_arguablycausal":
+        TaskConfig(PhysioNetDataSource, PHYSIONET_FEATURES_ARGUABLYCAUSAL),
     "electricity":
         TaskConfig(GrinstajnHFDataSource, ELECTRICITY_FEATURES),
     "bank-marketing":
@@ -391,6 +391,11 @@ for index, subset in enumerate(MEPS_FEATURES_CAUSAL_SUBSETS):
 for index, superset in enumerate(MEPS_FEATURES_ARGUABLYCAUSAL_SUPERSETS):
     _TASK_REGISTRY["meps_arguablycausal_test_"+f"{index}"] = TaskConfig(MEPSDataSource, superset)
 
+for index, subset in enumerate(PHYSIONET_FEATURES_CAUSAL_SUBSETS):
+    _TASK_REGISTRY["physionet_causal_test_"+f"{index}"] = TaskConfig(PhysioNetDataSource, subset)
+
+for index, superset in enumerate(PHYSIONET_FEATURES_ARGUABLYCAUSAL_SUPERSETS):
+    _TASK_REGISTRY["physionet_arguablycausal_test_"+f"{index}"] = TaskConfig(PhysioNetDataSource, superset)
 
 def get_task_config(name: str) -> TaskConfig:
     if name in _TASK_REGISTRY:
