@@ -114,7 +114,8 @@ TASKS = [
 
     # "meps", 
     # "meps_causal",
-    # "meps_arguablycausal"
+    # "meps_arguablycausal",
+    "meps_causal_test_19",
 ]
 
 # Robustness checks
