@@ -171,7 +171,7 @@ _TASK_REGISTRY = {
     "nhanes_lead_causal":
         TaskConfig(NHANESDataSource, NHANES_LEAD_FEATURES_CAUSAL),
     "nhanes_lead_arguablycausal":
-        TaskConfig(NHANESDataSource, NHANES_LEAD_FEATURES_ARGUABLUCAUSAL),
+        TaskConfig(NHANESDataSource, NHANES_LEAD_FEATURES_ARGUABLYCAUSAL),
     "physionet":
         TaskConfig(PhysioNetDataSource, PHYSIONET_FEATURES),
     "physionet_causal":
