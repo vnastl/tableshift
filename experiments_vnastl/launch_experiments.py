@@ -35,9 +35,9 @@ if __name__ == '__main__':
     import classad
 
 # Number of task to run per algorithm, per dataset
-# N_TRIALS    = 1
+N_TRIALS    = 10
 # N_TRIALS    = 30
-N_TRIALS    = 100
+# N_TRIALS    = 100
 
 # Cluster settings
 JOB_MIN_BID = 100    # htcondor bid (min. is 15 apparently...)
