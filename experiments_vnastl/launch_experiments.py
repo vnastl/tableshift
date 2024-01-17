@@ -35,9 +35,9 @@ if __name__ == '__main__':
     import classad
 
 # Number of task to run per algorithm, per dataset
-N_TRIALS    = 1
+# N_TRIALS    = 1
 # N_TRIALS    = 30
-# N_TRIALS    = 100
+N_TRIALS    = 100
 
 # Cluster settings
 JOB_MIN_BID = 100    # htcondor bid (min. is 15 apparently...)
@@ -86,14 +86,13 @@ TASKS = [
 
     # "college_scorecard",
     # "college_scorecard_causal",
-    "college_scorecard_causal_test_6",
     # "college_scorecard_arguablycausal",
 
-    "nhanes_lead", 
-    "nhanes_lead_causal",
-    "nhanes_lead_arguablycausal",
+    # "nhanes_lead", 
+    # "nhanes_lead_causal",
+    # "nhanes_lead_arguablycausal",
 
-    # "diabetes_readmission", 
+    "diabetes_readmission", 
     # "diabetes_readmission_causal",
     # "diabetes_readmission_arguablycausal",
 
@@ -210,11 +209,11 @@ TASKS = [
 # for index in range(PHYSIONET_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
 #         TASKS.append("physionet_arguablycausal_test_"+f"{index}")
 
-for index in range(NHANES_LEAD_FEATURES_CAUSAL_SUBSETS_NUMBER):
-        TASKS.append("nhanes_lead_causal_test_"+f"{index}")
+# for index in range(NHANES_LEAD_FEATURES_CAUSAL_SUBSETS_NUMBER):
+#         TASKS.append("nhanes_lead_causal_test_"+f"{index}")
 
-for index in range(NHANES_LEAD_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
-        TASKS.append("nhanes_lead_arguablycausal_test_"+f"{index}")
+# for index in range(NHANES_LEAD_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
+#         TASKS.append("nhanes_lead_arguablycausal_test_"+f"{index}")
 
 # Useful directories
 if __name__ == '__main__':

@@ -178,6 +178,7 @@ if __name__ == "__main__":
                 f"--model {exp_obj.model} "
                 f"--cache_dir {str(DATA_DIR_PREPROCESSED)} "
                 f"--save_dir {str(EXP_RESULTS_DIR)} "
+                f"--trial $(Process) "
                 # f"{'--verbose' if VERBOSE else ''} "
             ),
             "output": f"{cluster_job_out_name}.out",

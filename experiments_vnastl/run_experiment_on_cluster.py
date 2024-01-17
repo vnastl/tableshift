@@ -73,7 +73,7 @@ def balanced_accuracy_score(target,prediction):
     balanced_acc_se = torch.sqrt(sensitivity_se**2/4 + specificity_se**2/4)
     return balanced_acc.item(), balanced_acc_se.item()
 
-def main(experiment, model, cache_dir, save_dir, debug: bool):
+def main(experiment, model, cache_dir, save_dir, trial, debug: bool):
     cache_dir = Path(cache_dir)
     save_dir = Path(save_dir)
     save_dir.mkdir(exist_ok=True,parents=False)
@@ -119,7 +119,7 @@ def main(experiment, model, cache_dir, save_dir, debug: bool):
         # Open a file in write mode
         SAVE_DIR_EXP = save_dir / experiment
         SAVE_DIR_EXP.mkdir(exist_ok=True)
-        with open(f'{str(SAVE_DIR_EXP)}/{model}_eval.json', 'w') as f:
+        with open(f'{str(SAVE_DIR_EXP)}/{model}_eval_{trial}.json', 'w') as f:
             # Use json.dump to write the dictionary into the file
             evaluation["features"] = dset.predictors
             json.dump(evaluation, f)
@@ -152,7 +152,7 @@ def main(experiment, model, cache_dir, save_dir, debug: bool):
         # Open a file in write mode
         SAVE_DIR_EXP = save_dir / experiment
         SAVE_DIR_EXP.mkdir(exist_ok=True)
-        with open(f'{str(SAVE_DIR_EXP)}/{model}_eval.json', 'w') as f:
+        with open(f'{str(SAVE_DIR_EXP)}/{model}_eval_{trial}.json', 'w') as f:
             evaluation["features"] = dset.predictors
             json.dump(evaluation, f)
     return
@@ -171,5 +171,7 @@ if __name__ == "__main__":
                         help="Experiment to run. Overridden when debug=True.")
     parser.add_argument("--model", default="histgbm",
                         help="model to use.")
+    parser.add_argument("--trial", default=0,
+                        help="Number of trial.")
     args = parser.parse_args()
     main(**vars(args))
