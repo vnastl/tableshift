@@ -355,7 +355,7 @@ if __name__ == '__main__':
     # For each task
     print(
             f"\n*** *** ***\n"
-            f"Launching {len(all_task)}
+            f"Launching {len(all_task)} "
             f"tasks"
             f"\n*** *** ***\n"
         )
