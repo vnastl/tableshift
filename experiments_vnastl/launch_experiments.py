@@ -24,7 +24,8 @@ from tableshift.datasets import ACS_INCOME_FEATURES_CAUSAL_SUBSETS_NUMBER, ACS_I
     MIMIC_EXTRACT_MORT_HOSP_FEATURES_CAUSAL_SUBSETS, MIMIC_EXTRACT_MORT_HOSP_FEATURES_CAUSAL_SUBSETS_NUMBER,\
     SIPP_FEATURES_CAUSAL_SUBSETS_NUMBER, SIPP_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER,\
     MEPS_FEATURES_CAUSAL_SUBSETS_NUMBER, MEPS_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER,\
-    PHYSIONET_FEATURES_CAUSAL_SUBSETS_NUMBER, PHYSIONET_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER
+    PHYSIONET_FEATURES_CAUSAL_SUBSETS_NUMBER, PHYSIONET_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER,\
+    NHANES_LEAD_FEATURES_CAUSAL_SUBSETS_NUMBER, NHANES_LEAD_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER
     # MIMIC_EXTRACT_MORT_HOSP_FEATURES_ARGUABLYCAUSAL_SUPERSETS, MIMIC_EXTRACT_MORT_HOSP_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER
     # MIMIC_EXTRACT_LOS_3_FEATURES_ARGUABLYCAUSAL_SUPERSETS, MIMIC_EXTRACT_LOS_3_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER,\
 
@@ -85,11 +86,12 @@ TASKS = [
 
     # "college_scorecard",
     # "college_scorecard_causal",
-    "college_scorecard_causal_test_0",
+    "college_scorecard_causal_test_6",
     # "college_scorecard_arguablycausal",
 
-    # "nhanes_lead", 
-    # "nhanes_lead_causal",
+    "nhanes_lead", 
+    "nhanes_lead_causal",
+    "nhanes_lead_arguablycausal",
 
     # "diabetes_readmission", 
     # "diabetes_readmission_causal",
@@ -103,9 +105,9 @@ TASKS = [
     # "mimic_extract_mort_hosp_causal",
     # "mimic_extract_mort_hosp_arguablycausal",
 
-    "physionet", 
-    "physionet_causal",
-    "physionet_arguablycausal",
+    # "physionet", 
+    # "physionet_causal",
+    # "physionet_arguablycausal",
 
     # "sipp", 
     # "sipp_causal",
@@ -202,11 +204,17 @@ TASKS = [
 # for index in range(MEPS_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
 #         TASKS.append("meps_arguablycausal_test_"+f"{index}")
 
-for index in range(PHYSIONET_FEATURES_CAUSAL_SUBSETS_NUMBER):
-        TASKS.append("physionet_causal_test_"+f"{index}")
+# for index in range(PHYSIONET_FEATURES_CAUSAL_SUBSETS_NUMBER):
+#         TASKS.append("physionet_causal_test_"+f"{index}")
 
-for index in range(PHYSIONET_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
-        TASKS.append("physionet_arguablycausal_test_"+f"{index}")
+# for index in range(PHYSIONET_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
+#         TASKS.append("physionet_arguablycausal_test_"+f"{index}")
+
+for index in range(NHANES_LEAD_FEATURES_CAUSAL_SUBSETS_NUMBER):
+        TASKS.append("nhanes_lead_causal_test_"+f"{index}")
+
+for index in range(NHANES_LEAD_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
+        TASKS.append("nhanes_lead_arguablycausal_test_"+f"{index}")
 
 # Useful directories
 if __name__ == '__main__':

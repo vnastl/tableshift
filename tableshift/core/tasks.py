@@ -170,6 +170,8 @@ _TASK_REGISTRY = {
                    NHANES_LEAD_FEATURES),
     "nhanes_lead_causal":
         TaskConfig(NHANESDataSource, NHANES_LEAD_FEATURES_CAUSAL),
+    "nhanes_lead_arguablycausal":
+        TaskConfig(NHANESDataSource, NHANES_LEAD_FEATURES_ARGUABLUCAUSAL),
     "physionet":
         TaskConfig(PhysioNetDataSource, PHYSIONET_FEATURES),
     "physionet_causal":
@@ -396,6 +398,12 @@ for index, subset in enumerate(PHYSIONET_FEATURES_CAUSAL_SUBSETS):
 
 for index, superset in enumerate(PHYSIONET_FEATURES_ARGUABLYCAUSAL_SUPERSETS):
     _TASK_REGISTRY["physionet_arguablycausal_test_"+f"{index}"] = TaskConfig(PhysioNetDataSource, superset)
+
+for index, subset in enumerate(NHANES_LEAD_FEATURES_CAUSAL_SUBSETS):
+    _TASK_REGISTRY["nhanes_lead_causal_test_"+f"{index}"] = TaskConfig(NHANESDataSource, subset)
+
+for index, superset in enumerate(NHANES_LEAD_FEATURES_ARGUABLYCAUSAL_SUPERSETS):
+    _TASK_REGISTRY["nhanes_lead_arguablycausal_test_"+f"{index}"] = TaskConfig(NHANESDataSource, superset)
 
 def get_task_config(name: str) -> TaskConfig:
     if name in _TASK_REGISTRY:

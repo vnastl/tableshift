@@ -21,7 +21,8 @@ from tableshift.datasets import ACS_INCOME_FEATURES_CAUSAL_SUBSETS_NUMBER, ACS_I
     COLLEGE_SCORECARD_FEATURES_CAUSAL_SUBSETS_NUMBER, COLLEGE_SCORECARD_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER,\
     MIMIC_EXTRACT_LOS_3_FEATURES_CAUSAL_SUBSETS, MIMIC_EXTRACT_LOS_3_FEATURES_CAUSAL_SUBSETS_NUMBER,\
     MIMIC_EXTRACT_MORT_HOSP_FEATURES_CAUSAL_SUBSETS, MIMIC_EXTRACT_MORT_HOSP_FEATURES_CAUSAL_SUBSETS_NUMBER,\
-    PHYSIONET_FEATURES_CAUSAL_SUBSETS_NUMBER, PHYSIONET_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER
+    PHYSIONET_FEATURES_CAUSAL_SUBSETS_NUMBER, PHYSIONET_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER,\
+    NHANES_LEAD_FEATURES_CAUSAL_SUBSETS_NUMBER, NHANES_LEAD_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER
     # MIMIC_EXTRACT_LOS_3_FEATURES_ARGUABLYCAUSAL_SUPERSETS, MIMIC_EXTRACT_LOS_3_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER,\
     # MIMIC_EXTRACT_MORT_HOSP_FEATURES_ARGUABLYCAUSAL_SUPERSETS, MIMIC_EXTRACT_MORT_HOSP_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER
 from tableshift.datasets.mimic_extract import MIMIC_EXTRACT_STATIC_FEATURES, \
@@ -715,6 +716,21 @@ BENCHMARK_CONFIGS = {
             passthrough_columns=["nhanes_year"],
             numeric_features="kbins"),
         tabular_dataset_kwargs={"nhanes_task": "lead", "years": NHANES_YEARS}),
+    "nhanes_lead_arguablycausal": ExperimentConfig(
+        splitter=DomainSplitter(val_size=DEFAULT_ID_VAL_SIZE,
+                                ood_val_size=DEFAULT_OOD_VAL_SIZE,
+                                random_state=DEFAULT_RANDOM_STATE,
+                                id_test_size=DEFAULT_ID_TEST_SIZE,
+                                domain_split_varname='INDFMPIRBelowCutoff',
+                                domain_split_ood_values=[1.]),
+        # Race (non. hispanic white vs. all others; male vs. all others)
+        grouper=Grouper({"RIDRETH_merged": [3, ], "RIAGENDR": ["1.0", ]},
+                        drop=False),
+        preprocessor_config=PreprocessorConfig(
+            passthrough_columns=["nhanes_year"],
+            numeric_features="kbins"),
+        tabular_dataset_kwargs={"nhanes_task": "lead", "years": NHANES_YEARS}),
+
 
     # Sepsis
     # LOS >= 47 is roughly the 80th %ile of data.
@@ -1178,3 +1194,35 @@ for index in range(PHYSIONET_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
                                                                                                             dropna=None),
                                                                         tabular_dataset_kwargs={"name": "physionet_arguablycausal_test_"+f"{index}"})
     
+
+for index in range(NHANES_LEAD_FEATURES_CAUSAL_SUBSETS_NUMBER):
+    BENCHMARK_CONFIGS["nhanes_lead_causal_test_"+f"{index}"] = ExperimentConfig(
+                                                                        splitter=DomainSplitter(val_size=DEFAULT_ID_VAL_SIZE,
+                                                                                                ood_val_size=DEFAULT_OOD_VAL_SIZE,
+                                                                                                random_state=DEFAULT_RANDOM_STATE,
+                                                                                                id_test_size=DEFAULT_ID_TEST_SIZE,
+                                                                                                domain_split_varname='INDFMPIRBelowCutoff',
+                                                                                                domain_split_ood_values=[1.]),
+                                                                        # Race (non. hispanic white vs. all others; male vs. all others)
+                                                                        grouper=Grouper({"RIDRETH_merged": [3, ], "RIAGENDR": ["1.0", ]},
+                                                                                        drop=False),
+                                                                        preprocessor_config=PreprocessorConfig(
+                                                                            passthrough_columns=["nhanes_year"],
+                                                                            numeric_features="kbins"),
+                                                                        tabular_dataset_kwargs={"nhanes_task": "lead", "years": NHANES_YEARS})
+    
+for index in range(NHANES_LEAD_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
+    BENCHMARK_CONFIGS["nhanes_lead_arguablycausal_test_"+f"{index}"] = ExperimentConfig(
+                                                                        splitter=DomainSplitter(val_size=DEFAULT_ID_VAL_SIZE,
+                                                                                                ood_val_size=DEFAULT_OOD_VAL_SIZE,
+                                                                                                random_state=DEFAULT_RANDOM_STATE,
+                                                                                                id_test_size=DEFAULT_ID_TEST_SIZE,
+                                                                                                domain_split_varname='INDFMPIRBelowCutoff',
+                                                                                                domain_split_ood_values=[1.]),
+                                                                        # Race (non. hispanic white vs. all others; male vs. all others)
+                                                                        grouper=Grouper({"RIDRETH_merged": [3, ], "RIAGENDR": ["1.0", ]},
+                                                                                        drop=False),
+                                                                        preprocessor_config=PreprocessorConfig(
+                                                                            passthrough_columns=["nhanes_year"],
+                                                                            numeric_features="kbins"),
+                                                                        tabular_dataset_kwargs={"nhanes_task": "lead", "years": NHANES_YEARS})
