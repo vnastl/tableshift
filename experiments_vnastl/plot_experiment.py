@@ -10,7 +10,7 @@ import matplotlib.colors as mcolors
 from matplotlib import cm
 from matplotlib.colors import ListedColormap
 import seaborn as sns
-sns.set_context("paper", font_scale=1.5)
+sns.set_context("paper", font_scale=1.9)
 
 
 from tableshift import get_dataset
@@ -29,7 +29,7 @@ import os
 os.chdir("/Users/vnastl/Seafile/My Library/mpi project causal vs noncausal/tableshift")
 #%%
 
-ANTICAUSAL = True
+ANTICAUSAL = False
 
 # %%
 def get_dic_experiments_value(name):
@@ -287,9 +287,9 @@ def do_plot(experiment_name,mymin,myname):
     points = eval_plot[['id_test','ood_test']]
     mask = paretoset(points, sense=["max", "max"])
     points = points[mask]
-    points = points[points["id_test"] >= eval_constant['id_test'].values[0]]
+    points = points[points["id_test"] >= (eval_constant['id_test'].values[0] -0.01)]
     markers = eval_plot[mask]
-    markers = markers[markers["id_test"] >= eval_constant['id_test'].values[0]]
+    markers = markers[markers["id_test"] >= (eval_constant['id_test'].values[0] -0.01)]
     errors = plt.errorbar(
                 x=markers['id_test'],
                 y=markers['ood_test'],
@@ -318,9 +318,9 @@ def do_plot(experiment_name,mymin,myname):
     points = eval_plot[['id_test','ood_test']]
     mask = paretoset(points, sense=["max", "max"])
     points = points[mask]
-    points = points[points["id_test"] >= eval_constant['id_test'].values[0]]
+    points = points[points["id_test"] >= (eval_constant['id_test'].values[0] -0.01)]
     markers = eval_plot[mask]
-    markers = markers[markers["id_test"] >= eval_constant['id_test'].values[0]]
+    markers = markers[markers["id_test"] >= (eval_constant['id_test'].values[0] -0.01)]
     errors = plt.errorbar(
                 x=markers['id_test'],
                 y=markers['ood_test'],
@@ -349,9 +349,9 @@ def do_plot(experiment_name,mymin,myname):
         points = eval_plot[['id_test','ood_test']]
         mask = paretoset(points, sense=["max", "max"])
         points = points[mask]
-        points = points[points["id_test"] >= eval_constant['id_test'].values[0]]
+        points = points[points["id_test"] >= (eval_constant['id_test'].values[0] -0.01)]
         markers = eval_plot[mask]
-        markers = markers[markers["id_test"] >= eval_constant['id_test'].values[0]]
+        markers = markers[markers["id_test"] >= (eval_constant['id_test'].values[0] -0.01)]
         errors = plt.errorbar(
                     x=markers['id_test'],
                     y=markers['ood_test'],
@@ -380,9 +380,9 @@ def do_plot(experiment_name,mymin,myname):
         points = eval_plot[['id_test','ood_test']]
         mask = paretoset(points, sense=["max", "max"])
         points = points[mask]
-        points = points[points["id_test"] >= eval_constant['id_test'].values[0]]
+        points = points[points["id_test"] >= (eval_constant['id_test'].values[0] -0.01)]
         markers = eval_plot[mask]
-        markers = markers[markers["id_test"] >= eval_constant['id_test'].values[0]]
+        markers = markers[markers["id_test"] >=(eval_constant['id_test'].values[0] -0.01)]
         if not myname.endswith("zoom"):
             print(markers["model"].values)
         errors = plt.errorbar(
@@ -424,7 +424,7 @@ def do_plot(experiment_name,mymin,myname):
     points = eval_plot[['id_test','ood_test']]
     mask = paretoset(points, sense=["max", "max"])
     points = points[mask]
-    points = points[points["id_test"] >= eval_constant['id_test'].values[0]]
+    points = points[points["id_test"] >= (eval_constant['id_test'].values[0] -0.01)]  
     #get extra points for the plot
     new_row = pd.DataFrame({'id_test':[xmin,max(points['id_test'])], 'ood_test':[max(points['ood_test']),ymin]},)
     points = pd.concat([points,new_row], ignore_index=True)
@@ -445,9 +445,9 @@ def do_plot(experiment_name,mymin,myname):
     points = eval_plot[['id_test','ood_test']]
     mask = paretoset(points, sense=["max", "max"])
     points = points[mask]
-    points = points[points["id_test"] >= eval_constant['id_test'].values[0]]
+    points = points[points["id_test"] >= (eval_constant['id_test'].values[0] -0.01)]
     markers = eval_plot[mask]
-    markers = markers[markers["id_test"] >= eval_constant['id_test'].values[0]]
+    markers = markers[markers["id_test"] >= (eval_constant['id_test'].values[0] -0.01)]
     #get extra points for the plot
     new_row = pd.DataFrame({'id_test':[xmin,max(points['id_test'])], 'ood_test':[max(points['ood_test']),ymin]},)
     points = pd.concat([points,new_row], ignore_index=True)
@@ -469,7 +469,7 @@ def do_plot(experiment_name,mymin,myname):
         points = eval_plot[['id_test','ood_test']]
         mask = paretoset(points, sense=["max", "max"])
         points = points[mask]
-        points = points[points["id_test"] >= eval_constant['id_test'].values[0]]
+        points = points[points["id_test"] >= (eval_constant['id_test'].values[0] -0.01)]
         # get extra points for the plot
         new_row = pd.DataFrame({'id_test':[xmin,max(points['id_test'])], 'ood_test':[max(points['ood_test']),ymin]},)
         points = pd.concat([points,new_row], ignore_index=True)
@@ -491,7 +491,7 @@ def do_plot(experiment_name,mymin,myname):
         points = eval_plot[['id_test','ood_test']]
         mask = paretoset(points, sense=["max", "max"])
         points = points[mask]
-        points = points[points["id_test"] >= eval_constant['id_test'].values[0]]
+        points = points[points["id_test"] >= (eval_constant['id_test'].values[0] -0.01)]
         # get extra points for the plot
         new_row = pd.DataFrame({'id_test':[xmin,max(points['id_test'])], 'ood_test':[max(points['ood_test']),ymin]},)
         points = pd.concat([points,new_row], ignore_index=True)
@@ -582,7 +582,7 @@ def do_plot(experiment_name,mymin,myname):
                          xerr= type_shift['gap_var']**0.5,
                          yerr=type_shift['ood_test_ub']-type_shift['ood_test'],
                         color=eval(f"color_{type}"), ecolor=eval(f"color_{type}"),
-                        fmt=marker, markersize=7, capsize=3,  label=f"{type}",
+                        fmt=marker, markersize=7, capsize=3,  label="arguably\ncausal" if type == 'arguablycausal' else f"{type}",
                         zorder=3)
         xmin, xmax = plt.xlim()
         ymin, ymax = plt.ylim()
@@ -616,7 +616,7 @@ def do_plot(experiment_name,mymin,myname):
                 newLines.append(line)
             
         # Create a legend with only distinct labels
-        plt.legend(newLines, newLabels, loc='upper left')
+        plt.legend(newLines, newLabels, loc='lower right')
             # TODO add pareto dominate lines & areas, see constant, maybe even add the multiple paretos
         plt.savefig(str(Path(__file__).parents[0]/f"{myname}_shift_accuracy.pdf"), bbox_inches='tight')
         plt.show()
@@ -715,7 +715,7 @@ completed_experiments = [
                         # "acsemployment", # old
                          "acsfoodstamps",
                          "acsincome",
-                        #  "acspubcov",
+                         "acspubcov",
                          "acsunemployment",
                          "anes",
                          "assistments",
@@ -723,11 +723,11 @@ completed_experiments = [
                          "brfss_diabetes",
                          "college_scorecard",
                          "diabetes_readmission",
-                        #  "meps"
+                         "meps",
                          "mimic_extract_mort_hosp",
                          "mimic_extract_los_3",
-                        #  "nhanes_lead",
-                        #  "physionet", # old 
+                         "nhanes_lead",
+                         "physionet",
                          "sipp",
                          ]
 for experiment_name in completed_experiments:

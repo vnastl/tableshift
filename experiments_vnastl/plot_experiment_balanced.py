@@ -10,7 +10,7 @@ import matplotlib.colors as mcolors
 from matplotlib import cm
 from matplotlib.colors import ListedColormap
 import seaborn as sns
-sns.set_context("paper", font_scale=1.5)
+sns.set_context("paper", font_scale=1.9)
 
 from tableshift import get_dataset
 from  statsmodels.stats.proportion import proportion_confint
@@ -245,9 +245,9 @@ def do_plot(experiment_name,mymin,myname):
     points = eval_plot[['id_test','ood_test']]
     mask = paretoset(points, sense=["max", "max"])
     points = points[mask]
-    points = points[points["id_test"] >= eval_constant['id_test'].values[0]]
+    points = points[points["id_test"] >= (eval_constant['id_test'].values[0] -0.01)]
     markers = eval_plot[mask]
-    markers = markers[markers["id_test"] >= eval_constant['id_test'].values[0]]
+    markers = markers[markers["id_test"] >= (eval_constant['id_test'].values[0] -0.01)]
     errors = plt.errorbar(
                 x=markers['id_test'],
                 y=markers['ood_test'],
@@ -272,9 +272,9 @@ def do_plot(experiment_name,mymin,myname):
     points = eval_plot[['id_test','ood_test']]
     mask = paretoset(points, sense=["max", "max"])
     points = points[mask]
-    points = points[points["id_test"] >= eval_constant['id_test'].values[0]]
+    points = points[points["id_test"] >= (eval_constant['id_test'].values[0] -0.01)]
     markers = eval_plot[mask]
-    markers = markers[markers["id_test"] >= eval_constant['id_test'].values[0]]
+    markers = markers[markers["id_test"] >= (eval_constant['id_test'].values[0] -0.01)]
     errors = plt.errorbar(
                 x=markers['id_test'],
                 y=markers['ood_test'],
@@ -300,9 +300,9 @@ def do_plot(experiment_name,mymin,myname):
         points = eval_plot[['id_test','ood_test']]
         mask = paretoset(points, sense=["max", "max"])
         points = points[mask]
-        points = points[points["id_test"] >= eval_constant['id_test'].values[0]]
+        points = points[points["id_test"] >= (eval_constant['id_test'].values[0] -0.01)]
         markers = eval_plot[mask]
-        markers = markers[markers["id_test"] >= eval_constant['id_test'].values[0]]
+        markers = markers[markers["id_test"] >= (eval_constant['id_test'].values[0] -0.01)]
         errors = plt.errorbar(
                     x=markers['id_test'],
                     y=markers['ood_test'],
@@ -342,7 +342,7 @@ def do_plot(experiment_name,mymin,myname):
     points = eval_plot[['id_test','ood_test']]
     mask = paretoset(points, sense=["max", "max"])
     points = points[mask]
-    points = points[points["id_test"] >= eval_constant['id_test'].values[0]]
+    points = points[points["id_test"] >= (eval_constant['id_test'].values[0] -0.01)]
     #get extra points for the plot
     new_row = pd.DataFrame({'id_test':[xmin,max(points['id_test'])], 'ood_test':[max(points['ood_test']),ymin]},)
     points = pd.concat([points,new_row], ignore_index=True)
@@ -363,9 +363,9 @@ def do_plot(experiment_name,mymin,myname):
     points = eval_plot[['id_test','ood_test']]
     mask = paretoset(points, sense=["max", "max"])
     points = points[mask]
-    points = points[points["id_test"] >= eval_constant['id_test'].values[0]]
+    points = points[points["id_test"] >= (eval_constant['id_test'].values[0] -0.01)]
     markers = eval_plot[mask]
-    markers = markers[markers["id_test"] >= eval_constant['id_test'].values[0]]
+    markers = markers[markers["id_test"] >= (eval_constant['id_test'].values[0] -0.01)]
     #get extra points for the plot
     new_row = pd.DataFrame({'id_test':[xmin,max(points['id_test'])], 'ood_test':[max(points['ood_test']),ymin]},)
     points = pd.concat([points,new_row], ignore_index=True)
@@ -387,7 +387,7 @@ def do_plot(experiment_name,mymin,myname):
         points = eval_plot[['id_test','ood_test']]
         mask = paretoset(points, sense=["max", "max"])
         points = points[mask]
-        points = points[points["id_test"] >= eval_constant['id_test'].values[0]]
+        points = points[points["id_test"] >= (eval_constant['id_test'].values[0] -0.01)]
         # get extra points for the plot
         new_row = pd.DataFrame({'id_test':[xmin,max(points['id_test'])], 'ood_test':[max(points['ood_test']),ymin]},)
         points = pd.concat([points,new_row], ignore_index=True)
@@ -517,19 +517,19 @@ completed_experiments = [
                         # "acsemployment", # old
                          "acsfoodstamps",
                          "acsincome",
-                        #  "acspubcov", # old
-                         "acsunemployment", # old
+                         "acspubcov",
+                         "acsunemployment",
                          "anes",
-                        #  "assistments",
+                         "assistments",
                          "brfss_blood_pressure",
                          "brfss_diabetes",
-                         "college_scorecard", # old
+                         "college_scorecard",
                          "diabetes_readmission",
-                        #  "meps"
+                         "meps",
                          "mimic_extract_mort_hosp",
                          "mimic_extract_los_3",
-                        #  "nhanes_lead",
-                        #  "physionet", # old 
+                         "nhanes_lead",
+                         "physionet",
                          "sipp",
                          ]
 for experiment_name in completed_experiments:

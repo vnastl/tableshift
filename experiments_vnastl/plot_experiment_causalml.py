@@ -10,7 +10,7 @@ import matplotlib.colors as mcolors
 from matplotlib import cm
 from matplotlib.colors import ListedColormap
 import seaborn as sns
-sns.set_context("paper", font_scale=1.5)
+sns.set_context("paper", font_scale=1.9)
 
 from tableshift import get_dataset
 from  statsmodels.stats.proportion import proportion_confint
@@ -446,7 +446,7 @@ def plot_experiment(experiment_name):
         do_plot(experiment_name,mymin,myname)
 
     elif experiment_name == "assistments":
-        mymin = 0.4 if ANTICAUSAL else 0.5
+        mymin = 0.5
         myname = f"plots_paper/plot_{experiment_name}"
         do_plot(experiment_name,mymin,myname)
 
@@ -511,7 +511,7 @@ completed_experiments = [
                         #  "acspubcov", # old
                          "acsunemployment", # old
                          "anes",
-                        #  "assistments",
+                         "assistments",
                         #  "brfss_blood_pressure",
                          "brfss_diabetes",
                          "college_scorecard", # old

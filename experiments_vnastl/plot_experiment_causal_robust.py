@@ -10,7 +10,7 @@ import matplotlib.colors as mcolors
 from matplotlib import cm
 from matplotlib.colors import ListedColormap
 import seaborn as sns
-sns.set_context("paper", font_scale=1.5)
+sns.set_context("paper", font_scale=1.9)
 
 from tableshift import get_dataset
 from  statsmodels.stats.proportion import proportion_confint
@@ -30,7 +30,10 @@ from tableshift.datasets import ACS_INCOME_FEATURES_CAUSAL_SUBSETS_NUMBER, ACS_I
     COLLEGE_SCORECARD_FEATURES_CAUSAL_SUBSETS_NUMBER, COLLEGE_SCORECARD_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER,\
     MIMIC_EXTRACT_LOS_3_FEATURES_CAUSAL_SUBSETS, MIMIC_EXTRACT_LOS_3_FEATURES_CAUSAL_SUBSETS_NUMBER,\
     MIMIC_EXTRACT_MORT_HOSP_FEATURES_CAUSAL_SUBSETS, MIMIC_EXTRACT_MORT_HOSP_FEATURES_CAUSAL_SUBSETS_NUMBER,\
-    SIPP_FEATURES_CAUSAL_SUBSETS_NUMBER, SIPP_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER
+    SIPP_FEATURES_CAUSAL_SUBSETS_NUMBER, SIPP_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER,\
+    MEPS_FEATURES_CAUSAL_SUBSETS_NUMBER, MEPS_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER,\
+    PHYSIONET_FEATURES_CAUSAL_SUBSETS_NUMBER, PHYSIONET_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER,\
+    NHANES_LEAD_FEATURES_CAUSAL_SUBSETS_NUMBER, NHANES_LEAD_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER
 
 import warnings
 warnings.filterwarnings('ignore')
@@ -60,6 +63,10 @@ dic_robust_number = {
     "mimic_extract_los_3": MIMIC_EXTRACT_LOS_3_FEATURES_CAUSAL_SUBSETS_NUMBER,
     "mimic_extract_mort_hosp": MIMIC_EXTRACT_MORT_HOSP_FEATURES_CAUSAL_SUBSETS_NUMBER,
     "sipp": SIPP_FEATURES_CAUSAL_SUBSETS_NUMBER,
+    "acspubcov": ACS_PUBCOV_FEATURES_CAUSAL_SUBSETS_NUMBER,
+    "meps": MEPS_FEATURES_CAUSAL_SUBSETS_NUMBER,
+    "physionet": PHYSIONET_FEATURES_CAUSAL_SUBSETS_NUMBER,
+    "nhanes_lead": NHANES_LEAD_FEATURES_CAUSAL_SUBSETS_NUMBER,
 }
 
 dic_experiments = {
@@ -76,7 +83,12 @@ dic_experiments = {
     "mimic_extract_los_3":  get_dic_experiments_value("mimic_extract_los_3", dic_robust_number["mimic_extract_los_3"]),
     "mimic_extract_mort_hosp":  get_dic_experiments_value("mimic_extract_mort_hosp", dic_robust_number["mimic_extract_mort_hosp"]),
     "sipp":  get_dic_experiments_value("sipp", dic_robust_number["sipp"]),
+    "acspubcov": get_dic_experiments_value("acspubcov", dic_robust_number["acspubcov"]),
+    "meps": get_dic_experiments_value("meps", dic_robust_number["meps"]),
+    "physionet": get_dic_experiments_value("physionet", dic_robust_number["physionet"]),
+    "nhanes_lead": get_dic_experiments_value("nhanes_lead", dic_robust_number["nhanes_lead"]),
 }
+
  #%%
 
 
@@ -289,9 +301,9 @@ def do_plot(experiment_name,mymin,myname):
     points = eval_plot[['id_test','ood_test']]
     mask = paretoset(points, sense=["max", "max"])
     points = points[mask]
-    points = points[points["id_test"] >= eval_constant['id_test'].values[0]]
+    points = points[points["id_test"] >= (eval_constant['id_test'].values[0] -0.01)]
     markers = eval_plot[mask]
-    markers = markers[markers["id_test"] >= eval_constant['id_test'].values[0]]
+    markers = markers[markers["id_test"] >= (eval_constant['id_test'].values[0] -0.01)]
     errors = plt.errorbar(
                 x=markers['id_test'],
                 y=markers['ood_test'],
@@ -315,9 +327,9 @@ def do_plot(experiment_name,mymin,myname):
     points = eval_plot[['id_test','ood_test']]
     mask = paretoset(points, sense=["max", "max"])
     points = points[mask]
-    points = points[points["id_test"] >= eval_constant['id_test'].values[0]]
+    points = points[points["id_test"] >= (eval_constant['id_test'].values[0] -0.01)]
     markers = eval_plot[mask]
-    markers = markers[markers["id_test"] >= eval_constant['id_test'].values[0]]
+    markers = markers[markers["id_test"] >= (eval_constant['id_test'].values[0] -0.01)]
     errors = plt.errorbar(
                 x=markers['id_test'],
                 y=markers['ood_test'],
@@ -343,9 +355,9 @@ def do_plot(experiment_name,mymin,myname):
             points = eval_plot[['id_test','ood_test']]
             mask = paretoset(points, sense=["max", "max"])
             points = points[mask]
-            points = points[points["id_test"] >= eval_constant['id_test'].values[0]]
+            points = points[points["id_test"] >= (eval_constant['id_test'].values[0] -0.01)]
             markers = eval_plot[mask]
-            markers = markers[markers["id_test"] >= eval_constant['id_test'].values[0]]
+            markers = markers[markers["id_test"] >= (eval_constant['id_test'].values[0] -0.01)]
             # if not myname.endswith("zoom"):
             #     print(markers["model"].values)
             errors = plt.errorbar(
@@ -387,7 +399,7 @@ def do_plot(experiment_name,mymin,myname):
     points = eval_plot[['id_test','ood_test']]
     mask = paretoset(points, sense=["max", "max"])
     points = points[mask]
-    points = points[points["id_test"] >= eval_constant['id_test'].values[0]]
+    points = points[points["id_test"] >= (eval_constant['id_test'].values[0] -0.01)]
     #get extra points for the plot
     new_row = pd.DataFrame({'id_test':[xmin,max(points['id_test'])], 'ood_test':[max(points['ood_test']),ymin]},)
     points = pd.concat([points,new_row], ignore_index=True)
@@ -408,9 +420,9 @@ def do_plot(experiment_name,mymin,myname):
     points = eval_plot[['id_test','ood_test']]
     mask = paretoset(points, sense=["max", "max"])
     points = points[mask]
-    points = points[points["id_test"] >= eval_constant['id_test'].values[0]]
+    points = points[points["id_test"] >= (eval_constant['id_test'].values[0] -0.01)]
     markers = eval_plot[mask]
-    markers = markers[markers["id_test"] >= eval_constant['id_test'].values[0]]
+    markers = markers[markers["id_test"] >= (eval_constant['id_test'].values[0] -0.01)]
     #get extra points for the plot
     new_row = pd.DataFrame({'id_test':[xmin,max(points['id_test'])], 'ood_test':[max(points['ood_test']),ymin]},)
     points = pd.concat([points,new_row], ignore_index=True)
@@ -556,21 +568,21 @@ def plot_experiment(experiment_name):
 
 completed_experiments = [
                         # "acsemployment", # old
-                        #  "acsfoodstamps",
-                        #  "acsincome",
-                        # #  "acspubcov", # old
-                        #  "acsunemployment", # old
-                        #  "anes",
-                        # #  "assistments",
-                        #  "brfss_blood_pressure",
-                        #  "brfss_diabetes",
-                        #  "college_scorecard", # old
-                        #  "diabetes_readmission",
-                        # #  "meps"
+                        "acsfoodstamps",
+                         "acsincome",
+                         "acspubcov",
+                         "acsunemployment",
+                         "anes",
+                         "assistments",
+                         "brfss_blood_pressure",
+                         "brfss_diabetes",
+                         "college_scorecard",
+                         "diabetes_readmission",
+                         "meps",
                          "mimic_extract_mort_hosp",
-                        #  "mimic_extract_los_3",
+                         "mimic_extract_los_3",
                         #  "nhanes_lead",
-                        #  "physionet", # old 
+                         "physionet",
                          "sipp",
                          ]
 for experiment_name in completed_experiments:
