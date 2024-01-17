@@ -85,6 +85,7 @@ TASKS = [
 
     # "college_scorecard",
     # "college_scorecard_causal",
+    "college_scorecard_causal_test_0",
     # "college_scorecard_arguablycausal",
 
     # "nhanes_lead", 
