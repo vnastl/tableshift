@@ -36,8 +36,8 @@ if __name__ == '__main__':
 
 # Number of task to run per algorithm, per dataset
 # N_TRIALS    = 10
-# N_TRIALS    = 30
-N_TRIALS    = 100
+N_TRIALS    = 50
+# N_TRIALS    = 100
 
 # Cluster settings
 JOB_MIN_BID = 100    # htcondor bid (min. is 15 apparently...)
@@ -48,10 +48,10 @@ BIG_JOB_MEMORY_GB = 256
 VERBOSE = True
 
 TASKS = [
-    "acsincome",
-    "acsincome_causal",
-    "acsincome_arguablycausal",
-    "acsincome_anticausal",
+    # "acsincome",
+    # "acsincome_causal",
+    # "acsincome_arguablycausal",
+    # "acsincome_anticausal",
 
     # "acspubcov",
     # "acspubcov_causal",
@@ -108,10 +108,10 @@ TASKS = [
     # "physionet_causal",
     # "physionet_arguablycausal",
 
-    "sipp", 
-    "sipp_causal",
-    "sipp_arguablycausal",
-    "sipp_anticausal",
+    # "sipp", 
+    # "sipp_causal",
+    # "sipp_arguablycausal",
+    # "sipp_anticausal",
 
     "meps", 
     "meps_causal",
