@@ -29,7 +29,7 @@ import os
 os.chdir("/Users/vnastl/Seafile/My Library/mpi project causal vs noncausal/tableshift")
 #%%
 
-ANTICAUSAL = False
+ANTICAUSAL = True
 
 # %%
 def get_dic_experiments_value(name):
@@ -256,8 +256,8 @@ def do_plot(experiment_name,mymin,myname):
     dic_shift = {}
     dic_shift_acc ={}
 
-    plt.title(
-        f"{dic_title[experiment_name]}")
+    # plt.title(
+    #     f"{dic_title[experiment_name]}")
     plt.xlabel(f"in-domain accuracy") #\n({dic_id_domain[experiment_name]})")
     plt.ylabel(f"out-of-domain accuracy") #\n({dic_ood_domain[experiment_name]})")
 
@@ -535,8 +535,8 @@ def do_plot(experiment_name,mymin,myname):
     #############################################################################
     # Plot shift gap as bars
     #############################################################################
-    plt.title(
-    f"{dic_title[experiment_name]}")
+    # plt.title(
+    # f"{dic_title[experiment_name]}")
     plt.ylabel("shift gap")
 
     # add constant shift gap
@@ -564,8 +564,8 @@ def do_plot(experiment_name,mymin,myname):
     # Plot shift gap vs accuarcy
     #############################################################################
     if (eval_all['features'] == "arguablycausal").any():
-        plt.title(
-        f"{dic_title[experiment_name]}")
+        # plt.title(
+        # f"{dic_title[experiment_name]}")
         plt.xlabel("1 - shift gap")
         plt.ylabel("out-of-domain accuracy")
         shift_acc = pd.concat(dic_shift_acc.values(), ignore_index=True)

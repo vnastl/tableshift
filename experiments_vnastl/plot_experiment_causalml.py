@@ -28,7 +28,7 @@ import os
 os.chdir("/Users/vnastl/Seafile/My Library/mpi project causal vs noncausal/tableshift")
 #%%
 def get_dic_experiments_value(name):
-    return [name, f"{name}_causal"]
+    return [name, f"{name}_causal", f"{name}_arguablycausal"]
 
 dic_experiments = {
         "acsemployment": get_dic_experiments_value("acsemployment"),
@@ -148,6 +148,10 @@ def get_results(experiment_name):
                 if 'causal' not in feature_selection: 
                     feature_selection.append('causal') 
                 return 'causal'
+            elif experiment.endswith('_arguablycausal'):
+                if 'arguablycausal' not in feature_selection: 
+                    feature_selection.append('arguablycausal')
+                return 'arguablycausal'
             else:
                 if 'all' not in feature_selection: 
                     feature_selection.append('all')
@@ -217,8 +221,8 @@ def do_plot(experiment_name,mymin,myname):
     eval_constant = eval_all[eval_all['features']=="constant"]
     dic_shift = {}
 
-    plt.title(
-        f"{dic_title[experiment_name]}")
+    # plt.title(
+    #     f"{dic_title[experiment_name]}")
     plt.xlabel(f"in-domain accuracy") #\n({dic_id_domain[experiment_name]})")
     plt.ylabel(f"out-of-domain accuracy") #\n({dic_ood_domain[experiment_name]})")
     
@@ -289,6 +293,34 @@ def do_plot(experiment_name,mymin,myname):
     plt.hlines(y=shift["ood_test"], xmin=shift["ood_test"], xmax=shift['id_test'],
                color=color_causal, linewidth=3, alpha=0.7)
     
+    #############################################################################
+    # plot errorbars and shift gap for arguablycausal features
+    #############################################################################
+    if (eval_all['features'] == "arguablycausal").any():
+        eval_plot = eval_all[eval_all['features']=="arguablycausal"]
+        eval_plot = eval_plot[(eval_plot['model']!="irm")&(eval_plot['model']!="vrex")]
+        eval_plot.sort_values('id_test',inplace=True)
+        # Calculate the pareto set
+        points = eval_plot[['id_test','ood_test']]
+        mask = paretoset(points, sense=["max", "max"])
+        points = points[mask]
+        points = points[points["id_test"] >= (eval_constant['id_test'].values[0] -0.01)]
+        markers = eval_plot[mask]
+        markers = markers[markers["id_test"] >= (eval_constant['id_test'].values[0] -0.01)]
+        errors = plt.errorbar(
+                    x=markers['id_test'],
+                    y=markers['ood_test'],
+                    xerr=markers['id_test_ub']-markers['id_test'],
+                    yerr=markers['ood_test_ub']-markers['ood_test'], fmt="^",
+                    color=color_arguablycausal, ecolor=color_arguablycausal,
+                    markersize=7, capsize=3, label="top arguably causal features")
+        # highlight bar
+        shift = points[points["ood_test"] == points["ood_test"].max()]
+        shift["type"] = " arguably\ncausal"
+        dic_shift["arguablycausal"] = shift
+        plt.hlines(y=shift["ood_test"], xmin=shift["ood_test"], xmax=shift['id_test'],
+                color=color_arguablycausal, linewidth=3, alpha=0.7)
+
     #############################################################################
     # plot errorbars and shift gap for causal ml
     #############################################################################
@@ -375,6 +407,28 @@ def do_plot(experiment_name,mymin,myname):
     plt.fill(points[hull.vertices, 0], points[hull.vertices, 1], color=color_causal,alpha=0.1)
 
     #############################################################################
+    # plot pareto dominated area for arguablycausal features
+    #############################################################################
+    if (eval_all['features'] == "arguablycausal").any():
+        eval_plot = eval_all[eval_all['features']=="arguablycausal"]
+        eval_plot = eval_plot[(eval_plot['model']!="irm")&(eval_plot['model']!="vrex")]
+        eval_plot.sort_values('id_test',inplace=True)
+        # Calculate the pareto set
+        points = eval_plot[['id_test','ood_test']]
+        mask = paretoset(points, sense=["max", "max"])
+        points = points[mask]
+        points = points[points["id_test"] >= (eval_constant['id_test'].values[0] -0.01)]
+        # get extra points for the plot
+        new_row = pd.DataFrame({'id_test':[xmin,max(points['id_test'])], 'ood_test':[max(points['ood_test']),ymin]},)
+        points = pd.concat([points,new_row], ignore_index=True)
+        points.sort_values('id_test',inplace=True)
+        plt.plot(points['id_test'],points['ood_test'],color=color_arguablycausal,linestyle="dotted")
+        new_row = pd.DataFrame({'id_test':[xmin], 'ood_test':[ymin]},)
+        points = pd.concat([points,new_row], ignore_index=True)
+        points = points.to_numpy()
+        hull = ConvexHull(points)
+        plt.fill(points[hull.vertices, 0], points[hull.vertices, 1], color=color_arguablycausal,alpha=0.1)
+    #############################################################################
     # Add legend & diagonal, save plot
     #############################################################################
     # Get the lines and labels
@@ -398,8 +452,8 @@ def do_plot(experiment_name,mymin,myname):
     plt.savefig(f"{str(Path(__file__).parents[0]/myname)}_causalml.pdf", bbox_inches='tight')
     plt.show()
 
-    plt.title(
-    f"{dic_title[experiment_name]}")
+    # plt.title(
+    # f"{dic_title[experiment_name]}")
     plt.ylabel("shift gap")
 
     # add constant shift gap
@@ -409,7 +463,7 @@ def do_plot(experiment_name,mymin,myname):
     
     shift = pd.concat(dic_shift.values(), ignore_index=True)
     shift["gap"] = shift["id_test"] - shift["ood_test"]
-    barlist = plt.bar(shift["type"], shift["gap"], color=[color_all,color_causal]+[color_irm,color_vrex]+[color_constant])
+    barlist = plt.bar(shift["type"], shift["gap"], color=[color_all,color_causal, color_arguablycausal]+[color_irm,color_vrex]+[color_constant])
     plt.savefig(str(Path(__file__).parents[0]/f"{myname}_causalml_shift.pdf"), bbox_inches='tight')
     plt.show()
 
@@ -505,23 +559,20 @@ def plot_experiment(experiment_name):
 # %%
 
 completed_experiments = [
-                        # "acsemployment", # old
+                        
                          "acsfoodstamps",
                          "acsincome",
-                        #  "acspubcov", # old
+                        
                          "acsunemployment", # old
                          "anes",
-                         "assistments",
-                        #  "brfss_blood_pressure",
-                         "brfss_diabetes",
+                        #  "assistments",
+                        
                          "college_scorecard", # old
                          "diabetes_readmission",
-                        #  "meps"
+                        
                          "mimic_extract_mort_hosp",
                          "mimic_extract_los_3",
-                        #  "nhanes_lead",
-                        #  "physionet", # old 
-                        #  "sipp",
+                        
                          ]
 for experiment_name in completed_experiments:
     plot_experiment(experiment_name)

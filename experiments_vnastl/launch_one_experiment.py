@@ -22,7 +22,8 @@ NOT_DG_TASKS = (
     "physionet", 
     "nhanes_lead",
     "brfss_blood_pressure",
-    "sipp"
+    "sipp",
+    "assistments"
 )
 MODELS = (
     "ft_transformer",
