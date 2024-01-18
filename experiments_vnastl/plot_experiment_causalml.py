@@ -334,8 +334,9 @@ def do_plot(experiment_name,mymin,myname):
                     x=points['id_test'],
                     y=points['ood_test'],
                     xerr=points['id_test_ub']-points['id_test'],
-                    yerr=points['ood_test_ub']-points['ood_test'], fmt="^",
-                    color=eval(f"color_{causalml}"), ecolor=eval(f"color_{causalml}"), label="causal ml")
+                    yerr=points['ood_test_ub']-points['ood_test'], fmt="v",
+                    color=eval(f"color_{causalml}"), ecolor=eval(f"color_{causalml}"), 
+                    markersize=7, capsize=3, label="causal ml")
         # highlight bar
     
         shift = points[points['model']==causalml]
@@ -428,6 +429,27 @@ def do_plot(experiment_name,mymin,myname):
         points = points.to_numpy()
         hull = ConvexHull(points)
         plt.fill(points[hull.vertices, 0], points[hull.vertices, 1], color=color_arguablycausal,alpha=0.1)
+
+    #############################################################################
+    # plot pareto dominated area for causalml
+    #############################################################################
+    eval_plot = eval_all[eval_all['features']=="all"]
+    # eval_plot = eval_plot[eval_plot['model'].isin(['irm', 'vrex'])]
+    # eval_plot.sort_values('model',inplace=True)
+
+    for causalml in ["irm","vrex"]:
+        # Calculate the pareto set
+        points = eval_plot[eval_plot['model']==causalml][['id_test','ood_test']]
+        #get extra points for the plot
+        new_row = pd.DataFrame({'id_test':[xmin,max(points['id_test'])], 'ood_test':[max(points['ood_test']),ymin]},)
+        points = pd.concat([points,new_row], ignore_index=True)
+        points.sort_values('id_test',inplace=True)
+        plt.plot(points['id_test'],points['ood_test'],color=eval(f"color_{causalml}"),linestyle="dotted")
+        new_row = pd.DataFrame({'id_test':[xmin], 'ood_test':[ymin]},)
+        points = pd.concat([points,new_row], ignore_index=True)
+        points = points.to_numpy()
+        hull = ConvexHull(points)
+        plt.fill(points[hull.vertices, 0], points[hull.vertices, 1], color=eval(f"color_{causalml}"),alpha=0.1)
     #############################################################################
     # Add legend & diagonal, save plot
     #############################################################################
