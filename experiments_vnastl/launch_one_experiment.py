@@ -7,6 +7,7 @@ import pandas as pd
 import json
 import argparse
 import pickle
+from time import sleep
 
 from tableshift import get_dataset
 
@@ -220,4 +221,10 @@ if __name__ == "__main__":
 
     for i, exp_obj in enumerate(all_task_experiments):
         print(f"{i}. Launching {exp_obj.n_trials} trials for the experiment '{exp_obj}'")
-        launch_experiments_jobs(task=dic_args["task"], exp_obj=exp_obj)
+        success = False
+        while not success:
+            try:
+                launch_experiments_jobs(task=dic_args["task"], exp_obj=exp_obj)
+                success = True
+            except:
+                sleep(10*60)
