@@ -93,13 +93,13 @@ if __name__ == "__main__":
     DATA_DIR_PREPROCESSED = Path(dic_args["DATA_DIR"]) / "preprocessed"
     DATA_DIR_PREPROCESSED.mkdir(exist_ok=True)
 
-    CLUSTER_LOGS_SAVE_ERR_DIR = Path(dic_args["CLUSTER_LOGS_SAVE_DIR"]) / "error"
+    CLUSTER_LOGS_SAVE_ERR_DIR = Path(dic_args["CLUSTER_LOGS_SAVE_DIR"]) / "error" / "experiments"
     CLUSTER_LOGS_SAVE_ERR_DIR.mkdir(exist_ok=True)
 
-    CLUSTER_LOGS_SAVE_OUT_DIR = Path(dic_args["CLUSTER_LOGS_SAVE_DIR"]) / "output"
+    CLUSTER_LOGS_SAVE_OUT_DIR = Path(dic_args["CLUSTER_LOGS_SAVE_DIR"]) / "output" / "experiments"
     CLUSTER_LOGS_SAVE_OUT_DIR.mkdir(exist_ok=True)
 
-    CLUSTER_LOGS_SAVE_LOG_DIR = Path(dic_args["CLUSTER_LOGS_SAVE_DIR"]) / "logs"
+    CLUSTER_LOGS_SAVE_LOG_DIR = Path(dic_args["CLUSTER_LOGS_SAVE_DIR"]) / "logs" / "experiments"
     CLUSTER_LOGS_SAVE_LOG_DIR.mkdir(exist_ok=True)
 
       # enforce min bid
