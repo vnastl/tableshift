@@ -227,4 +227,4 @@ if __name__ == "__main__":
                 launch_experiments_jobs(task=dic_args["task"], exp_obj=exp_obj)
                 success = True
             except:
-                sleep(10*60)
+                sleep(60)

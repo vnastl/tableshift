@@ -57,18 +57,18 @@ TASKS = [
     # "acspubcov_causal",
     # "acspubcov_arguablycausal",
 
-    "acsfoodstamps",
-    "acsfoodstamps_causal",
-    "acsfoodstamps_arguablycausal",
+    # "acsfoodstamps",
+    # "acsfoodstamps_causal",
+    # "acsfoodstamps_arguablycausal",
 
     # "acsunemployment",
     # "acsunemployment_causal",
     # "acsunemployment_arguablycausal",
     # "acsunemployment_anticausal",
 
-    # "anes",
-    # "anes_causal",
-    # "anes_arguablycausal",
+    "anes",
+    "anes_causal",
+    "anes_arguablycausal",
 
     # "assistments",
     # "assistments_causal",
