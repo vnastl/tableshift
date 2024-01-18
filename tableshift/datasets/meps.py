@@ -84,6 +84,7 @@ MEPS_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER = len(arguablycausal_supersets)
 
 def preprocess_meps(df:pd.DataFrame)->pd.DataFrame:
         df[MEPS_FEATURES.target] = (1.0*(df[MEPS_FEATURES.target] > 3)).astype(int)
+        df = df[df[domain.name] != 2]
         return df
 
 

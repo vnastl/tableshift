@@ -29,7 +29,7 @@ import os
 os.chdir("/Users/vnastl/Seafile/My Library/mpi project causal vs noncausal/tableshift")
 #%%
 
-ANTICAUSAL = True
+ANTICAUSAL = False
 
 # %%
 def get_dic_experiments_value(name):

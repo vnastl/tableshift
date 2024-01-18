@@ -131,10 +131,10 @@ if __name__ == "__main__":
     # RESULTS_DIR.mkdir(exist_ok=True, parents=False)
     # experiments = ["brfss_diabetes_causal","brfss_diabetes_anticausal"] #,"brfss_diabetes"]
     # experiments = ["brfss_blood_pressure_causal","brfss_blood_pressure"]
-    experiments=["college_scorecard_arguablycausal"] #,"college_scorecard_causal"]
+    # experiments=["college_scorecard_arguablycausal"] #,"college_scorecard_causal"]
     # experiments = ["nhanes_lead", "nhanes_lead_causal"]
     # experiments = ["diabetes_readmission"] #, "diabetes_readmission_causal"]
-    # experiments = ["meps","meps_causal"]
+    experiments = ["meps"] #,"meps_causal"]
     # experiments = ["mimic_extract_los_3","mimic_extract_los_3_causal"] 
     # experiments = ["mimic_extract_mort_hosp","mimic_extract_mort_hosp_causal"]
     # experiments = ["physionet","physionet_causal", "physionet_anticausal"]
