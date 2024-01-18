@@ -58,26 +58,26 @@ TASKS = [
     # "acspubcov_arguablycausal",
 
     # "acsfoodstamps",
-    # "acsfoodstamps_causal",
-    # "acsfoodstamps_arguablycausal",
+    "acsfoodstamps_causal",
+    "acsfoodstamps_arguablycausal",
 
     # "acsunemployment",
     # "acsunemployment_causal",
     # "acsunemployment_arguablycausal",
     # "acsunemployment_anticausal",
 
-    "anes",
-    "anes_causal",
-    "anes_arguablycausal",
+    # "anes",
+    # "anes_causal",
+    # "anes_arguablycausal",
 
     # "assistments",
     # "assistments_causal",
     # "assistments_arguablycausal",
 
-    # "brfss_diabetes",
-    # "brfss_diabetes_causal",
-    # "brfss_diabetes_arguablycausal",
-    # "brfss_diabetes_anticausal",
+    "brfss_diabetes",
+    "brfss_diabetes_causal",
+    "brfss_diabetes_arguablycausal",
+    "brfss_diabetes_anticausal",
 
     # "brfss_blood_pressure",
     # "brfss_blood_pressure_causal",
@@ -361,6 +361,6 @@ if __name__ == '__main__':
         )
 
     for i, exp_obj in enumerate(all_task):
-            print(f"{i}. Launching {exp_obj.n_trials} trials for the task '{exp_obj.name}'")
-            launch_task_jobs(task=task, exp_obj=exp_obj)
+        print(f"{i}. Launching {exp_obj.n_trials} trials for the task '{exp_obj.name}'")
+        launch_task_jobs(task=task, exp_obj=exp_obj)
 
