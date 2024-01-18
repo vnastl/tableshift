@@ -48,10 +48,10 @@ BIG_JOB_MEMORY_GB = 256
 VERBOSE = True
 
 TASKS = [
-    # "acsincome",
-    # "acsincome_causal",
-    # "acsincome_arguablycausal",
-    # "acsincome_anticausal",
+    "acsincome",
+    "acsincome_causal",
+    "acsincome_arguablycausal",
+    "acsincome_anticausal",
 
     # "acspubcov",
     # "acspubcov_causal",
@@ -70,19 +70,19 @@ TASKS = [
     # "anes_causal",
     # "anes_arguablycausal",
 
-    # "assistments",
-    # "assistments_causal",
-    # "assistments_arguablycausal",
+    "assistments",
+    "assistments_causal",
+    "assistments_arguablycausal",
 
     # "brfss_diabetes",
     # "brfss_diabetes_causal",
     # "brfss_diabetes_arguablycausal",
     # "brfss_diabetes_anticausal",
 
-    # "brfss_blood_pressure",
-    # "brfss_blood_pressure_causal",
-    # "brfss_blood_pressure_arguablycausal",
-    # "brfss_blood_pressure_anticausal",
+    "brfss_blood_pressure",
+    "brfss_blood_pressure_causal",
+    "brfss_blood_pressure_arguablycausal",
+    "brfss_blood_pressure_anticausal",
 
     # "college_scorecard",
     # "college_scorecard_causal",
@@ -108,14 +108,14 @@ TASKS = [
     # "physionet_causal",
     # "physionet_arguablycausal",
 
-    # "sipp", 
-    # "sipp_causal",
-    # "sipp_arguablycausal",
-    # "sipp_anticausal",
+    "sipp", 
+    "sipp_causal",
+    "sipp_arguablycausal",
+    "sipp_anticausal",
 
-    "meps", 
-    "meps_causal",
-    "meps_arguablycausal",
+    # "meps", 
+    # "meps_causal",
+    # "meps_arguablycausal",
 ]
 
 # Robustness checks
