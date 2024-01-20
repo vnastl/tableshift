@@ -30,7 +30,7 @@ MODELS = (
     # "ft_transformer",
     "histgbm",
     # "mlp",
-    "saint",
+    # "saint",
     # "tabtransformer",
     # "resnet",
     "xgb",
