@@ -92,7 +92,7 @@ def main(experiment, model, cache_dir, save_dir, trial, debug: bool):
     if not isinstance(estimator, torch.nn.Module):
         evaluation = {}
         # Case: non-pytorch estimator; perform test-split evaluation.
-        test_splits = ["id_test","ood_test"] if dset.is_domain_split else ["test"]
+        test_splits = ["id_test","ood_test", "validation"] if dset.is_domain_split else ["test"]
         for test_split in test_splits:
             # Fetch predictions and labels for a sklearn model.
             X_te, y_te, _, _ = dset.get_pandas(test_split)

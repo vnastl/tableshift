@@ -41,7 +41,7 @@ def main(experiment, dset, model, debug: bool):
     if not isinstance(estimator, torch.nn.Module):
         evaluation = {}
         # Case: non-pytorch estimator; perform test-split evaluation.
-        test_splits = ["id_test","ood_test"] if dset.is_domain_split else ["test"]
+        test_splits = ["id_test","ood_test","validation"] if dset.is_domain_split else ["test"]
         for test_split in test_splits:
             # Fetch predictions and labels for a sklearn model.
             X_te, y_te, _, _ = dset.get_pandas(test_split)
@@ -124,7 +124,7 @@ if __name__ == "__main__":
     # experiments = ["acsincome" ,"acsincome_causal", "acsincome_arguablycausal","acsincome_anticausal",]
     # experiments=["acspubcov", "acspubcov_causal"]
     # experiments = ["acsunemployment","acsunemployment_causal", "acsunemployment_anticausal"] 
-    experiments=["acsfoodstamps", "acsfoodstamps_causal"]
+    # experiments=["acsfoodstamps", "acsfoodstamps_causal"]
     # for index in range(ACS_INCOME_FEATURES_CAUSAL_SUBSETS_NUMBER-1):
     #     experiments.append("acsfoodstamps_causal_test_"+f"{index}")
     #     RESULTS_DIR = ROOT_DIR / f"acsfoodstamps_causal_test_{index}"
@@ -143,7 +143,7 @@ if __name__ == "__main__":
     # experiments = ["brfss_blood_pressure_causal","brfss_blood_pressure"]
     # experiments=["college_scorecard_arguablycausal"] #,"college_scorecard_causal"]
     # experiments = ["nhanes_lead", "nhanes_lead_causal"]
-    # experiments = ["diabetes_readmission"] #, "diabetes_readmission_causal"]
+    experiments = ["diabetes_readmission"] #, "diabetes_readmission_causal"]
     # experiments = ["meps"] #,"meps_causal"]
     # experiments = ["mimic_extract_los_3","mimic_extract_los_3_causal"] 
     # experiments = ["mimic_extract_mort_hosp","mimic_extract_mort_hosp_causal"]
@@ -158,9 +158,9 @@ if __name__ == "__main__":
         models = [
             # "ft_transformer",
             # "histgbm",
-            "mlp",
+            # "mlp",
             # "saint",
-            "tabtransformer",
+            # "tabtransformer",
             # "resnet",
             "xgb",
             # "aldro",
