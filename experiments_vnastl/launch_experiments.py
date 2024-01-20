@@ -42,7 +42,7 @@ N_TRIALS    = 10
 # Cluster settings
 JOB_MIN_BID = 100    # htcondor bid (min. is 15 apparently...)
 JOB_CPUS = 1     # number of CPUs per experiment (per cluster job)
-JOB_MEMORY_GB = 256 # 128  # GBs of memory
+JOB_MEMORY_GB = 128  # GBs of memory
 BIG_JOB_MEMORY_GB = 256
 
 VERBOSE = True
@@ -53,15 +53,15 @@ TASKS = [
     # "acsincome_arguablycausal",
     # "acsincome_anticausal",
 
-    "acspubcov",
-    "acspubcov_causal",
-    "acspubcov_arguablycausal",
+    # "acspubcov",
+    # "acspubcov_causal",
+    # "acspubcov_arguablycausal",
 
     # "acsfoodstamps",
     # "acsfoodstamps_causal",
     # "acsfoodstamps_arguablycausal",
 
-    # "acsunemployment",
+    "acsunemployment",
     # "acsunemployment_causal",
     # "acsunemployment_arguablycausal",
     # "acsunemployment_anticausal",
@@ -131,11 +131,11 @@ TASKS = [
 # for index in range(ACS_FOODSTAMPS_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
 #         TASKS.append("acsfoodstamps_arguablycausal_test_"+f"{index}")
 
-for index in range(ACS_PUBCOV_FEATURES_CAUSAL_SUBSETS_NUMBER):
-        TASKS.append("acspubcov_causal_test_"+f"{index}")
+# for index in range(ACS_PUBCOV_FEATURES_CAUSAL_SUBSETS_NUMBER):
+#         TASKS.append("acspubcov_causal_test_"+f"{index}")
 
-for index in range(ACS_PUBCOV_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
-    TASKS.append("acspubcov_arguablycausal_test_"+f"{index}")
+# for index in range(ACS_PUBCOV_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
+#     TASKS.append("acspubcov_arguablycausal_test_"+f"{index}")
 
 # for index in range(ACS_UNEMPLOYMENT_FEATURES_CAUSAL_SUBSETS_NUMBER):
 #         TASKS.append("acsunemployment_causal_test_"+f"{index}")

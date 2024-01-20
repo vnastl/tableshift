@@ -27,24 +27,24 @@ NOT_DG_TASKS = (
     "assistments"
 )
 MODELS = (
-    "ft_transformer",
-    "histgbm",
-    "mlp",
+    # "ft_transformer",
+    # "histgbm",
+    # "mlp",
     "saint",
-    "tabtransformer",
-    "resnet",
-    "xgb",
-    "aldro",
-    "dro",
+    # "tabtransformer",
+    # "resnet",
+    # "xgb",
+    # "aldro",
+    # "dro",
     "node",
-    "group_dro",
-    "label_group_dro",
+    # "group_dro",
+    # "label_group_dro",
 )
 DG_MODELS = (
-    "dann",
-    "irm",
-    "vrex",
-    "mixup",
+    # "dann",
+    # "irm",
+    # "vrex",
+    # "mixup",
     "mmd",
 )
 
