@@ -8,11 +8,10 @@ import random
 import seaborn as sns
 
 from sklearn.model_selection import train_test_split
-from sklearn.linear_model import LinearRegression
-from sklearn.metrics import mean_squared_error
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score
 
 from tqdm import tqdm
-
 #%%
 test_size = 0.3
 # Generate normally distributed samples
@@ -42,12 +41,14 @@ for beta, gamma, shift_x, shift_w in tqdm(itertools.product(numbers_beta, number
     x = eps_x
     y = beta*x + eps_y
     w = gamma*y + eps_w
+    y_class = (y>0)
 
     ood_x = ood_eps_x+ shift_x
     ood_y = beta*ood_x + ood_eps_y
     ood_w = gamma*ood_y + ood_eps_w + shift_w
+    ood_y_class = (ood_y>0)
 
-    target = y
+    target = y_class
     ####################### only x  ####################### 
     
     # Combine the variables into a single feature matrix
@@ -57,25 +58,25 @@ for beta, gamma, shift_x, shift_w in tqdm(itertools.product(numbers_beta, number
     features_train, features_test, y_train, y_test = train_test_split(features, target, test_size=test_size, random_state=0)
 
     # Create and fit the model
-    model = LinearRegression()
+    model = LogisticRegression(penalty='none')
     model.fit(features_train, y_train)
 
     # Make predictions on the test data
     y_pred = model.predict(features_test)
 
     # Calculate the mean squared error
-    mse = mean_squared_error(y_test, y_pred)
-    # print("Mean Squared Error: ", mse)
-    record["mse_causal"] = mse
+    acc = accuracy_score(y_test, y_pred)
+    # print("Mean Squared Error: ", acc)
+    record["acc_causal"] = acc
 
     # Make predictions on the ood test data
     ood_features_test = ood_x.reshape(-1, 1)
     ood_y_pred = model.predict(ood_features_test)
 
     # Calculate the mean squared error
-    ood_mse = mean_squared_error(ood_y, ood_y_pred)
-    # print("Out-of-domain Mean Squared Error: ", ood_mse) 
-    record["ood_mse_causal"] = ood_mse
+    ood_acc = accuracy_score(ood_y_class, ood_y_pred)
+    # print("Out-of-domain Mean Squared Error: ", ood_acc) 
+    record["ood_acc_causal"] = ood_acc
 
     ################# true x coefficient  ################# 
 
@@ -88,17 +89,17 @@ for beta, gamma, shift_x, shift_w in tqdm(itertools.product(numbers_beta, number
     # Make predictions on the test data
     y_pred = ((beta*features_test).reshape((-1,))>0)
      # Calculate the mean squared error
-    mse = mean_squared_error(y_test, y_pred)
-    record["mse_true_causal"] = mse
+    acc = accuracy_score(y_test, y_pred)
+    record["acc_true_causal"] = acc
 
     # Make predictions on the ood test data
     ood_features_test = ood_x.reshape(-1, 1)
-    ood_y_pred = (beta*ood_features_test).reshape((-1,))
+    ood_y_pred = ((beta*ood_features_test).reshape((-1,))>0)
 
     # Calculate the mean squared error
-    ood_mse = mean_squared_error(ood_y, ood_y_pred)
-    # print("Out-of-domain Mean Squared Error: ", ood_mse) 
-    record["ood_mse_true_causal"] = ood_mse
+    ood_acc = accuracy_score(ood_y_class, ood_y_pred)
+    # print("Out-of-domain Mean Squared Error: ", ood_acc) 
+    record["ood_acc_true_causal"] = ood_acc
 
     ####################### x and w ####################### 
 
@@ -109,25 +110,25 @@ for beta, gamma, shift_x, shift_w in tqdm(itertools.product(numbers_beta, number
     features_train, features_test, y_train, y_test = train_test_split(features, target, test_size=0.3, random_state=0)
 
     # Create and fit the model
-    model = LinearRegression()
+    model = LogisticRegression(penalty='none')
     model.fit(features_train, y_train)
 
     # Make predictions on the test data
     y_pred = model.predict(features_test)
 
     # Calculate the mean squared error
-    mse = mean_squared_error(y_test, y_pred)
-    # print("Mean Squared Error: ", mse)
-    record["mse_all"] = mse
+    acc = accuracy_score(y_test, y_pred)
+    # print("Mean Squared Error: ", acc)
+    record["acc_all"] = acc
 
     # Make predictions on the ood test data
     ood_features_test = np.column_stack((ood_x,ood_w))
     ood_y_pred = model.predict(ood_features_test)
 
     # Calculate the mean squared error
-    ood_mse = mean_squared_error(ood_y, ood_y_pred)
-    # print("Out-of-domain Mean Squared Error: ", ood_mse) 
-    record["ood_mse_all"] = ood_mse
+    ood_acc = accuracy_score(ood_y_class, ood_y_pred)
+    # print("Out-of-domain Mean Squared Error: ", ood_acc) 
+    record["ood_acc_all"] = ood_acc
 
     record_list.append(record.copy())
 
@@ -140,11 +141,11 @@ record_beta_1_gamma_1 = record_dataframe[(record_dataframe["beta"]==1)&
                                          (record_dataframe["shift_w"]<2)]
 
 #%%
-plt.plot(record_beta_1_gamma_1["shift_x"], record_beta_1_gamma_1["ood_mse_true_causal"], label="mse of true causal", color="#d55e00",linestyle="dotted")
-plt.plot(record_beta_1_gamma_1["shift_x"], record_beta_1_gamma_1["ood_mse_causal"], label="mse of est. causal",color="#de8f05")
+plt.plot(record_beta_1_gamma_1["shift_x"], record_beta_1_gamma_1["ood_acc_true_causal"], label="acc of true causal", color="#d55e00",linestyle="dotted")
+plt.plot(record_beta_1_gamma_1["shift_x"], record_beta_1_gamma_1["ood_acc_causal"], label="acc of est. causal",color="#de8f05")
 
 record_beta_1_gamma_1_shift_w = record_beta_1_gamma_1[record_beta_1_gamma_1["shift_w"]==0]
-plt.plot(record_beta_1_gamma_1_shift_w["shift_x"], record_beta_1_gamma_1_shift_w["ood_mse_all"], label=f"mse of all", color="#0173b2",alpha=1-0*0.2)
+plt.plot(record_beta_1_gamma_1_shift_w["shift_x"], record_beta_1_gamma_1_shift_w["ood_acc_all"], label=f"acc of all", color="#0173b2",alpha=1-0*0.2)
 
 random.seed(0)
 sample = random.sample(list(record_beta_1_gamma_1["shift_w"].unique()),5)
@@ -156,22 +157,21 @@ sample.sort()
 # colors.remove("#ca9161")
 for index, value in enumerate(sample):
     record_beta_1_gamma_1_shift_w = record_beta_1_gamma_1[record_beta_1_gamma_1["shift_w"]==value]
-    plt.plot(record_beta_1_gamma_1_shift_w["shift_x"], record_beta_1_gamma_1_shift_w["ood_mse_all"], label=f"mse of all with shift {round(value,2)}", color="#0173b2",alpha=1-(index+1)*0.15, linestyle="dashed")
-    
+    plt.plot(record_beta_1_gamma_1_shift_w["shift_x"], record_beta_1_gamma_1_shift_w["ood_acc_all"], label=f"acc of all with shift {round(value,2)}", color="#0173b2",alpha=1-(index+1)*0.15, linestyle="dashed")
 plt.xlabel("shift_x")
-plt.ylabel("mse")
-plt.legend(loc="lower right")
+plt.ylabel("acc")
 plt.tight_layout()
-plt.savefig("plots_paper/simulations_mse_x_shift.pdf")
+plt.legend(loc="lower right")
+plt.savefig("plots_paper/simulations_acc_x_shift.pdf")
 plt.show()
 
 #%%
 record_beta_1_gamma_1_shift_w = record_beta_1_gamma_1[record_beta_1_gamma_1["shift_x"]==0]
-plt.plot(record_beta_1_gamma_1_shift_w["shift_w"], record_beta_1_gamma_1_shift_w["ood_mse_all"], label=f"mse of all", color="#0173b2",alpha=1-0*0.2)
+plt.plot(record_beta_1_gamma_1_shift_w["shift_w"], record_beta_1_gamma_1_shift_w["ood_acc_all"], label=f"acc of all", color="#0173b2",alpha=1-0*0.2)
 
 record_beta_1_gamma_1_shift_x = record_beta_1_gamma_1[record_beta_1_gamma_1["shift_x"]==0]
-plt.plot(record_beta_1_gamma_1_shift_x["shift_w"], record_beta_1_gamma_1_shift_x["ood_mse_true_causal"], label="mse of true causal", color="#d55e00")
-plt.plot(record_beta_1_gamma_1_shift_x["shift_w"], record_beta_1_gamma_1_shift_x["ood_mse_causal"], label="mse of est. causal",color="#de8f05",linestyle="dotted")
+plt.plot(record_beta_1_gamma_1_shift_x["shift_w"], record_beta_1_gamma_1_shift_x["ood_acc_true_causal"], label="acc of true causal", color="#d55e00")
+plt.plot(record_beta_1_gamma_1_shift_x["shift_w"], record_beta_1_gamma_1_shift_x["ood_acc_causal"], label="acc of est. causal",color="#de8f05",linestyle="dotted")
 
 random.seed(0)
 sample = random.sample(list(record_beta_1_gamma_1["shift_x"].unique()),5)
@@ -183,23 +183,23 @@ sample.sort()
 # colors.remove("#ca9161")
 for index, value in enumerate(sample):
     record_beta_1_gamma_1_shift_w = record_beta_1_gamma_1[record_beta_1_gamma_1["shift_x"]==value]
-    plt.plot(record_beta_1_gamma_1_shift_w["shift_w"], record_beta_1_gamma_1_shift_w["ood_mse_causal"], label=f"mse of causal with shift {round(value,2)}", color="#de8f05",alpha=1-(index+1)*0.15, linestyle="dashed")
+    plt.plot(record_beta_1_gamma_1_shift_w["shift_w"], record_beta_1_gamma_1_shift_w["ood_acc_causal"], label=f"acc of causal with shift {round(value,2)}", color="#de8f05",alpha=1-(index+1)*0.15, linestyle="dashed")
 
 plt.xlabel("shift_w")
-plt.ylabel("mse")
-plt.legend()
+plt.ylabel("acc")
 plt.tight_layout()
-plt.savefig("plots_paper/simulations_mse_w_shift.pdf")
+plt.legend()
+plt.savefig("plots_paper/simulations_acc_w_shift.pdf")
 plt.show()
 #%%
 ax = plt.axes(projection ='3d')
-plot_df = record_beta_1_gamma_1[["shift_x", "shift_w", "ood_mse_true_causal"]]
-plot1 = ax.plot_trisurf(record_beta_1_gamma_1["shift_x"], record_beta_1_gamma_1["shift_w"].values, record_beta_1_gamma_1["ood_mse_true_causal"].values, label="mse of true causal", color="#d55e00", alpha=0.7)
-plot2 = ax.plot_trisurf(record_beta_1_gamma_1["shift_x"].values, record_beta_1_gamma_1["shift_w"].values, record_beta_1_gamma_1["ood_mse_causal"].values, label="mse of est. causal", color="#de8f05",alpha=0.7)
-plot3 = ax.plot_trisurf(record_beta_1_gamma_1["shift_x"].values, record_beta_1_gamma_1["shift_w"].values, record_beta_1_gamma_1["ood_mse_all"].values, label="mse of all", color="#0173b2", alpha=0.7)
+plot_df = record_beta_1_gamma_1[["shift_x", "shift_w", "ood_acc_true_causal"]]
+plot1 = ax.plot_trisurf(record_beta_1_gamma_1["shift_x"], record_beta_1_gamma_1["shift_w"].values, record_beta_1_gamma_1["ood_acc_true_causal"].values, label="acc of true causal", color="#d55e00", alpha=0.7)
+plot2 = ax.plot_trisurf(record_beta_1_gamma_1["shift_x"].values, record_beta_1_gamma_1["shift_w"].values, record_beta_1_gamma_1["ood_acc_causal"].values, label="acc of est. causal", color="#de8f05",alpha=0.7)
+plot3 = ax.plot_trisurf(record_beta_1_gamma_1["shift_x"].values, record_beta_1_gamma_1["shift_w"].values, record_beta_1_gamma_1["ood_acc_all"].values, label="acc of all", color="#0173b2", alpha=0.7)
 ax.set_xlabel("shift_x")
 ax.set_ylabel("shift_w")
-ax.set_zlabel("mse")
+ax.set_zlabel("acc")
 
 plot1._edgecolors2d = "#d55e00"
 plot1._facecolors2d = "#d55e00"
@@ -212,8 +212,7 @@ plot3._facecolors2d = "#0173b2"
 
 ax.legend()
 plt.tight_layout()
-plt.savefig("plots_paper/simulations_mse_x_w_shift.pdf")
+plt.savefig("plots_paper/simulations_acc_x_w_shift.pdf")
 plt.show()
 
 # %%
-
