@@ -99,7 +99,8 @@ def get_predictions_and_labels(model, loader, device=None, as_logits=False) -> T
 def evaluate(model, loader, device):
     model.eval()
     prediction, target = get_predictions_and_labels(model, loader, device)
+    logit = get_predictions_and_labels(model, loader, device, as_logits=True)
     prediction = np.round(prediction)
     score = sklearn.metrics.accuracy_score(target, prediction)
     score_balanced, score_balanced_se = balanced_accuracy_score(target=target, prediction=prediction)
-    return score, score_balanced, score_balanced_se
+    return score, score_balanced, score_balanced_se, logit

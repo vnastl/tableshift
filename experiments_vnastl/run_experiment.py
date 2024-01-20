@@ -5,6 +5,7 @@ from pathlib import Path
 import torch
 import pandas as pd
 from sklearn.metrics import accuracy_score
+import scipy
 
 from tableshift import get_dataset
 from tableshift.models.training import train
@@ -46,7 +47,10 @@ def main(experiment, dset, model, debug: bool):
             X_te, y_te, _, _ = dset.get_pandas(test_split)
             X_te = X_te.astype(float)
             yhat_te = estimator.predict(X_te)
-
+            evaluation[test_split+"_proba"] = estimator.predict_proba(X_te)[:,1].tolist()
+            evaluation[test_split+"_preds"] = yhat_te.tolist()
+            evaluation[test_split+"_true"] = y_te.tolist()
+            
             # Calculate accuracy
             acc = accuracy_score(y_true=y_te, y_pred=yhat_te)
             evaluation[test_split] = acc
@@ -64,7 +68,7 @@ def main(experiment, dset, model, debug: bool):
             evaluation[test_split + "_balanced" + "_conf"] = balanced_acc_conf
             print(f"training completed! {test_split} balanced accuracy: {balanced_acc:.4f}")
 
-        with open(f'experiments_vnastl/results/{experiment}/{model}_eval.json', 'w') as f:
+        with open(f'experiments_vnastl/results/drafts/{experiment}_{model}_eval.json', 'w') as f:
             # Use json.dump to write the dictionary into the file
             evaluation["features"] = dset.predictors
             json.dump(evaluation, f)
@@ -72,7 +76,7 @@ def main(experiment, dset, model, debug: bool):
     else:
         # Case: pytorch estimator; eval is already performed + printed by train().
         print("training completed!")
-        with open(f'experiments_vnastl/results/{experiment}/{model}_eval.json', 'w') as f:
+        with open(f'experiments_vnastl/results/drafts/{experiment}_{model}_eval.json', 'w') as f:
             # Use json.dump to write the dictionary into the file
             evaluation = estimator.fit_metrics
             evaluation_balanced = estimator.fit_metrics_balanced
@@ -80,6 +84,7 @@ def main(experiment, dset, model, debug: bool):
                 # Get accuracy
                 # Fetch predictions and labels for a sklearn model.
                 X_te, y_te, _, _ = dset.get_pandas(test_split)
+                evaluation[test_split+"_true"] = y_te.tolist()
                 nobs = len(y_te)
                 acc = evaluation[test_split]
                 count = nobs*acc
@@ -94,6 +99,11 @@ def main(experiment, dset, model, debug: bool):
                 evaluation[test_split + "_balanced" + "_conf"] = balanced_acc_conf
                 print(f"training completed! {test_split} balanced accuracy: {balanced_acc:.4f}")
             evaluation["features"] = dset.predictors
+            logits = estimator.logits
+            for test_split in estimator.logits:
+                evaluation[test_split+"_logits"] = logits[test_split][0].tolist()
+                evaluation[test_split+"_proba"] = scipy.special.expit(logits[test_split][0]).tolist()
+                evaluation[test_split+"_preds"] = logits[test_split][1].tolist()
             json.dump(evaluation, f)
     return
 
@@ -114,7 +124,7 @@ if __name__ == "__main__":
     # experiments = ["acsincome" ,"acsincome_causal", "acsincome_arguablycausal","acsincome_anticausal",]
     # experiments=["acspubcov", "acspubcov_causal"]
     # experiments = ["acsunemployment","acsunemployment_causal", "acsunemployment_anticausal"] 
-    # experiments=["acsfoodstamps", "acsfoodstamps_causal"]
+    experiments=["acsfoodstamps", "acsfoodstamps_causal"]
     # for index in range(ACS_INCOME_FEATURES_CAUSAL_SUBSETS_NUMBER-1):
     #     experiments.append("acsfoodstamps_causal_test_"+f"{index}")
     #     RESULTS_DIR = ROOT_DIR / f"acsfoodstamps_causal_test_{index}"
@@ -129,12 +139,12 @@ if __name__ == "__main__":
     # experiments.append("brfss_diabetes_causal_test_0")
     # RESULTS_DIR = ROOT_DIR / f"brfss_diabetes_test_0"
     # RESULTS_DIR.mkdir(exist_ok=True, parents=False)
-    # experiments = ["brfss_diabetes_causal","brfss_diabetes_anticausal"] #,"brfss_diabetes"]
+    # experiments = ["brfss_diabetes","brfss_diabetes_causal","brfss_diabetes_anticausal"] #,]
     # experiments = ["brfss_blood_pressure_causal","brfss_blood_pressure"]
     # experiments=["college_scorecard_arguablycausal"] #,"college_scorecard_causal"]
     # experiments = ["nhanes_lead", "nhanes_lead_causal"]
     # experiments = ["diabetes_readmission"] #, "diabetes_readmission_causal"]
-    experiments = ["meps"] #,"meps_causal"]
+    # experiments = ["meps"] #,"meps_causal"]
     # experiments = ["mimic_extract_los_3","mimic_extract_los_3_causal"] 
     # experiments = ["mimic_extract_mort_hosp","mimic_extract_mort_hosp_causal"]
     # experiments = ["physionet","physionet_causal", "physionet_anticausal"]
@@ -148,9 +158,9 @@ if __name__ == "__main__":
         models = [
             # "ft_transformer",
             # "histgbm",
-            # "mlp",
+            "mlp",
             # "saint",
-            # "tabtransformer",
+            "tabtransformer",
             # "resnet",
             "xgb",
             # "aldro",
