@@ -58,7 +58,7 @@ TASKS = [
     # "acspubcov_arguablycausal",
 
     # "acsfoodstamps",
-    "acsfoodstamps_causal",
+    # "acsfoodstamps_causal",
     # "acsfoodstamps_arguablycausal",
 
     # "acsunemployment",
@@ -104,7 +104,7 @@ TASKS = [
     # "mimic_extract_mort_hosp_causal",
     # "mimic_extract_mort_hosp_arguablycausal",
 
-    # "physionet", 
+    "physionet", 
     # "physionet_causal",
     # "physionet_arguablycausal",
 
