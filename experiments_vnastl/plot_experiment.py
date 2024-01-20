@@ -25,6 +25,8 @@ warnings.filterwarnings('ignore')
 plt.rcParams['figure.dpi'] = 300
 plt.rcParams['savefig.dpi'] = 300
 
+from tqdm import tqdm
+
 import os
 os.chdir("/Users/vnastl/Seafile/My Library/mpi project causal vs noncausal/tableshift")
 #%%
@@ -157,7 +159,7 @@ def get_results(experiment_name):
     for experiment in experiments:
         file_info = []
         RESULTS_DIR = Path(__file__).parents[0] / "results" / experiment
-        for filename in os.listdir(RESULTS_DIR):
+        for filename in tqdm(os.listdir(RESULTS_DIR)):
             if filename == ".DS_Store":
                 pass
             else:
@@ -192,6 +194,7 @@ def get_results(experiment_name):
                     'ood_test':eval_json['ood_test'],
                     'ood_test_lb':eval_json['ood_test' + '_conf'][0],
                     'ood_test_ub':eval_json['ood_test' + '_conf'][1],
+                    'validation':eval_json['validation'],
                     'features': get_feature_selection(experiment),
                     'model':run.split("_")[0]}])
                 if get_feature_selection(experiment) == 'causal':
@@ -226,6 +229,14 @@ def get_results(experiment_name):
         with open(str(RESULTS_DIR / filename), "w") as file:
             json.dump(eval_constant, file)
 
+    list_model_data = []
+    for model in eval_all['model'].unique():
+        model_data = eval_all[eval_all['model']==model]
+        model_data = model_data[model_data["validation"] == model_data["validation"].max()]
+        list_model_data.append(model_data)
+
+    eval_all = pd.concat(list_model_data)
+
     eval_pd = pd.DataFrame([{
             'id_test':eval_constant['id_test'],
             'id_test_lb':eval_constant['id_test_conf'][0],
@@ -235,9 +246,10 @@ def get_results(experiment_name):
             'ood_test_ub':eval_constant['ood_test_conf'][1],
             'features':'constant',
             'model':'constant'}])
+    
     eval_all = pd.concat([eval_all, eval_pd], ignore_index=True)
 
-        
+    
     eval_all.to_csv(str(Path(__file__).parents[0]/f"{experiment_name}_eval.csv"))
     # print(eval_all)
     return eval_all, causal_features, extra_features
@@ -713,22 +725,22 @@ def plot_experiment(experiment_name):
 
 completed_experiments = [
                         # "acsemployment", # old
-                         "acsfoodstamps",
-                         "acsincome",
-                         "acspubcov",
-                         "acsunemployment",
+                        #  "acsfoodstamps",
+                        #  "acsincome",
+                        #  "acspubcov",
+                        #  "acsunemployment",
                          "anes",
-                         "assistments",
-                         "brfss_blood_pressure",
-                         "brfss_diabetes",
-                         "college_scorecard",
-                         "diabetes_readmission",
-                         "meps",
-                         "mimic_extract_mort_hosp",
-                         "mimic_extract_los_3",
-                         "nhanes_lead",
-                         "physionet",
-                         "sipp",
+                        #  "assistments",
+                        #  "brfss_blood_pressure",
+                        #  "brfss_diabetes",
+                        #  "college_scorecard",
+                        #  "diabetes_readmission",
+                        #  "meps",
+                        #  "mimic_extract_mort_hosp",
+                        #  "mimic_extract_los_3",
+                        #  "nhanes_lead",
+                        #  "physionet",
+                        #  "sipp",
                          ]
 for experiment_name in completed_experiments:
     plot_experiment(experiment_name)
