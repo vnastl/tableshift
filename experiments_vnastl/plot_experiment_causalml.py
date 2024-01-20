@@ -500,6 +500,7 @@ def do_plot(experiment_name,mymin,myname):
     dic_shift["constant"] = shift
 
     shift = pd.concat(dic_shift.values(), ignore_index=True)
+    shift.drop_duplicates(inplace=True)
     barlist = plt.bar(shift["type"], shift["ood_test"]-ymin,
                               yerr=shift['ood_test_ub']-shift['ood_test'],
                               color=[color_all,color_causal, color_arguablycausal]+[color_irm,color_vrex]+[color_constant],
@@ -620,17 +621,17 @@ def plot_experiment(experiment_name):
 completed_experiments = [
                         
                          "acsfoodstamps",
-                        #  "acsincome",
+                         "acsincome",
                         
-                        #  "acsunemployment", # old
+                         "acsunemployment",
                          "anes",
                         #  "assistments",
                         
-                        #  "college_scorecard", # old
-                        #  "diabetes_readmission",
+                         "college_scorecard",
+                         "diabetes_readmission",
                         
-                        #  "mimic_extract_mort_hosp",
-                        #  "mimic_extract_los_3",
+                         "mimic_extract_mort_hosp",
+                         "mimic_extract_los_3",
                         
                          ]
 for experiment_name in completed_experiments:
