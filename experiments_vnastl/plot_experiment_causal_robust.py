@@ -221,6 +221,7 @@ def get_results(experiment_name):
                     'ood_test':eval_json['ood_test'],
                     'ood_test_lb':eval_json['ood_test' + '_conf'][0],
                     'ood_test_ub':eval_json['ood_test' + '_conf'][1],
+                    'validation':eval_json['validation'] if 'validation' in eval_json else np.nan,
                     'features': get_feature_selection(experiment),
                     'model':run.split("_")[0]}])
                 if get_feature_selection(experiment) == 'causal':
@@ -249,6 +250,16 @@ def get_results(experiment_name):
             eval_constant[test_split + "_conf"] = acc_conf
         with open(str(RESULTS_DIR / filename), "w") as file:
             json.dump(eval_constant, file)
+
+    list_model_data = []
+    for set in eval_all['features'].unique():
+        eval_feature = eval_all[eval_all['features']==set]
+        for model in eval_feature['model'].unique():
+            model_data = eval_feature[eval_feature['model']==model]
+            if not set[-1].isdigit():
+                model_data = model_data[model_data["validation"] == model_data["validation"].max()]
+            list_model_data.append(model_data)
+    eval_all = pd.concat(list_model_data)
 
     eval_pd = pd.DataFrame([{
             'id_test':eval_constant['id_test'],
@@ -312,7 +323,8 @@ def do_plot(experiment_name,mymin,myname):
                 color=color_all, ecolor=color_all,
                 markersize=7, capsize=3, label="top all features")
     # highlight bar
-    shift = points[points["ood_test"] == points["ood_test"].max()]
+    shift = eval_plot[mask]
+    shift = shift[shift["ood_test"] == shift["ood_test"].max()]
     shift["type"] = "all"
     dic_shift["all"] = shift
     plt.hlines(y=shift["ood_test"], xmin=shift["ood_test"], xmax=shift['id_test'],
@@ -338,7 +350,8 @@ def do_plot(experiment_name,mymin,myname):
                 color=color_causal, ecolor=color_causal,
                 markersize=7, capsize=3, label="top causal features")
     # highlight bar
-    shift = points[points["ood_test"] == points["ood_test"].max()]
+    shift = eval_plot[mask]
+    shift = shift[shift["ood_test"] == shift["ood_test"].max()]
     shift["type"] = "causal"
     dic_shift["causal"] = shift
     plt.hlines(y=shift["ood_test"], xmin=shift["ood_test"], xmax=shift['id_test'],
@@ -369,7 +382,8 @@ def do_plot(experiment_name,mymin,myname):
                         color=color_causal_robust, ecolor=color_causal_robust, zorder = 1,
                         label="robustness test for causal features")
             # highlight bar
-            shift = points[points["ood_test"] == points["ood_test"].max()]
+            shift = eval_plot[mask]
+            shift = shift[shift["ood_test"] == shift["ood_test"].max()]
             shift["type"] = f"test {index}"
             dic_shift[f"test{index}"] = shift
             plt.hlines(y=shift["ood_test"], xmin=shift["ood_test"], xmax=shift['id_test'],
@@ -459,20 +473,43 @@ def do_plot(experiment_name,mymin,myname):
     plt.show()
 
     #############################################################################
-    # Plot shift gap as bars
+    # Plot ood accuracy as bars
     #############################################################################
     # plt.title(
     # f"{dic_title[experiment_name]}")
-    plt.ylabel("shift gap")
+    plt.ylabel("out-of-domain accuracy")
 
-    # add constant
+    # add constant shift gap
     shift = eval_constant
     shift["type"] = "constant"
     dic_shift["constant"] = shift
 
     shift = pd.concat(dic_shift.values(), ignore_index=True)
+    # shift["gap"] = shift["id_test"] - shift["ood_test"]
+    barlist = plt.bar(shift["type"], shift["ood_test"]-ymin,
+                              yerr=shift['ood_test_ub']-shift['ood_test'],
+                              color=[color_all,color_causal]+[color_causal_robust for index in range(dic_robust_number[experiment_name])]+[color_constant],
+                              ecolor=color_error,align='center', capsize=5,
+                              bottom=ymin)
+    plt.xticks(rotation=90)
+    plt.savefig(str(Path(__file__).parents[0]/f"{myname}_causal_robust_ood_accuracy.pdf"), bbox_inches='tight')
+    plt.show()
+
+    #############################################################################
+    # Plot shift gap as bars
+    #############################################################################
+    # plt.title(
+    # f"{dic_title[experiment_name]}")
+    plt.ylabel("shift gap")
+    
+    shift = pd.concat(dic_shift.values(), ignore_index=True)
     shift["gap"] = shift["id_test"] - shift["ood_test"]
-    barlist = plt.bar(shift["type"], shift["gap"], color=[color_all,color_causal]+[color_causal_robust for index in range(dic_robust_number[experiment_name])]+[color_constant])
+    shift['id_test_var'] = ((shift['id_test_ub']-shift['id_test']))**2
+    shift['ood_test_var'] = ((shift['ood_test_ub']-shift['ood_test']))**2
+    shift['gap_var'] = shift['id_test_var']+shift['ood_test_var']
+    barlist = plt.bar(shift["type"], shift["gap"],
+                      yerr=shift['gap_var']**0.5,ecolor=color_error,align='center', capsize=5,
+                      color=[color_all,color_causal]+[color_causal_robust for index in range(dic_robust_number[experiment_name])]+[color_constant])
     plt.xticks(rotation=90)
     plt.savefig(str(Path(__file__).parents[0]/f"{myname}_causal_robust_shift.pdf"), bbox_inches='tight')
     plt.show()
@@ -569,21 +606,21 @@ def plot_experiment(experiment_name):
 completed_experiments = [
                         # "acsemployment", # old
                         "acsfoodstamps",
-                         "acsincome",
-                         "acspubcov",
-                         "acsunemployment",
+                        #  "acsincome",
+                        #  "acspubcov",
+                        #  "acsunemployment",
                          "anes",
-                         "assistments",
-                         "brfss_blood_pressure",
+                        #  "assistments",
+                        #  "brfss_blood_pressure",
                          "brfss_diabetes",
-                         "college_scorecard",
-                         "diabetes_readmission",
+                        #  "college_scorecard",
+                        #  "diabetes_readmission",
                          "meps",
-                         "mimic_extract_mort_hosp",
-                         "mimic_extract_los_3",
-                        #  "nhanes_lead",
-                         "physionet",
-                         "sipp",
+                        #  "mimic_extract_mort_hosp",
+                        #  "mimic_extract_los_3",
+                        # #  "nhanes_lead",
+                        #  "physionet",
+                        #  "sipp",
                          ]
 for experiment_name in completed_experiments:
     plot_experiment(experiment_name)
