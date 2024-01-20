@@ -27,25 +27,25 @@ NOT_DG_TASKS = (
     "assistments"
 )
 MODELS = (
-    "ft_transformer",
+    # "ft_transformer",
     "histgbm",
-    "mlp",
-    "saint",
-    "tabtransformer",
-    "resnet",
+    # "mlp",
+    # "saint",
+    # "tabtransformer",
+    # "resnet",
     "xgb",
-    "aldro",
-    "dro",
-    "node",
-    "group_dro",
-    "label_group_dro",
+    # "aldro",
+    # "dro",
+    # "node",
+    # "group_dro",
+    # "label_group_dro",
 )
 DG_MODELS = (
-    "dann",
-    "irm",
-    "vrex",
-    "mixup",
-    "mmd",
+    # "dann",
+    # "irm",
+    # "vrex",
+    # "mixup",
+    # "mmd",
 )
 
 def IS_TASK_DG(task):
