@@ -268,7 +268,7 @@ def do_plot(experiment_name,mymin,myname):
                 xerr=markers['id_test_ub']-markers['id_test'],
                 yerr=markers['ood_test_ub']-markers['ood_test'], fmt="s",
                 color=color_all, ecolor=color_all,
-                markersize=7, capsize=3, label="top all features")
+                markersize=7, capsize=3, label="all")
     # highlight bar
     shift = eval_plot[mask]
     shift = shift[shift["ood_test"] == shift["ood_test"].max()]
@@ -296,7 +296,7 @@ def do_plot(experiment_name,mymin,myname):
                 xerr=markers['id_test_ub']-markers['id_test'],
                 yerr=markers['ood_test_ub']-markers['ood_test'], fmt="o",
                 color=color_causal, ecolor=color_causal,
-                markersize=7, capsize=3, label="top causal features")
+                markersize=7, capsize=3, label="causal")
     # highlight bar
     shift = eval_plot[mask]
     shift = shift[shift["ood_test"] == shift["ood_test"].max()]
@@ -325,7 +325,7 @@ def do_plot(experiment_name,mymin,myname):
                     xerr=markers['id_test_ub']-markers['id_test'],
                     yerr=markers['ood_test_ub']-markers['ood_test'], fmt="^",
                     color=color_arguablycausal, ecolor=color_arguablycausal,
-                    markersize=7, capsize=3, label="top arguably causal features")
+                    markersize=7, capsize=3, label="arguably\ncausal")
         # highlight bar
         shift = eval_plot[mask]
         shift = shift[shift["ood_test"] == shift["ood_test"].max()]
@@ -619,7 +619,7 @@ def plot_experiment(experiment_name):
 
 completed_experiments = [
                         
-                        #  "acsfoodstamps",
+                         "acsfoodstamps",
                         #  "acsincome",
                         
                         #  "acsunemployment", # old
