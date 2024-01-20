@@ -562,6 +562,7 @@ def do_plot(experiment_name,mymin,myname):
     dic_shift["constant"] = shift
 
     shift = pd.concat(dic_shift.values(), ignore_index=True)
+    shift.drop_duplicates(inplace=True)
     # shift["gap"] = shift["id_test"] - shift["ood_test"]
     if (eval_all['features'] == "arguablycausal").any():
         if (eval_all['features'] == "anticausal").any():
