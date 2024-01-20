@@ -176,6 +176,7 @@ def get_results(experiment_name):
                     'ood_test':eval_json['ood_test'+'_balanced'],
                     'ood_test_lb':eval_json['ood_test'+'_balanced' + '_conf'][0],
                     'ood_test_ub':eval_json['ood_test'+'_balanced' + '_conf'][1],
+                    'validation':eval_json['validation'],
                     'features': get_feature_selection(experiment),
                     'model':run.split("_")[0]}])
                 if get_feature_selection(experiment) == 'causal':
@@ -194,6 +195,15 @@ def get_results(experiment_name):
     for test_split in ["id_test","ood_test"]:
         eval_constant[test_split] =  0.5
         eval_constant[test_split + "_conf"] = (0.5,0.5)
+
+    list_model_data = []
+    for set in eval_all['features'].unique():
+        eval_feature = eval_all[eval_all['features']==set]
+        for model in eval_feature['model'].unique():
+            model_data = eval_feature[eval_feature['model']==model]
+            model_data = model_data[model_data["validation"] == model_data["validation"].max()]
+            list_model_data.append(model_data)
+    eval_all = pd.concat(list_model_data)
 
     eval_pd = pd.DataFrame([{
             'id_test':eval_constant['id_test'],
@@ -256,7 +266,8 @@ def do_plot(experiment_name,mymin,myname):
                 color=color_all, ecolor=color_all,
                 markersize=7, capsize=3, label="top all features")
     # highlight bar
-    shift = points[points["ood_test"] == points["ood_test"].max()]
+    shift = eval_plot[mask]
+    shift = shift[shift["ood_test"] == shift["ood_test"].max()]
     shift["type"] = "all"
     dic_shift["all"] = shift
     plt.hlines(y=shift["ood_test"], xmin=shift["ood_test"], xmax=shift['id_test'],
@@ -283,7 +294,8 @@ def do_plot(experiment_name,mymin,myname):
                 color=color_causal, ecolor=color_causal,
                 markersize=7, capsize=3, label="top causal features")
     # highlight bar
-    shift = points[points["ood_test"] == points["ood_test"].max()]
+    shift = eval_plot[mask]
+    shift = shift[shift["ood_test"] == shift["ood_test"].max()]
     shift["type"] = "causal"
     dic_shift["causal"] = shift
     plt.hlines(y=shift["ood_test"], xmin=shift["ood_test"], xmax=shift['id_test'],
@@ -311,7 +323,8 @@ def do_plot(experiment_name,mymin,myname):
                     color=color_arguablycausal, ecolor=color_arguablycausal,
                     markersize=7, capsize=3, label="top arguably causal features")
         # highlight bar
-        shift = points[points["ood_test"] == points["ood_test"].max()]
+        shift = eval_plot[mask]
+        shift = shift[shift["ood_test"] == shift["ood_test"].max()]
         shift["type"] = "arguably\ncausal"
         dic_shift["arguablycausal"] = shift
         plt.hlines(y=shift["ood_test"], xmin=shift["ood_test"], xmax=shift['id_test'],
@@ -423,6 +436,33 @@ def do_plot(experiment_name,mymin,myname):
     plt.savefig(f"{str(Path(__file__).parents[0]/myname)}_balanced.pdf", bbox_inches='tight')
     plt.show()
 
+    #############################################################################
+    # Plot ood accuracy as bars
+    #############################################################################
+    # plt.title(
+    # f"{dic_title[experiment_name]}")
+    plt.ylabel("balanced\nout-of-domain accuracy")
+
+    # add constant shift gap
+    shift = eval_constant
+    shift["type"] = "constant"
+    dic_shift["constant"] = shift
+
+    shift = pd.concat(dic_shift.values(), ignore_index=True)
+    # shift["gap"] = shift["id_test"] - shift["ood_test"]
+    if (eval_all['features'] == "arguablycausal").any():
+        barlist = plt.bar(shift["type"], shift["ood_test"]-ymin,
+                              yerr=shift['ood_test_ub']-shift['ood_test'],
+                              color=[color_all,color_causal,color_arguablycausal,color_constant],
+                              ecolor=color_error,align='center', capsize=10,
+                              bottom=ymin)
+        plt.savefig(str(Path(__file__).parents[0]/f"{myname}_balanced_ood_accuracy.pdf"), bbox_inches='tight')
+        plt.show()
+    else:
+        barlist = plt.bar(shift["type"], shift["ood_test"], color=[color_all,color_causal,color_constant])
+        plt.savefig(str(Path(__file__).parents[0]/f"{myname}_balanced_ood_accuracy.pdf"), bbox_inches='tight')
+        plt.show()
+
 # %%
 def plot_experiment(experiment_name):
     if experiment_name == "acsemployment":
@@ -516,21 +556,21 @@ def plot_experiment(experiment_name):
 completed_experiments = [
                         # "acsemployment", # old
                          "acsfoodstamps",
-                         "acsincome",
-                         "acspubcov",
-                         "acsunemployment",
+                        #  "acsincome",
+                        #  "acspubcov",
+                        #  "acsunemployment",
                          "anes",
-                         "assistments",
-                         "brfss_blood_pressure",
+                        #  "assistments",
+                        #  "brfss_blood_pressure",
                          "brfss_diabetes",
-                         "college_scorecard",
-                         "diabetes_readmission",
+                        #  "college_scorecard",
+                        #  "diabetes_readmission",
                          "meps",
-                         "mimic_extract_mort_hosp",
-                         "mimic_extract_los_3",
-                         "nhanes_lead",
-                         "physionet",
-                         "sipp",
+                        #  "mimic_extract_mort_hosp",
+                        #  "mimic_extract_los_3",
+                        #  "nhanes_lead",
+                        #  "physionet",
+                        #  "sipp",
                          ]
 for experiment_name in completed_experiments:
     plot_experiment(experiment_name)

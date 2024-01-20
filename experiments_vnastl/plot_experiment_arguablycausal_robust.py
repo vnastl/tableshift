@@ -345,7 +345,7 @@ def do_plot(experiment_name,mymin,myname):
     # highlight bar
     shift = eval_plot[mask]
     shift = shift[shift["ood_test"] == shift["ood_test"].max()]
-    shift["type"] = "arguably\ncausal"
+    shift["type"] = "arg. causal"
     dic_shift["arguablycausal"] = shift
     plt.hlines(y=shift["ood_test"], xmin=shift["ood_test"], xmax=shift['id_test'],
                color=color_arguablycausal, linewidth=3, alpha=0.7)
