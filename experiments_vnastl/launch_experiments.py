@@ -42,7 +42,7 @@ N_TRIALS    = 50
 # Cluster settings
 JOB_MIN_BID = 100    # htcondor bid (min. is 15 apparently...)
 JOB_CPUS = 1     # number of CPUs per experiment (per cluster job)
-JOB_MEMORY_GB = 256 #128  # GBs of memory
+JOB_MEMORY_GB = 128  # GBs of memory
 BIG_JOB_MEMORY_GB = 256
 
 VERBOSE = True
@@ -53,9 +53,9 @@ TASKS = [
     # "acsincome_arguablycausal",
     # "acsincome_anticausal",
 
-    "acspubcov",
-    "acspubcov_causal",
-    "acspubcov_arguablycausal",
+    # "acspubcov",
+    # "acspubcov_causal",
+    # "acspubcov_arguablycausal",
 
     # "acsfoodstamps",
     # "acsfoodstamps_causal",
@@ -79,10 +79,10 @@ TASKS = [
     # "brfss_diabetes_arguablycausal",
     # "brfss_diabetes_anticausal",
 
-    # "brfss_blood_pressure",
-    # "brfss_blood_pressure_causal",
-    # "brfss_blood_pressure_arguablycausal",
-    # "brfss_blood_pressure_anticausal",
+    "brfss_blood_pressure",
+    "brfss_blood_pressure_causal",
+    "brfss_blood_pressure_arguablycausal",
+    "brfss_blood_pressure_anticausal",
 
     # "college_scorecard",
     # "college_scorecard_causal",
