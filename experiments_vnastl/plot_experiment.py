@@ -779,22 +779,22 @@ def plot_experiment(experiment_name):
 
 completed_experiments = [
                         # "acsemployment", # old
-                         "acsfoodstamps",
-                         "acsincome",
-                        #  "acspubcov",
-                         "acsunemployment",
-                         "anes",
-                         "assistments",
+                        #  "acsfoodstamps",
+                        #  "acsincome",
+                        # #  "acspubcov",
+                        #  "acsunemployment",
+                        #  "anes",
+                        #  "assistments",
                          "brfss_blood_pressure",
-                         "brfss_diabetes",
-                         "college_scorecard",
-                         "diabetes_readmission",
-                         "meps",
-                         "mimic_extract_mort_hosp",
-                         "mimic_extract_los_3",
-                         "nhanes_lead",
-                         "physionet",
-                         "sipp",
+                        #  "brfss_diabetes",
+                        #  "college_scorecard",
+                        #  "diabetes_readmission",
+                        #  "meps",
+                        #  "mimic_extract_mort_hosp",
+                        #  "mimic_extract_los_3",
+                        #  "nhanes_lead",
+                        #  "physionet",
+                        #  "sipp",
                          ]
 for experiment_name in completed_experiments:
     plot_experiment(experiment_name)
