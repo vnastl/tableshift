@@ -28,12 +28,12 @@ NOT_DG_TASKS = (
 )
 MODELS = (
     # "ft_transformer",
-    "histgbm",
+    # "histgbm",
     # "mlp",
-    # "saint",
+    "saint",
     # "tabtransformer",
     # "resnet",
-    "xgb",
+    # "xgb",
     # "lightgbm",
     # "aldro",
     # "dro",
