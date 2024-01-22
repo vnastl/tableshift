@@ -12,6 +12,8 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score
 
 from tqdm import tqdm
+plt.rcParams['figure.dpi'] = 300
+plt.rcParams['savefig.dpi'] = 300
 #%%
 test_size = 0.3
 # Generate normally distributed samples
@@ -19,7 +21,7 @@ numbers_gamma = [1] #np.linspace(0, 2, num=10+1)[1:]
 numbers_beta = [1] #np.linspace(0, 2, num=10+1)[1:]
 
 numbers_shift_x = np.linspace(-2, 2, num=100+1)
-numbers_shift_w = np.linspace(-2, 2, num=100+1)
+numbers_shift_w = np.linspace(-2, 4, num=100+1)
 
 record_list = []
 
@@ -41,7 +43,7 @@ for beta, gamma, shift_x, shift_w in tqdm(itertools.product(numbers_beta, number
     x = eps_x
     y = beta*x + eps_y
     w = gamma*y + eps_w
-    y_class = (y>0)
+    y_class = (y>1)
 
     ood_x = ood_eps_x+ shift_x
     ood_y = beta*ood_x + ood_eps_y
@@ -138,7 +140,7 @@ record_dataframe = pd.DataFrame(record_list)
 record_beta_1_gamma_1 = record_dataframe[(record_dataframe["beta"]==1)&
                                          (record_dataframe["gamma"]==1)&
                                          (record_dataframe["shift_x"]<2)&
-                                         (record_dataframe["shift_w"]<2)]
+                                         (record_dataframe["shift_w"]<4)]
 
 #%%
 plt.plot(record_beta_1_gamma_1["shift_x"], record_beta_1_gamma_1["ood_acc_true_causal"], label="acc of true causal", color="#d55e00",linestyle="dotted")
@@ -161,7 +163,7 @@ for index, value in enumerate(sample):
 plt.xlabel("shift_x")
 plt.ylabel("acc")
 plt.tight_layout()
-plt.legend(loc="lower right")
+plt.legend(loc='upper left', bbox_to_anchor=(1, 1))
 plt.savefig("plots_paper/simulations_acc_x_shift.pdf")
 plt.show()
 
@@ -188,7 +190,7 @@ for index, value in enumerate(sample):
 plt.xlabel("shift_w")
 plt.ylabel("acc")
 plt.tight_layout()
-plt.legend()
+plt.legend(loc='upper left', bbox_to_anchor=(1, 1))
 plt.savefig("plots_paper/simulations_acc_w_shift.pdf")
 plt.show()
 #%%
@@ -210,7 +212,7 @@ plot2._facecolors2d = "#de8f05"
 plot3._edgecolors2d = "#0173b2"
 plot3._facecolors2d = "#0173b2"
 
-ax.legend()
+plt.legend( loc='upper left', bbox_to_anchor=(1, 1))
 plt.tight_layout()
 plt.savefig("plots_paper/simulations_acc_x_w_shift.pdf")
 plt.show()

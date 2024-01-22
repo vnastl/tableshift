@@ -13,6 +13,8 @@ from sklearn.metrics import mean_squared_error
 
 from tqdm import tqdm
 
+plt.rcParams['figure.dpi'] = 300
+plt.rcParams['savefig.dpi'] = 300
 #%%
 test_size = 0.3
 # Generate normally distributed samples
@@ -160,7 +162,7 @@ for index, value in enumerate(sample):
     
 plt.xlabel("shift_x")
 plt.ylabel("mse")
-plt.legend(loc="lower right")
+plt.legend(loc='upper left', bbox_to_anchor=(1, 1))
 plt.tight_layout()
 plt.savefig("plots_paper/simulations_mse_x_shift.pdf")
 plt.show()
@@ -187,7 +189,7 @@ for index, value in enumerate(sample):
 
 plt.xlabel("shift_w")
 plt.ylabel("mse")
-plt.legend()
+plt.legend(loc='upper left', bbox_to_anchor=(1, 1))
 plt.tight_layout()
 plt.savefig("plots_paper/simulations_mse_w_shift.pdf")
 plt.show()
@@ -210,7 +212,7 @@ plot2._facecolors2d = "#de8f05"
 plot3._edgecolors2d = "#0173b2"
 plot3._facecolors2d = "#0173b2"
 
-ax.legend()
+ax.legend(loc='upper left', bbox_to_anchor=(1, 1))
 plt.tight_layout()
 plt.savefig("plots_paper/simulations_mse_x_w_shift.pdf")
 plt.show()
