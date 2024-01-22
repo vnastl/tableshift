@@ -5,6 +5,7 @@ import pandas as pd
 import os
 from pathlib import Path
 import ast
+import pickle
 
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
@@ -346,9 +347,9 @@ def do_plot(experiment_name,mymin,myname):
             xerr=eval_constant['id_test_ub']-eval_constant['id_test'],
             yerr=eval_constant['ood_test_ub']-eval_constant['ood_test'], fmt="D",
             color=color_constant, ecolor=color_constant,
-            markersize=7, capsize=3, label="constant")
+            markersize=markersize, capsize=capsize, label="constant")
     plt.hlines(y=eval_constant['ood_test'].values[0], xmin=eval_constant['ood_test'].values[0], xmax=eval_constant['id_test'].values[0],
-                color=color_constant, linewidth=3, alpha=0.7)
+                color=color_constant, linewidth=linewidth_shift, alpha=0.7)
     
     #############################################################################
     # plot errorbars and shift gap for all features
@@ -368,14 +369,14 @@ def do_plot(experiment_name,mymin,myname):
                 xerr=markers['id_test_ub']-markers['id_test'],
                 yerr=markers['ood_test_ub']-markers['ood_test'], fmt="s",
                 color=color_all, ecolor=color_all,
-                markersize=7, capsize=3, label="all")
+                markersize=markersize, capsize=capsize, label="all")
     # highlight bar
     shift = eval_plot[mask]
     shift = shift[shift["ood_test"] == shift["ood_test"].max()]
     shift["type"] = "all"
     dic_shift["all"] = shift
     plt.hlines(y=shift["ood_test"], xmin=shift["ood_test"], xmax=shift['id_test'],
-               color=color_all, linewidth=3, alpha=0.7)
+               color=color_all, linewidth=linewidth_shift, alpha=0.7)
     
     #############################################################################
     # plot errorbars and shift gap for causal features
@@ -395,14 +396,14 @@ def do_plot(experiment_name,mymin,myname):
                 xerr=markers['id_test_ub']-markers['id_test'],
                 yerr=markers['ood_test_ub']-markers['ood_test'], fmt="o",
                 color=color_causal, ecolor=color_causal,
-                markersize=7, capsize=3, label="causal")
+                markersize=markersize, capsize=capsize, label="causal")
     # highlight bar
     shift = eval_plot[mask]
     shift = shift[shift["ood_test"] == shift["ood_test"].max()]
     shift["type"] = "causal"
     dic_shift["causal"] = shift
     plt.hlines(y=shift["ood_test"], xmin=shift["ood_test"], xmax=shift['id_test'],
-               color=color_causal, linewidth=3, alpha=0.7)
+               color=color_causal, linewidth=linewidth_shift, alpha=0.7)
 
     #############################################################################
     # plot errorbars and shift gap for robustness tests
@@ -425,7 +426,7 @@ def do_plot(experiment_name,mymin,myname):
                         y=markers['ood_test'],
                         xerr=markers['id_test_ub']-markers['id_test'],
                         yerr=markers['ood_test_ub']-markers['ood_test'], fmt="v",
-                        markersize=7, capsize=3,
+                        markersize=markersize, capsize=capsize,
                         color=color_causal_robust, ecolor=color_causal_robust, zorder = 1,
                         label="robustness test for causal")
             # highlight bar
@@ -443,10 +444,10 @@ def do_plot(experiment_name,mymin,myname):
     ymin, ymax = plt.ylim()
     plt.plot([xmin, eval_constant['id_test'].values[0]],
                 [eval_constant['ood_test'].values[0],eval_constant['ood_test'].values[0]],
-                color=color_constant,linestyle="dotted")
+                color=color_constant,linestyle=(0, (1, 1)),linewidth=linewidth_bound)
     plt.plot([eval_constant['id_test'].values[0], eval_constant['id_test'].values[0]],
                 [ymin,eval_constant['ood_test'].values[0]],
-                color=color_constant,linestyle="dotted")
+                color=color_constant,linestyle=(0, (1, 1)),linewidth=linewidth_bound)
     plt.fill_between([xmin, eval_constant['id_test'].values[0]],
                      [ymin,ymin],
                      [eval_constant['ood_test'].values[0],eval_constant['ood_test'].values[0]],
@@ -465,7 +466,7 @@ def do_plot(experiment_name,mymin,myname):
     new_row = pd.DataFrame({'id_test':[xmin,max(points['id_test'])], 'ood_test':[max(points['ood_test']),ymin]},)
     points = pd.concat([points,new_row], ignore_index=True)
     points.sort_values('id_test',inplace=True)
-    plt.plot(points['id_test'],points['ood_test'],color=color_all,linestyle="dotted")
+    plt.plot(points['id_test'],points['ood_test'],color=color_all,linestyle=(0, (1, 1)),linewidth=linewidth_bound)
     new_row = pd.DataFrame({'id_test':[xmin], 'ood_test':[ymin]},)
     points = pd.concat([points,new_row], ignore_index=True)
     points = points.to_numpy()
@@ -488,7 +489,7 @@ def do_plot(experiment_name,mymin,myname):
     new_row = pd.DataFrame({'id_test':[xmin,max(points['id_test'])], 'ood_test':[max(points['ood_test']),ymin]},)
     points = pd.concat([points,new_row], ignore_index=True)
     points.sort_values('id_test',inplace=True)
-    plt.plot(points['id_test'],points['ood_test'],color=color_causal,linestyle="dotted")
+    plt.plot(points['id_test'],points['ood_test'],color=color_causal,linestyle=(0, (1, 1)),linewidth=linewidth_bound)
     new_row = pd.DataFrame({'id_test':[xmin], 'ood_test':[ymin]},)
     points = pd.concat([points,new_row], ignore_index=True)
     points = points.to_numpy()
@@ -509,7 +510,10 @@ def do_plot(experiment_name,mymin,myname):
             newLines.append(line)
 
     # Create a legend with only distinct labels
-    plt.legend(newLines, newLabels, loc='upper left')
+    # plt.legend(newLines, newLabels, loc='upper left')
+    with open(str(Path(__file__).parents[0]/f"legend_causal_robust"), 'wb') as f:
+        # Use json.dump to write data to the file
+        pickle.dump({"labels":newLabels, "lines":newLines}, f)
 
    # Plot the diagonal line
     start_lim = max(xmin, ymin)
@@ -517,6 +521,7 @@ def do_plot(experiment_name,mymin,myname):
     plt.plot([start_lim, end_lim], [start_lim, end_lim], color='black')
     
     plt.savefig(f"{str(Path(__file__).parents[0]/myname)}_causal_robust.pdf", bbox_inches='tight')
+    plt.savefig(f"{str(Path(__file__).parents[0]/myname)}_causal_robust.png", bbox_inches='tight')
     plt.show()
 
     #############################################################################
@@ -540,6 +545,7 @@ def do_plot(experiment_name,mymin,myname):
                               bottom=ymin)
     plt.xticks(rotation=90)
     plt.savefig(str(Path(__file__).parents[0]/f"{myname}_causal_robust_ood_accuracy.pdf"), bbox_inches='tight')
+    plt.savefig(f"{str(Path(__file__).parents[0]/myname)}_causal_robust_ood_accuracy.png", bbox_inches='tight')
     plt.show()
 
     #############################################################################
@@ -559,6 +565,8 @@ def do_plot(experiment_name,mymin,myname):
                       color=[color_all,color_causal]+[color_causal_robust for index in range(dic_robust_number[experiment_name])]+[color_constant])
     plt.xticks(rotation=90)
     plt.savefig(str(Path(__file__).parents[0]/f"{myname}_causal_robust_shift.pdf"), bbox_inches='tight')
+
+    plt.savefig(str(Path(__file__).parents[0]/f"{myname}_causal_robust_shift.png"), bbox_inches='tight')
     plt.show()
 
 # %%

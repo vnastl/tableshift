@@ -5,6 +5,7 @@ import pandas as pd
 import os
 from pathlib import Path
 import ast
+import pickle
 
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
@@ -32,7 +33,7 @@ import os
 os.chdir("/Users/vnastl/Seafile/My Library/mpi project causal vs noncausal/tableshift")
 #%%
 
-ANTICAUSAL = True
+ANTICAUSAL = False
 
 # %%
 def get_dic_experiments_value(name):
@@ -318,26 +319,11 @@ def do_plot(experiment_name,mymin,myname):
 
     # plt.title(
     #     f"{dic_title[experiment_name]}")
+    fig1 = plt.figure()
     plt.xlabel(f"in-domain accuracy") #\n({dic_id_domain[experiment_name]})")
     plt.ylabel(f"out-of-domain accuracy") #\n({dic_ood_domain[experiment_name]})")
 
-    #############################################################################
-    # plot errorbars and shift gap for constant
-    #############################################################################
-    errors = plt.errorbar(
-            x=eval_constant['id_test'],
-            y=eval_constant['ood_test'],
-            xerr=eval_constant['id_test_ub']-eval_constant['id_test'],
-            yerr=eval_constant['ood_test_ub']-eval_constant['ood_test'], fmt="D",
-            color=color_constant, ecolor=color_constant,
-            markersize=7, capsize=3, label="constant")
-    plt.hlines(y=eval_constant['ood_test'].values[0], xmin=eval_constant['ood_test'].values[0], xmax=eval_constant['id_test'].values[0],
-                color=color_constant, linewidth=3, alpha=0.7)
-    # get pareto set for shift vs accuracy
-    shift_acc = eval_constant
-    shift_acc["type"] = "constant"
-    shift_acc["gap"] = shift_acc["id_test"] - shift_acc["ood_test"]
-    dic_shift_acc["constant"] = shift_acc
+    
     #############################################################################
     # plot errorbars and shift gap for all features
     #############################################################################
@@ -356,51 +342,20 @@ def do_plot(experiment_name,mymin,myname):
                 xerr=markers['id_test_ub']-markers['id_test'],
                 yerr=markers['ood_test_ub']-markers['ood_test'], fmt="s",
                 color=color_all, ecolor=color_all,
-                markersize=7, capsize=3, label="all")
+                markersize=markersize, capsize=capsize, label="all")
     # highlight bar
     shift = eval_plot[mask]
     shift = shift[shift["ood_test"] == shift["ood_test"].max()]
     shift["type"] = "all"
     dic_shift["all"] = shift
     plt.hlines(y=shift["ood_test"], xmin=shift["ood_test"], xmax=shift['id_test'],
-               color=color_all, linewidth=3, alpha=0.7)
+               color=color_all, linewidth=linewidth_shift, alpha=0.7)
     # get pareto set for shift vs accuracy
     shift_acc = eval_plot[mask]
     shift_acc["type"] = "all"
     shift_acc["gap"] = shift_acc["id_test"] - shift_acc["ood_test"]
     dic_shift_acc["all"] = shift_acc
 
-    #############################################################################
-    # plot errorbars and shift gap for causal features
-    #############################################################################
-    eval_plot = eval_all[eval_all['features']=="causal"]
-    eval_plot.sort_values('id_test',inplace=True)
-    # Calculate the pareto set
-    points = eval_plot[['id_test','ood_test']]
-    mask = paretoset(points, sense=["max", "max"])
-    points = points[mask]
-    points = points[points["id_test"] >= (eval_constant['id_test'].values[0] -0.01)]
-    markers = eval_plot[mask]
-    markers = markers[markers["id_test"] >= (eval_constant['id_test'].values[0] -0.01)]
-    errors = plt.errorbar(
-                x=markers['id_test'],
-                y=markers['ood_test'],
-                xerr=markers['id_test_ub']-markers['id_test'],
-                yerr=markers['ood_test_ub']-markers['ood_test'], fmt="o",
-                color=color_causal, ecolor=color_causal,
-                markersize=7, capsize=3, label="causal")
-    # highlight bar
-    shift = eval_plot[mask]
-    shift = shift[shift["ood_test"] == shift["ood_test"].max()]
-    shift["type"] = "causal"
-    dic_shift["causal"] = shift
-    plt.hlines(y=shift["ood_test"], xmin=shift["ood_test"], xmax=shift['id_test'],
-               color=color_causal, linewidth=3, alpha=0.7)
-    # get pareto set for shift vs accuracy
-    shift_acc = eval_plot[mask]
-    shift_acc["type"] = "causal"
-    shift_acc["gap"] = shift_acc["id_test"] - shift_acc["ood_test"]
-    dic_shift_acc["causal"] = shift_acc
     #############################################################################
     # plot errorbars and shift gap for arguablycausal features
     #############################################################################
@@ -420,19 +375,51 @@ def do_plot(experiment_name,mymin,myname):
                     xerr=markers['id_test_ub']-markers['id_test'],
                     yerr=markers['ood_test_ub']-markers['ood_test'], fmt="^",
                     color=color_arguablycausal, ecolor=color_arguablycausal,
-                    markersize=7, capsize=3, label="arguably\ncausal")
+                    markersize=markersize, capsize=capsize, label="arguably\ncausal")
         # highlight bar
         shift = eval_plot[mask]
         shift = shift[shift["ood_test"] == shift["ood_test"].max()]
         shift["type"] = "arguably\ncausal"
         dic_shift["arguablycausal"] = shift
         plt.hlines(y=shift["ood_test"], xmin=shift["ood_test"], xmax=shift['id_test'],
-                color=color_arguablycausal, linewidth=3, alpha=0.7)
+                color=color_arguablycausal, linewidth=linewidth_shift, alpha=0.7)
         # get pareto set for shift vs accuracy
         shift_acc = eval_plot[mask]
         shift_acc["type"] = "arguablycausal"
         shift_acc["gap"] = shift_acc["id_test"] - shift_acc["ood_test"]
         dic_shift_acc["arguablycausal"] = shift_acc
+        
+    #############################################################################
+    # plot errorbars and shift gap for causal features
+    #############################################################################
+    eval_plot = eval_all[eval_all['features']=="causal"]
+    eval_plot.sort_values('id_test',inplace=True)
+    # Calculate the pareto set
+    points = eval_plot[['id_test','ood_test']]
+    mask = paretoset(points, sense=["max", "max"])
+    points = points[mask]
+    points = points[points["id_test"] >= (eval_constant['id_test'].values[0] -0.01)]
+    markers = eval_plot[mask]
+    markers = markers[markers["id_test"] >= (eval_constant['id_test'].values[0] -0.01)]
+    errors = plt.errorbar(
+                x=markers['id_test'],
+                y=markers['ood_test'],
+                xerr=markers['id_test_ub']-markers['id_test'],
+                yerr=markers['ood_test_ub']-markers['ood_test'], fmt="o",
+                color=color_causal, ecolor=color_causal,
+                markersize=markersize, capsize=capsize, label="causal")
+    # highlight bar
+    shift = eval_plot[mask]
+    shift = shift[shift["ood_test"] == shift["ood_test"].max()]
+    shift["type"] = "causal"
+    dic_shift["causal"] = shift
+    plt.hlines(y=shift["ood_test"], xmin=shift["ood_test"], xmax=shift['id_test'],
+               color=color_causal, linewidth=linewidth_shift, alpha=0.7)
+    # get pareto set for shift vs accuracy
+    shift_acc = eval_plot[mask]
+    shift_acc["type"] = "causal"
+    shift_acc["gap"] = shift_acc["id_test"] - shift_acc["ood_test"]
+    dic_shift_acc["causal"] = shift_acc
     #############################################################################
     # plot errorbars and shift gap for anticausal features
     #############################################################################
@@ -454,15 +441,31 @@ def do_plot(experiment_name,mymin,myname):
                     xerr=markers['id_test_ub']-markers['id_test'],
                     yerr=markers['ood_test_ub']-markers['ood_test'], fmt="P",
                     color=color_anticausal, ecolor=color_anticausal,
-                    markersize=7, capsize=3, label="anticausal")
+                    markersize=markersize, capsize=capsize, label="anticausal")
         # highlight bar
         shift = eval_plot[mask]
         shift = shift[shift["ood_test"] == shift["ood_test"].max()]
         shift["type"] = "anti\ncausal"
         dic_shift["anticausal"] = shift
         plt.hlines(y=shift["ood_test"], xmin=shift["ood_test"], xmax=shift['id_test'],
-                color=color_anticausal, linewidth=3, alpha=0.7)
-
+                color=color_anticausal, linewidth=linewidth_shift, alpha=0.7)
+    #############################################################################
+    # plot errorbars and shift gap for constant
+    #############################################################################
+    errors = plt.errorbar(
+            x=eval_constant['id_test'],
+            y=eval_constant['ood_test'],
+            xerr=eval_constant['id_test_ub']-eval_constant['id_test'],
+            yerr=eval_constant['ood_test_ub']-eval_constant['ood_test'], fmt="D",
+            color=color_constant, ecolor=color_constant,
+            markersize=markersize, capsize=capsize, label="constant")
+    plt.hlines(y=eval_constant['ood_test'].values[0], xmin=eval_constant['ood_test'].values[0], xmax=eval_constant['id_test'].values[0],
+                color=color_constant, linewidth=linewidth_shift, alpha=0.7)
+    # get pareto set for shift vs accuracy
+    shift_acc = eval_constant
+    shift_acc["type"] = "constant"
+    shift_acc["gap"] = shift_acc["id_test"] - shift_acc["ood_test"]
+    dic_shift_acc["constant"] = shift_acc
     #############################################################################
     # plot pareto dominated area for constant
     #############################################################################
@@ -470,10 +473,10 @@ def do_plot(experiment_name,mymin,myname):
     ymin, ymax = plt.ylim()
     plt.plot([xmin, eval_constant['id_test'].values[0]],
                 [eval_constant['ood_test'].values[0],eval_constant['ood_test'].values[0]],
-                color=color_constant,linestyle="dotted")
+                color=color_constant,linestyle=(0, (1, 1)),linewidth=linewidth_bound)
     plt.plot([eval_constant['id_test'].values[0], eval_constant['id_test'].values[0]],
                 [ymin,eval_constant['ood_test'].values[0]],
-                color=color_constant,linestyle="dotted")
+                color=color_constant,linestyle=(0, (1, 1)),linewidth=linewidth_bound)
     plt.fill_between([xmin, eval_constant['id_test'].values[0]],
                      [ymin,ymin],
                      [eval_constant['ood_test'].values[0],eval_constant['ood_test'].values[0]],
@@ -493,7 +496,7 @@ def do_plot(experiment_name,mymin,myname):
     new_row = pd.DataFrame({'id_test':[xmin,max(points['id_test'])], 'ood_test':[max(points['ood_test']),ymin]},)
     points = pd.concat([points,new_row], ignore_index=True)
     points.sort_values('id_test',inplace=True)
-    plt.plot(points['id_test'],points['ood_test'],color=color_all,linestyle="dotted")
+    plt.plot(points['id_test'],points['ood_test'],color=color_all,linestyle=(0, (1, 1)),linewidth=linewidth_bound)
     new_row = pd.DataFrame({'id_test':[xmin], 'ood_test':[ymin]},)
     points = pd.concat([points,new_row], ignore_index=True)
     points = points.to_numpy()
@@ -516,7 +519,7 @@ def do_plot(experiment_name,mymin,myname):
     new_row = pd.DataFrame({'id_test':[xmin,max(points['id_test'])], 'ood_test':[max(points['ood_test']),ymin]},)
     points = pd.concat([points,new_row], ignore_index=True)
     points.sort_values('id_test',inplace=True)
-    plt.plot(points['id_test'],points['ood_test'],color=color_causal,linestyle="dotted")
+    plt.plot(points['id_test'],points['ood_test'],color=color_causal,linestyle=(0, (1, 1)),linewidth=linewidth_bound)
     new_row = pd.DataFrame({'id_test':[xmin], 'ood_test':[ymin]},)
     points = pd.concat([points,new_row], ignore_index=True)
     points = points.to_numpy()
@@ -538,7 +541,7 @@ def do_plot(experiment_name,mymin,myname):
         new_row = pd.DataFrame({'id_test':[xmin,max(points['id_test'])], 'ood_test':[max(points['ood_test']),ymin]},)
         points = pd.concat([points,new_row], ignore_index=True)
         points.sort_values('id_test',inplace=True)
-        plt.plot(points['id_test'],points['ood_test'],color=color_arguablycausal,linestyle="dotted")
+        plt.plot(points['id_test'],points['ood_test'],color=color_arguablycausal,linestyle=(0, (1, 1)),linewidth=linewidth_bound)
         new_row = pd.DataFrame({'id_test':[xmin], 'ood_test':[ymin]},)
         points = pd.concat([points,new_row], ignore_index=True)
         points = points.to_numpy()
@@ -560,7 +563,7 @@ def do_plot(experiment_name,mymin,myname):
         new_row = pd.DataFrame({'id_test':[xmin,max(points['id_test'])], 'ood_test':[max(points['ood_test']),ymin]},)
         points = pd.concat([points,new_row], ignore_index=True)
         points.sort_values('id_test',inplace=True)
-        plt.plot(points['id_test'],points['ood_test'],color=color_anticausal,linestyle="dotted")
+        plt.plot(points['id_test'],points['ood_test'],color=color_anticausal,linestyle=(0, (1, 1)),linewidth=linewidth_bound)
 
         new_row = pd.DataFrame({'id_test':[xmin], 'ood_test':[ymin]},)
         points = pd.concat([points,new_row], ignore_index=True)
@@ -571,6 +574,11 @@ def do_plot(experiment_name,mymin,myname):
     #############################################################################
     # Add legend & diagonal, save plot
     #############################################################################
+    # Plot the diagonal line
+    start_lim = max(xmin, ymin)
+    end_lim = min(xmax, ymax)
+    plt.plot([start_lim, end_lim], [start_lim, end_lim], color=color_error)
+
     # Get the lines and labels
     lines, labels = plt.gca().get_legend_handles_labels()
 
@@ -582,12 +590,15 @@ def do_plot(experiment_name,mymin,myname):
             newLines.append(line)
 
     # Create a legend with only distinct labels
-    plt.legend(newLines, newLabels, loc='upper left')
-
-    # Plot the diagonal line
-    start_lim = max(xmin, ymin)
-    end_lim = min(xmax, ymax)
-    plt.plot([start_lim, end_lim], [start_lim, end_lim], color=color_error)
+    # plt.legend(newLines, newLabels, loc='upper left')
+    if (eval_all['features'] == "anticausal").any():
+        with open(str(Path(__file__).parents[0]/f"legend_anticausal.pkl"), 'wb') as f:
+            # Use pickle.dump to write data to the file
+            pickle.dump({"labels":newLabels, "lines":newLines}, f)
+    else:
+        with open(str(Path(__file__).parents[0]/f"legend.pkl"), 'wb') as f:
+            # Use pickle.dump to write data to the file
+            pickle.dump({"labels":newLabels, "lines":newLines}, f)
     
     if (eval_all['features'] == "anticausal").any():
         plt.savefig(f"{str(Path(__file__).parents[0]/myname)}_anticausal.pdf", bbox_inches='tight')
@@ -595,10 +606,12 @@ def do_plot(experiment_name,mymin,myname):
     else:
         plt.savefig(f"{str(Path(__file__).parents[0]/myname)}.pdf", bbox_inches='tight')
         plt.show()
+    plt.close(fig1)
 
     #############################################################################
     # Plot ood accuracy as bars
     #############################################################################
+    fig3 = plt.figure()
     # plt.title(
     # f"{dic_title[experiment_name]}")
     plt.ylabel("out-of-domain accuracy")
@@ -616,7 +629,7 @@ def do_plot(experiment_name,mymin,myname):
             barlist = plt.bar(shift["type"], shift["ood_test"]-ymin,
                               yerr=shift['ood_test_ub']-shift['ood_test'],
                               color=[color_all,color_causal,color_arguablycausal,color_anticausal,color_constant],
-                              ecolor=color_error,align='center', capsize=10,
+                              ecolor=color_error,align='center', capsize=capsize,
                               bottom=ymin)
             plt.savefig(str(Path(__file__).parents[0]/f"{myname}_anticausal_ood_accuracy.pdf"), bbox_inches='tight')
             plt.show()
@@ -624,7 +637,7 @@ def do_plot(experiment_name,mymin,myname):
             barlist = plt.bar(shift["type"], shift["ood_test"]-ymin,
                               yerr=shift['ood_test_ub']-shift['ood_test'],
                               color=[color_all,color_causal,color_arguablycausal,color_constant],
-                              ecolor=color_error,align='center', capsize=10,
+                              ecolor=color_error,align='center', capsize=capsize,
                               bottom=ymin)
             plt.savefig(str(Path(__file__).parents[0]/f"{myname}_ood_accuracy.pdf"), bbox_inches='tight')
             plt.show()
@@ -633,18 +646,14 @@ def do_plot(experiment_name,mymin,myname):
         plt.savefig(str(Path(__file__).parents[0]/f"{myname}_ood_accuracy.pdf"), bbox_inches='tight')
         plt.show()
 
-
+    
     #############################################################################
     # Plot shift gap as bars
     #############################################################################
+    fig4 = plt.figure()
     # plt.title(
     # f"{dic_title[experiment_name]}")
     plt.ylabel("shift gap")
-
-    # # add constant shift gap
-    # shift = eval_constant
-    # shift["type"] = "constant"
-    # dic_shift["constant"] = shift
 
     # shift = pd.concat(dic_shift.values(), ignore_index=True)
     shift["gap"] = shift["id_test"] - shift["ood_test"]
@@ -656,14 +665,14 @@ def do_plot(experiment_name,mymin,myname):
             barlist = plt.bar(shift["type"], shift["gap"],
                               yerr=shift['gap_var']**0.5,
                               color=[color_all,color_causal,color_arguablycausal,color_anticausal,color_constant],
-                              ecolor=color_error,align='center', capsize=10)
+                              ecolor=color_error,align='center', capsize=capsize)
             plt.savefig(str(Path(__file__).parents[0]/f"{myname}_anticausal_shift.pdf"), bbox_inches='tight')
             plt.show()
         else:
             barlist = plt.bar(shift["type"], shift["gap"],
                               yerr=shift['gap_var']**0.5,
                               color=[color_all,color_causal,color_arguablycausal,color_constant],
-                              ecolor=color_error,align='center', capsize=10)
+                              ecolor=color_error,align='center', capsize=capsize)
             plt.savefig(str(Path(__file__).parents[0]/f"{myname}_shift.pdf"), bbox_inches='tight')
             plt.show()
     else:
@@ -671,9 +680,11 @@ def do_plot(experiment_name,mymin,myname):
         plt.savefig(str(Path(__file__).parents[0]/f"{myname}_shift.pdf"), bbox_inches='tight')
         plt.show()
 
+    plt.close(fig4)
     #############################################################################
     # Plot shift gap vs accuarcy
     #############################################################################
+    fig2 = plt.figure()
     if (eval_all['features'] == "arguablycausal").any():
         # plt.title(
         # f"{dic_title[experiment_name]}")
@@ -693,7 +704,7 @@ def do_plot(experiment_name,mymin,myname):
                          xerr= type_shift['gap_var']**0.5,
                          yerr= type_shift['ood_test_ub']-type_shift['ood_test'],
                         color=eval(f"color_{type}"), ecolor=eval(f"color_{type}"),
-                        fmt=marker, markersize=7, capsize=3,  label="arguably\ncausal" if type == 'arguablycausal' else f"{type}",
+                        fmt=marker, markersize=markersize, capsize=capsize,  label="arguably\ncausal" if type == 'arguablycausal' else f"{type}",
                         zorder=3)
         xmin, xmax = plt.xlim()
         ymin, ymax = plt.ylim()
@@ -709,7 +720,7 @@ def do_plot(experiment_name,mymin,myname):
             new_row = pd.DataFrame({'1-gap':[xmin,max(points['1-gap'])], 'ood_test':[max(points['ood_test']),ymin]},)
             points = pd.concat([points,new_row], ignore_index=True)
             points.sort_values('1-gap',inplace=True)
-            plt.plot(points['1-gap'],points['ood_test'],color=eval(f"color_{type}"),linestyle="dotted")
+            plt.plot(points['1-gap'],points['ood_test'],color=eval(f"color_{type}"),linestyle=(0, (1, 1)),linewidth=linewidth_bound)
             new_row = pd.DataFrame({'1-gap':[xmin], 'ood_test':[ymin]},)
             points = pd.concat([points,new_row], ignore_index=True)
             points = points.to_numpy()
@@ -725,14 +736,16 @@ def do_plot(experiment_name,mymin,myname):
             if label not in newLabels:
                 newLabels.append(label)
                 newLines.append(line)
-            
+        
+        
         # Create a legend with only distinct labels
-        plt.legend(newLines, newLabels, loc='upper left')
+        # plt.legend(newLines, newLabels, loc='upper left')
 
         # plt.legend(newLines, newLabels, loc='upper left', bbox_to_anchor=(1, 1))
             # TODO add pareto dominate lines & areas, see constant, maybe even add the multiple paretos
         plt.savefig(str(Path(__file__).parents[0]/f"{myname}_shift_accuracy.pdf"), bbox_inches='tight')
         plt.show()
+        plt.close(fig2)
 
 # %%
 def plot_experiment(experiment_name):
@@ -823,25 +836,25 @@ def plot_experiment(experiment_name):
         do_plot(experiment_name,mymin,myname)
 
 # %%
-
-completed_experiments = [
-                        # "acsemployment", # old
-                         "acsfoodstamps",
-                         "acsincome",
-                        #  "acspubcov",
-                         "acsunemployment",
-                         "anes",
-                         "assistments",
-                         "brfss_blood_pressure",
-                         "brfss_diabetes",
-                         "college_scorecard",
-                         "diabetes_readmission",
-                         "meps",
-                         "mimic_extract_mort_hosp",
-                         "mimic_extract_los_3",
-                         "nhanes_lead",
-                         "physionet",
-                         "sipp",
-                         ]
-for experiment_name in completed_experiments:
-    plot_experiment(experiment_name)
+if __name__ == "__main__":
+    completed_experiments = [
+                            # "acsemployment", # old
+                            "acsfoodstamps",
+                            "acsincome",
+                            #  "acspubcov",
+                            "acsunemployment",
+                            "anes",
+                            "assistments",
+                            "brfss_blood_pressure",
+                            "brfss_diabetes",
+                            "college_scorecard",
+                            "diabetes_readmission",
+                            "meps",
+                            "mimic_extract_mort_hosp",
+                            "mimic_extract_los_3",
+                            "nhanes_lead",
+                            "physionet",
+                            "sipp",
+                            ]
+    for experiment_name in completed_experiments:
+        plot_experiment(experiment_name)

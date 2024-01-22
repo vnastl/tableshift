@@ -8,4 +8,9 @@ color_arguablycausal_robust =  "#EEFBFF" #"#CDF6FF" #"#fcd084" #"#8acbf0" #EAFCF
 color_ml = "#029e73" #"#779714" #"#029e73"
 color_irm = "#779714" #"#029e73"
 color_vrex = "#779714"
-color_error =  "#000000"  
+color_error =  "#000000"
+
+markersize = 8
+capsize = 4
+linewidth_shift = 7
+linewidth_bound = 2
