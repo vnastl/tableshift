@@ -235,6 +235,7 @@ def get_results(experiment_name):
         for model in eval_feature['model'].unique():
             model_data = eval_feature[eval_feature['model']==model]
             model_data = model_data[model_data["validation"] == model_data["validation"].max()]
+            model_data.drop_duplicates(inplace=True)
             list_model_data.append(model_data)
     eval_all = pd.concat(list_model_data)
     
@@ -250,7 +251,24 @@ def get_results(experiment_name):
     
     eval_all = pd.concat([eval_all, eval_pd], ignore_index=True)
 
-    
+    if experiment_name == 'brfss_blood_pressure':
+        tableshift_results = pd.read_csv(str(Path(__file__).parents[0].parents[0]/"results"/"best_id_accuracy_results_by_task_and_model.csv"))
+        tableshift_results_id = tableshift_results[(tableshift_results['task']=='Hypertension')&(tableshift_results['estimator']=='LightGBM')&(tableshift_results['in_distribution']==True)]
+        tableshift_results_id.reset_index(inplace=True)
+        tableshift_results_ood = tableshift_results[(tableshift_results['task']=='Hypertension')&(tableshift_results['estimator']=='LightGBM')&(tableshift_results['in_distribution']==False)]
+        tableshift_results_ood.reset_index(inplace=True)
+        eval_pd = pd.DataFrame([{
+                    'id_test':tableshift_results_id['test_accuracy'][0],
+                    'id_test_lb':0.6720139250889634,
+                    'id_test_ub':0.6831896589701418,
+                    'ood_test':tableshift_results_ood['test_accuracy'][0],
+                    'ood_test_lb':0.6327599295470678,
+                    'ood_test_ub':0.6353837727075402,
+                    'validation':1,
+                    'features': 'all',
+                    'model':'tableshift:lightgbm'}])
+        eval_all = pd.concat([eval_all, eval_pd], ignore_index=True)
+
     eval_all.to_csv(str(Path(__file__).parents[0]/f"{experiment_name}_eval.csv"))
     # print(eval_all)
     return eval_all, causal_features, extra_features
@@ -785,12 +803,12 @@ completed_experiments = [
                         #  "acsunemployment",
                         #  "anes",
                         #  "assistments",
-                         "brfss_blood_pressure",
+                        #  "brfss_blood_pressure",
                         #  "brfss_diabetes",
                         #  "college_scorecard",
                         #  "diabetes_readmission",
                         #  "meps",
-                        #  "mimic_extract_mort_hosp",
+                         "mimic_extract_mort_hosp",
                         #  "mimic_extract_los_3",
                         #  "nhanes_lead",
                         #  "physionet",
