@@ -216,7 +216,6 @@ def get_results(experiment_name):
             'model':'constant'}])
     eval_all = pd.concat([eval_all, eval_pd], ignore_index=True)
 
-        
     eval_all.to_csv(str(RESULTS_DIR/f"{experiment_name}_balanced_eval.csv"))
     # print(eval_all)
     return eval_all, causal_features, extra_features

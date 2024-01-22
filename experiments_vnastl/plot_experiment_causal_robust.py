@@ -4,6 +4,7 @@ import numpy as np
 import pandas as pd
 import os
 from pathlib import Path
+import ast
 
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
@@ -171,6 +172,24 @@ dic_title = {
     "physionet": 'Tableshift: Sepsis', # ICU length of stay
     "sipp": 'SIPP: Poverty',
 }
+
+dic_tableshift = {
+        "acsfoodstamps":  'Food Stamps',
+        "acsincome": 'Income',
+        "acspubcov":  'Public Health Ins.',
+        "acsunemployment":  'Unemployment',
+        "anes": 'Voting',
+        "assistments":  'ASSISTments',
+        "brfss_blood_pressure": 'Hypertension',
+        "brfss_diabetes": 'Diabetes',
+        "college_scorecard":  'College Scorecard',
+        "diabetes_readmission": 'Hospital Readmission',
+        "mimic_extract_los_3":   'ICU Length of Stay',
+        "mimic_extract_mort_hosp": 'ICU Hospital Mortality',
+        "nhanes_lead": 'Childhood Lead',
+        "physionet": 'Sepsis',
+    }
+
 sns.set_style("white")
 
 def get_results(experiment_name):
@@ -272,6 +291,34 @@ def get_results(experiment_name):
             'model':'constant'}])
     eval_all = pd.concat([eval_all, eval_pd], ignore_index=True)
 
+    if experiment_name in dic_tableshift.keys():
+        tableshift_results = pd.read_csv(str(Path(__file__).parents[0].parents[0]/"results"/"best_id_accuracy_results_by_task_and_model.csv"))
+        tableshift_results = tableshift_results[tableshift_results['task']==dic_tableshift[experiment_name]]
+
+        tableshift_results['test_accuracy_clopper_pearson_95%_interval'] = tableshift_results['test_accuracy_clopper_pearson_95%_interval'].apply(lambda s: ast.literal_eval(s) if s is not np.nan else np.nan)
+        tableshift_results_id = tableshift_results[tableshift_results['in_distribution']==True]
+        tableshift_results_id.reset_index(inplace=True)
+        tableshift_results_ood = tableshift_results[tableshift_results['in_distribution']==False]
+        tableshift_results_ood.reset_index(inplace=True)
+        for model in tableshift_results['estimator'].unique():
+            model_tableshift_results_id = tableshift_results_id[tableshift_results_id['estimator']==model]
+            model_tableshift_results_id.reset_index(inplace=True)
+            model_tableshift_results_ood = tableshift_results_ood[tableshift_results_ood['estimator']==model]
+            model_tableshift_results_ood.reset_index(inplace=True)
+            try:
+                eval_pd = pd.DataFrame([{
+                            'id_test':model_tableshift_results_id['test_accuracy'][0],
+                            'id_test_lb':model_tableshift_results_id['test_accuracy_clopper_pearson_95%_interval'][0][0],
+                            'id_test_ub':model_tableshift_results_id['test_accuracy_clopper_pearson_95%_interval'][0][1],
+                            'ood_test':model_tableshift_results_ood['test_accuracy'][0],
+                            'ood_test_lb':model_tableshift_results_ood['test_accuracy_clopper_pearson_95%_interval'][0][0],
+                            'ood_test_ub':model_tableshift_results_ood['test_accuracy_clopper_pearson_95%_interval'][0][1],
+                            'validation':np.nan,
+                            'features': 'all',
+                            'model':f"tableshift:{model_tableshift_results_id['estimator'][0].lower()}"}])
+            except:
+                print(experiment_name,model)
+            eval_all = pd.concat([eval_all, eval_pd], ignore_index=True)
         
     # eval_all.to_csv(str(Path(__file__).parents[0]/f"{experiment_name}_eval.csv"))
     # print(eval_all)

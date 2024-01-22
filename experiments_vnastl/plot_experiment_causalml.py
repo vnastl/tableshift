@@ -4,6 +4,7 @@ import numpy as np
 import pandas as pd
 import os
 from pathlib import Path
+import ast
 
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
@@ -125,6 +126,23 @@ dic_title = {
     "sipp": 'SIPP: Poverty',
 }
 
+dic_tableshift = {
+        "acsfoodstamps":  'Food Stamps',
+        "acsincome": 'Income',
+        "acspubcov":  'Public Health Ins.',
+        "acsunemployment":  'Unemployment',
+        "anes": 'Voting',
+        "assistments":  'ASSISTments',
+        "brfss_blood_pressure": 'Hypertension',
+        "brfss_diabetes": 'Diabetes',
+        "college_scorecard":  'College Scorecard',
+        "diabetes_readmission": 'Hospital Readmission',
+        "mimic_extract_los_3":   'ICU Length of Stay',
+        "mimic_extract_mort_hosp": 'ICU Hospital Mortality',
+        "nhanes_lead": 'Childhood Lead',
+        "physionet": 'Sepsis',
+    }
+
 sns.set_style("white")
 
 def get_results(experiment_name):
@@ -218,7 +236,35 @@ def get_results(experiment_name):
             'model':'constant'}])
     eval_all = pd.concat([eval_all, eval_pd], ignore_index=True)
 
-        
+    if experiment_name in dic_tableshift.keys():
+        tableshift_results = pd.read_csv(str(Path(__file__).parents[0].parents[0]/"results"/"best_id_accuracy_results_by_task_and_model.csv"))
+        tableshift_results = tableshift_results[tableshift_results['task']==dic_tableshift[experiment_name]]
+
+        tableshift_results['test_accuracy_clopper_pearson_95%_interval'] = tableshift_results['test_accuracy_clopper_pearson_95%_interval'].apply(lambda s: ast.literal_eval(s) if s is not np.nan else np.nan)
+        tableshift_results_id = tableshift_results[tableshift_results['in_distribution']==True]
+        tableshift_results_id.reset_index(inplace=True)
+        tableshift_results_ood = tableshift_results[tableshift_results['in_distribution']==False]
+        tableshift_results_ood.reset_index(inplace=True)
+        for model in tableshift_results['estimator'].unique():
+            model_tableshift_results_id = tableshift_results_id[tableshift_results_id['estimator']==model]
+            model_tableshift_results_id.reset_index(inplace=True)
+            model_tableshift_results_ood = tableshift_results_ood[tableshift_results_ood['estimator']==model]
+            model_tableshift_results_ood.reset_index(inplace=True)
+            try:
+                eval_pd = pd.DataFrame([{
+                            'id_test':model_tableshift_results_id['test_accuracy'][0],
+                            'id_test_lb':model_tableshift_results_id['test_accuracy_clopper_pearson_95%_interval'][0][0],
+                            'id_test_ub':model_tableshift_results_id['test_accuracy_clopper_pearson_95%_interval'][0][1],
+                            'ood_test':model_tableshift_results_ood['test_accuracy'][0],
+                            'ood_test_lb':model_tableshift_results_ood['test_accuracy_clopper_pearson_95%_interval'][0][0],
+                            'ood_test_ub':model_tableshift_results_ood['test_accuracy_clopper_pearson_95%_interval'][0][1],
+                            'validation':np.nan,
+                            'features': 'all',
+                            'model':f"tableshift:{model_tableshift_results_id['estimator'][0].lower()}"}])
+            except:
+                print(experiment_name,model)
+            eval_all = pd.concat([eval_all, eval_pd], ignore_index=True)
+
     # eval_all.to_csv(str(Path(__file__).parents[0]/f"{experiment_name}_eval.csv"))
     # print(eval_all)
     return eval_all, causal_features
@@ -253,7 +299,7 @@ def do_plot(experiment_name,mymin,myname):
     # plot errorbars and shift gap for all features
     #############################################################################
     eval_plot = eval_all[eval_all['features']=="all"]
-    eval_plot = eval_plot[(eval_plot['model']!="irm")&(eval_plot['model']!="vrex")]
+    eval_plot = eval_plot[(eval_plot['model']!='irm')&(eval_plot['model']!='vrex')&(eval_plot['model']!='tableshift:irm')&(eval_plot['model']!='tableshift:vrex')]
     eval_plot.sort_values('id_test',inplace=True)
     # Calculate the pareto set
     points = eval_plot[['id_test','ood_test']]
@@ -270,7 +316,7 @@ def do_plot(experiment_name,mymin,myname):
                 color=color_all, ecolor=color_all,
                 markersize=7, capsize=3, label="all")
     # highlight bar
-    shift = eval_plot[mask]
+    shift = markers
     shift = shift[shift["ood_test"] == shift["ood_test"].max()]
     shift["type"] = "all"
     dic_shift["all"] = shift
@@ -281,13 +327,12 @@ def do_plot(experiment_name,mymin,myname):
     # plot errorbars and shift gap for causal features
     #############################################################################
     eval_plot = eval_all[eval_all['features']=="causal"]
-    eval_plot = eval_plot[(eval_plot['model']!="irm")&(eval_plot['model']!="vrex")]
+    eval_plot = eval_plot[(eval_plot['model']!='irm')&(eval_plot['model']!='vrex')&(eval_plot['model']!='tableshift:irm')&(eval_plot['model']!='tableshift:vrex')]
     eval_plot.sort_values('id_test',inplace=True)
     # Calculate the pareto set
     points = eval_plot[['id_test','ood_test']]
     mask = paretoset(points, sense=["max", "max"])
     points = points[mask]
-    points = points[points["id_test"] >= eval_constant['id_test'].values[0]]
     markers = eval_plot[mask]
     markers = markers[markers["id_test"] >= eval_constant['id_test'].values[0]]
     errors = plt.errorbar(
@@ -298,7 +343,7 @@ def do_plot(experiment_name,mymin,myname):
                 color=color_causal, ecolor=color_causal,
                 markersize=7, capsize=3, label="causal")
     # highlight bar
-    shift = eval_plot[mask]
+    shift = markers
     shift = shift[shift["ood_test"] == shift["ood_test"].max()]
     shift["type"] = "causal"
     dic_shift["causal"] = shift
@@ -310,7 +355,7 @@ def do_plot(experiment_name,mymin,myname):
     #############################################################################
     if (eval_all['features'] == "arguablycausal").any():
         eval_plot = eval_all[eval_all['features']=="arguablycausal"]
-        eval_plot = eval_plot[(eval_plot['model']!="irm")&(eval_plot['model']!="vrex")]
+        eval_plot = eval_plot[(eval_plot['model']!='irm')&(eval_plot['model']!='vrex')&(eval_plot['model']!='tableshift:irm')&(eval_plot['model']!='tableshift:vrex')]
         eval_plot.sort_values('id_test',inplace=True)
         # Calculate the pareto set
         points = eval_plot[['id_test','ood_test']]
@@ -327,7 +372,7 @@ def do_plot(experiment_name,mymin,myname):
                     color=color_arguablycausal, ecolor=color_arguablycausal,
                     markersize=7, capsize=3, label="arguably\ncausal")
         # highlight bar
-        shift = eval_plot[mask]
+        shift = markers
         shift = shift[shift["ood_test"] == shift["ood_test"].max()]
         shift["type"] = " arguably\ncausal"
         dic_shift["arguablycausal"] = shift
@@ -341,18 +386,25 @@ def do_plot(experiment_name,mymin,myname):
     # eval_plot = eval_plot[eval_plot['model'].isin(['irm', 'vrex'])]
     # eval_plot.sort_values('model',inplace=True)
 
-    for causalml in ["irm","vrex"]:
-        points = eval_plot[eval_plot['model']==causalml]
+    for causalml in ['irm', 'vrex']:
+        eval_model = eval_plot[(eval_plot['model']==causalml)|(eval_plot['model']==f"tableshift:{causalml}")]
+        points = eval_model[['id_test','ood_test']]
+        mask = paretoset(points, sense=["max", "max"])
+        points = points[mask]
+        points = points[points["id_test"] >= (eval_constant['id_test'].values[0] -0.01)]
+        markers = eval_model[mask]
+        markers = markers[markers["id_test"] >= (eval_constant['id_test'].values[0] -0.01)]
         errors = plt.errorbar(
-                    x=points['id_test'],
-                    y=points['ood_test'],
-                    xerr=points['id_test_ub']-points['id_test'],
-                    yerr=points['ood_test_ub']-points['ood_test'], fmt="v",
+                    x=markers['id_test'],
+                    y=markers['ood_test'],
+                    xerr=markers['id_test_ub']-markers['id_test'],
+                    yerr=markers['ood_test_ub']-markers['ood_test'], fmt="v",
                     color=eval(f"color_{causalml}"), ecolor=eval(f"color_{causalml}"), 
                     markersize=7, capsize=3, label="causal ml")
         # highlight bar
     
-        shift = points[points['model']==causalml]
+        shift = markers
+        shift = shift[shift["ood_test"] == shift["ood_test"].max()]
         shift["type"] = causalml
         dic_shift[causalml] = shift
         plt.hlines(y=shift["ood_test"], xmin=shift["ood_test"], xmax=shift['id_test'],
@@ -378,7 +430,7 @@ def do_plot(experiment_name,mymin,myname):
     # plot pareto dominated area for all features
     #############################################################################
     eval_plot = eval_all[eval_all['features']=="all"]
-    eval_plot = eval_plot[(eval_plot['model']!="irm")&(eval_plot['model']!="vrex")]
+    eval_plot = eval_plot[(eval_plot['model']!='irm')&(eval_plot['model']!='vrex')&(eval_plot['model']!='tableshift:irm')&(eval_plot['model']!='tableshift:vrex')]
     eval_plot.sort_values('id_test',inplace=True)
     # Calculate the pareto set
     points = eval_plot[['id_test','ood_test']]
@@ -400,7 +452,7 @@ def do_plot(experiment_name,mymin,myname):
     # plot pareto dominated area for causal features
     #############################################################################
     eval_plot = eval_all[eval_all['features']=="causal"]
-    eval_plot = eval_plot[(eval_plot['model']!="irm")&(eval_plot['model']!="vrex")]
+    eval_plot = eval_plot[(eval_plot['model']!='irm')&(eval_plot['model']!='vrex')&(eval_plot['model']!='tableshift:irm')&(eval_plot['model']!='tableshift:vrex')]
     eval_plot.sort_values('id_test',inplace=True)
     # Calculate the pareto set
     points = eval_plot[['id_test','ood_test']]
@@ -425,7 +477,7 @@ def do_plot(experiment_name,mymin,myname):
     #############################################################################
     if (eval_all['features'] == "arguablycausal").any():
         eval_plot = eval_all[eval_all['features']=="arguablycausal"]
-        eval_plot = eval_plot[(eval_plot['model']!="irm")&(eval_plot['model']!="vrex")]
+        eval_plot = eval_plot[(eval_plot['model']!='irm')&(eval_plot['model']!='vrex')&(eval_plot['model']!='tableshift:irm')&(eval_plot['model']!='tableshift:vrex')]
         eval_plot.sort_values('id_test',inplace=True)
         # Calculate the pareto set
         points = eval_plot[['id_test','ood_test']]
@@ -450,9 +502,11 @@ def do_plot(experiment_name,mymin,myname):
     # eval_plot = eval_plot[eval_plot['model'].isin(['irm', 'vrex'])]
     # eval_plot.sort_values('model',inplace=True)
 
-    for causalml in ["irm","vrex"]:
+    for causalml in ['irm', 'vrex']:
         # Calculate the pareto set
-        points = eval_plot[eval_plot['model']==causalml][['id_test','ood_test']]
+        points = eval_plot[(eval_plot['model']==causalml)|(eval_plot['model']==f"tableshift:{causalml}")][['id_test','ood_test']]
+        mask = paretoset(points, sense=["max", "max"])
+        points = points[mask]
         #get extra points for the plot
         new_row = pd.DataFrame({'id_test':[xmin,max(points['id_test'])], 'ood_test':[max(points['ood_test']),ymin]},)
         points = pd.concat([points,new_row], ignore_index=True)
@@ -503,7 +557,7 @@ def do_plot(experiment_name,mymin,myname):
     shift.drop_duplicates(inplace=True)
     barlist = plt.bar(shift["type"], shift["ood_test"]-ymin,
                               yerr=shift['ood_test_ub']-shift['ood_test'],
-                              color=[color_all,color_causal, color_arguablycausal]+[color_irm,color_vrex]+[color_constant],
+                              color=[color_all,color_causal, color_arguablycausal]+[color_irm,color_vrex,]+[color_constant],
                               ecolor=color_error,align='center', capsize=10,
                               bottom=ymin)
     plt.savefig(str(Path(__file__).parents[0]/f"{myname}_causalml_ood_accuracy.pdf"), bbox_inches='tight')
