@@ -363,6 +363,12 @@ if __name__ == '__main__':
 
     for i, exp_obj in enumerate(all_task):
         print(f"{i}. Launching {exp_obj.n_trials} trials for the task '{exp_obj.name}'")
-        launch_task_jobs(task=task, exp_obj=exp_obj)
-        sleep(10)
+        success = False
+        while not success:
+            try:
+                launch_task_jobs(task=task, exp_obj=exp_obj)
+                success = True
+                sleep(10)
+            except:
+                sleep(60)
 

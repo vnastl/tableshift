@@ -42,6 +42,7 @@ MODELS = (
     # "node",
     # "group_dro",
     # "label_group_dro",
+    "deepcoral",
 )
 DG_MODELS = (
     # "dann",
@@ -49,7 +50,6 @@ DG_MODELS = (
     # "vrex",
     # "mixup",
     # "mmd",
-    "deepcoral"
 )
 
 def IS_TASK_DG(task):
