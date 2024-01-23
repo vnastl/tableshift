@@ -200,7 +200,7 @@ if __name__ == "__main__":
             # > each job uses this amount of resources out of a pool of 10k
             # "concurrency_limits": "user.theoremfivepointsix:10000",     # 1 job
             # "concurrency_limits": "user.theoremfivepointsix:100",     # 100 jobs in parallel
-            "concurrency_limits": "user.theoremfivepointsix:50",     # 200 jobs in parallel
+            "concurrency_limits": "user.theoremfivepointsix:10",     # 5000 jobs in parallel
 
             "+MaxRunningPrice": 100,
             # "+RunningPriceExceededAction": classad.quote("restart"),
@@ -228,4 +228,4 @@ if __name__ == "__main__":
                 launch_experiments_jobs(task=dic_args["task"], exp_obj=exp_obj)
                 success = True
             except:
-                sleep(600)
+                sleep(60)

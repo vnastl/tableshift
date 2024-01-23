@@ -10,6 +10,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 import json
+from time import sleep
 from tableshift.datasets import ACS_INCOME_FEATURES_CAUSAL_SUBSETS_NUMBER, ACS_INCOME_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER, \
     ACS_FOODSTAMPS_FEATURES_CAUSAL_SUBSETS_NUMBER, ACS_FOODSTAMPS_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER, \
     ACS_PUBCOV_FEATURES_CAUSAL_SUBSETS_NUMBER, ACS_PUBCOV_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER,\
@@ -48,74 +49,74 @@ BIG_JOB_MEMORY_GB = 256
 VERBOSE = True
 
 TASKS = [
-    # "acsincome",
-    # "acsincome_causal",
-    # "acsincome_arguablycausal",
-    # "acsincome_anticausal",
+    "acsincome",
+    "acsincome_causal",
+    "acsincome_arguablycausal",
+    "acsincome_anticausal",
 
     # "acspubcov",
     # "acspubcov_causal",
     # "acspubcov_arguablycausal",
 
-    # "acsfoodstamps",
-    # "acsfoodstamps_causal",
-    # "acsfoodstamps_arguablycausal",
+    "acsfoodstamps",
+    "acsfoodstamps_causal",
+    "acsfoodstamps_arguablycausal",
 
-    # "acsunemployment",
-    # "acsunemployment_causal",
-    # "acsunemployment_arguablycausal",
-    # "acsunemployment_anticausal",
+    "acsunemployment",
+    "acsunemployment_causal",
+    "acsunemployment_arguablycausal",
+    "acsunemployment_anticausal",
 
-    # "anes",
-    # "anes_causal",
-    # "anes_arguablycausal",
+    "anes",
+    "anes_causal",
+    "anes_arguablycausal",
 
-    # "assistments",
-    # "assistments_causal",
-    # "assistments_arguablycausal",
+    "assistments",
+    "assistments_causal",
+    "assistments_arguablycausal",
 
-    # "brfss_diabetes",
-    # "brfss_diabetes_causal",
-    # "brfss_diabetes_arguablycausal",
-    # "brfss_diabetes_anticausal",
+    "brfss_diabetes",
+    "brfss_diabetes_causal",
+    "brfss_diabetes_arguablycausal",
+    "brfss_diabetes_anticausal",
 
     "brfss_blood_pressure",
-    # "brfss_blood_pressure_causal",
-    # "brfss_blood_pressure_arguablycausal",
-    # "brfss_blood_pressure_anticausal",
+    "brfss_blood_pressure_causal",
+    "brfss_blood_pressure_arguablycausal",
+    "brfss_blood_pressure_anticausal",
 
-    # "college_scorecard",
-    # "college_scorecard_causal",
-    # "college_scorecard_arguablycausal",
+    "college_scorecard",
+    "college_scorecard_causal",
+    "college_scorecard_arguablycausal",
 
-    # "nhanes_lead", 
-    # "nhanes_lead_causal",
-    # "nhanes_lead_arguablycausal",
+    "nhanes_lead", 
+    "nhanes_lead_causal",
+    "nhanes_lead_arguablycausal",
 
-    # "diabetes_readmission", 
-    # "diabetes_readmission_causal",
-    # "diabetes_readmission_arguablycausal",
+    "diabetes_readmission", 
+    "diabetes_readmission_causal",
+    "diabetes_readmission_arguablycausal",
 
-    # "mimic_extract_los_3",
-    # "mimic_extract_los_3_causal",
-    # "mimic_extract_los_3_arguablycausal",
+    "mimic_extract_los_3",
+    "mimic_extract_los_3_causal",
+    "mimic_extract_los_3_arguablycausal",
 
-    # "mimic_extract_mort_hosp",
-    # "mimic_extract_mort_hosp_causal",
-    # "mimic_extract_mort_hosp_arguablycausal",
+    "mimic_extract_mort_hosp",
+    "mimic_extract_mort_hosp_causal",
+    "mimic_extract_mort_hosp_arguablycausal",
 
-    # "physionet", 
-    # "physionet_causal",
-    # "physionet_arguablycausal",
+    "physionet", 
+    "physionet_causal",
+    "physionet_arguablycausal",
 
-    # "sipp", 
-    # "sipp_causal",
-    # "sipp_arguablycausal",
-    # "sipp_anticausal",
+    "sipp", 
+    "sipp_causal",
+    "sipp_arguablycausal",
+    "sipp_anticausal",
 
-    # "meps", 
-    # "meps_causal",
-    # "meps_arguablycausal",
+    "meps", 
+    "meps_causal",
+    "meps_arguablycausal",
 ]
 
 # Robustness checks
@@ -332,7 +333,7 @@ if __name__ == '__main__':
             # > each job uses this amount of resources out of a pool of 10k
             # "concurrency_limits": "user.theoremfivepointsix:10000",     # 1 job
             # "concurrency_limits": "user.theoremfivepointsix:100",     # 100 jobs in parallel
-            "concurrency_limits": "user.theoremfivepointsix:50",     # 200 jobs in parallel
+            "concurrency_limits": "user.theoremfivepointsix:10",     # 1000 jobs in parallel
 
             "+MaxRunningPrice": 100,
             # "+RunningPriceExceededAction": classad.quote("restart"),
@@ -363,4 +364,5 @@ if __name__ == '__main__':
     for i, exp_obj in enumerate(all_task):
         print(f"{i}. Launching {exp_obj.n_trials} trials for the task '{exp_obj.name}'")
         launch_task_jobs(task=task, exp_obj=exp_obj)
+        sleep(10)
 
