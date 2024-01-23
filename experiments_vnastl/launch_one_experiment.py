@@ -22,9 +22,11 @@ NOT_DG_TASKS = (
     "acspubcov",
     "physionet", 
     "nhanes_lead",
-    "brfss_blood_pressure",
+    "brfss_blood_pressure"
+    "brfss_diabetes",
     "sipp",
-    "assistments"
+    "assistments",
+    "meps",
 )
 MODELS = (
     # "ft_transformer",
@@ -37,7 +39,7 @@ MODELS = (
     # "lightgbm",
     # "aldro",
     # "dro",
-    "node",
+    # "node",
     # "group_dro",
     # "label_group_dro",
 )
@@ -46,7 +48,8 @@ DG_MODELS = (
     # "irm",
     # "vrex",
     # "mixup",
-    "mmd",
+    # "mmd",
+    "deepcoral"
 )
 
 def IS_TASK_DG(task):
