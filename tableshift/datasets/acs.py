@@ -444,17 +444,10 @@ ACS_INCOME_FEATURES_ARGUABLYCAUSAL = FeatureList([
                 9: 'Two or More Races'}),
     POBP_FEATURE,
     ## Arguably causal features
+    Feature('ST', cat_dtype, "State Code based on 2010 Census definitions.",
+            name_extended="State"),
     FER_FEATURE,
     ENG_FEATURE,
-    Feature('MAR', cat_dtype, "Marital status",
-            name_extended='marital status',
-            value_mapping={
-                1: 'Married',
-                2: 'Widowed',
-                3: 'Divorced',
-                4: 'Separated',
-                5: 'Never married or under 15 years old'
-            }),
     Feature('CIT', cat_dtype, """Citizenship status""",
             name_extended='citizenship status',
             value_mapping={
@@ -1145,6 +1138,15 @@ ACS_FOODSTAMPS_FEATURES_CAUSAL = FeatureList(features=[
     DREM_FEATURE,
     Feature('ST', cat_dtype, "State Code based on 2010 Census definitions.",
             name_extended="State"),
+    Feature('MAR', cat_dtype, "Marital status",
+    name_extended='marital status',
+    value_mapping={
+        1: 'Married',
+        2: 'Widowed',
+        3: 'Divorced',
+        4: 'Separated',
+        5: 'Never married or under 15 years old'
+    }),
 ],
     documentation="https://www2.census.gov/programs-surveys/acs/tech_docs"
                   "/pums/data_dict/PUMS_Data_Dictionary_2019.pdf"
@@ -1243,18 +1245,18 @@ ACS_FOODSTAMPS_FEATURES_ARGUABLYCAUSAL = FeatureList(features=[
     DREM_FEATURE,
     Feature('ST', cat_dtype, "State Code based on 2010 Census definitions.",
             name_extended="State"),
+        Feature('MAR', cat_dtype, "Marital status",
+        name_extended='marital status',
+        value_mapping={
+            1: 'Married',
+            2: 'Widowed',
+            3: 'Divorced',
+            4: 'Separated',
+            5: 'Never married or under 15 years old'
+        }),
     ## Arguably causal features
     ENG_FEATURE,
     FER_FEATURE,
-    Feature('MAR', cat_dtype, "Marital status",
-            name_extended='marital status',
-            value_mapping={
-                1: 'Married',
-                2: 'Widowed',
-                3: 'Divorced',
-                4: 'Separated',
-                5: 'Never married or under 15 years old'
-            }),
     Feature('CIT', cat_dtype, """Citizenship status""",
             name_extended='citizenship status',
             value_mapping={
