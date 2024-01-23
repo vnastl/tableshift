@@ -34,10 +34,6 @@ plt.rcParams['savefig.dpi'] = 1200
 import os
 os.chdir("/Users/vnastl/Seafile/My Library/mpi project causal vs noncausal/tableshift")
 
-#%%
-fig = plt.figure(figsize=(24, 18))
-experiments = ["brfss_diabetes","acsunemployment","acsincome","mimic_extract_mort_hosp"]
-
 dic_title = {
     "acsemployment":'Employment',
     "acsfoodstamps": 'Food Stamps',
@@ -57,6 +53,10 @@ dic_title = {
     "physionet": 'Sepsis',
     "sipp": 'SIPP: Poverty',
 }
+
+#%%
+fig = plt.figure(figsize=(24, 18))
+experiments = ["brfss_diabetes","acsunemployment","acsincome","mimic_extract_mort_hosp"]
 
 (subfig1, subfig2, subfig3, subfig4) = fig.subfigures(4, 1, hspace=0.2) # create 4x1 subfigures
 
@@ -402,8 +402,8 @@ for index, experiment_name in enumerate(experiments):
     eval_constant = eval_all[eval_all['features']=="constant"]
     dic_shift = {}
 
-    ax[0].set_xlabel(f"in-domain accuracy") #\n({dic_id_domain[experiment_name]})")
-    ax[0].set_ylabel(f"out-of-domain accuracy") #\n({dic_ood_domain[experiment_name]})")
+    ax[0].set_xlabel(f"balanced in-domain accuracy") #\n({dic_id_domain[experiment_name]})")
+    ax[0].set_ylabel(f"balanced out-of-domain accuracy") #\n({dic_ood_domain[experiment_name]})")
 
     #############################################################################
     # plot errorbars and shift gap for constant
