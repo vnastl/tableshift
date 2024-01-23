@@ -370,5 +370,5 @@ if __name__ == '__main__':
                 success = True
                 sleep(10)
             except:
-                sleep(60)
+                sleep(10)
 
