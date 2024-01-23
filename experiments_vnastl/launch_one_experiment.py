@@ -30,14 +30,14 @@ MODELS = (
     # "ft_transformer",
     # "histgbm",
     # "mlp",
-    "saint",
+    # "saint",
     # "tabtransformer",
     # "resnet",
     # "xgb",
     # "lightgbm",
     # "aldro",
     # "dro",
-    # "node",
+    "node",
     # "group_dro",
     # "label_group_dro",
 )
@@ -46,7 +46,7 @@ DG_MODELS = (
     # "irm",
     # "vrex",
     # "mixup",
-    # "mmd",
+    "mmd",
 )
 
 def IS_TASK_DG(task):

@@ -97,11 +97,11 @@ TASKS = [
     # "diabetes_readmission_causal",
     # "diabetes_readmission_arguablycausal",
 
-    "mimic_extract_los_3",
+    # "mimic_extract_los_3",
     # "mimic_extract_los_3_causal",
     # "mimic_extract_los_3_arguablycausal",
 
-    "mimic_extract_mort_hosp",
+    # "mimic_extract_mort_hosp",
     # "mimic_extract_mort_hosp_causal",
     # "mimic_extract_mort_hosp_arguablycausal",
 
