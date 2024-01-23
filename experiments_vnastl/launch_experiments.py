@@ -49,27 +49,27 @@ BIG_JOB_MEMORY_GB = 256
 VERBOSE = True
 
 TASKS = [
-        # "acsincome",
-        # "acsincome_causal",
-        # "acsincome_arguablycausal",
-        # "acsincome_anticausal",
+    "acsincome",
+    "acsincome_causal",
+    "acsincome_arguablycausal",
+    "acsincome_anticausal",
 
     # "acspubcov",
     # "acspubcov_causal",
     # "acspubcov_arguablycausal",
 
-        # "acsfoodstamps",
-        # "acsfoodstamps_causal",
-        # "acsfoodstamps_arguablycausal",
+    "acsfoodstamps",
+    "acsfoodstamps_causal",
+    "acsfoodstamps_arguablycausal",
 
-        # "acsunemployment",
-        # "acsunemployment_causal",
-        # "acsunemployment_arguablycausal",
-        # "acsunemployment_anticausal",
+    "acsunemployment",
+    "acsunemployment_causal",
+    "acsunemployment_arguablycausal",
+    "acsunemployment_anticausal",
 
-        # "anes",
-        # "anes_causal",
-        # "anes_arguablycausal",
+    "anes",
+    "anes_causal",
+    "anes_arguablycausal",
 
     # "assistments",
     # "assistments_causal",
@@ -85,25 +85,25 @@ TASKS = [
     # "brfss_blood_pressure_arguablycausal",
     # "brfss_blood_pressure_anticausal",
 
-        # "college_scorecard",
-        # "college_scorecard_causal",
-        # "college_scorecard_arguablycausal",
+    "college_scorecard",
+    "college_scorecard_causal",
+    "college_scorecard_arguablycausal",
 
     # "nhanes_lead", 
     # "nhanes_lead_causal",
     # "nhanes_lead_arguablycausal",
 
     "diabetes_readmission", 
-        # "diabetes_readmission_causal",
-        # "diabetes_readmission_arguablycausal",
+    "diabetes_readmission_causal",
+    "diabetes_readmission_arguablycausal",
 
-        # "mimic_extract_los_3",
-        # "mimic_extract_los_3_causal",
-        # "mimic_extract_los_3_arguablycausal",
+    "mimic_extract_los_3",
+    "mimic_extract_los_3_causal",
+    "mimic_extract_los_3_arguablycausal",
 
-        # "mimic_extract_mort_hosp",
-        # "mimic_extract_mort_hosp_causal",
-        # "mimic_extract_mort_hosp_arguablycausal",
+    "mimic_extract_mort_hosp",
+    "mimic_extract_mort_hosp_causal",
+    "mimic_extract_mort_hosp_arguablycausal",
 
     # "physionet", 
     # "physionet_causal",
