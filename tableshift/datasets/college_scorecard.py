@@ -193,8 +193,6 @@ COLLEGE_SCORECARD_FEATURES_CAUSAL = FeatureList(features=[
         # Feature('CCSIZSET', cat_dtype, name_extended='Carnegie Classification -- size and setting'),
         Feature('HBCU', cat_dtype, name_extended='Flag for Historically Black College and University'),
         Feature('DISTANCEONLY', cat_dtype, name_extended='Flag for distance-education-only education'),
-        Feature('median_hh_inc', float, name_extended='Median household income',
-                na_values=('PrivacySuppressed',)),
         Feature('poverty_rate', float, name_extended='Poverty rate, via Census data',
                 na_values=('PrivacySuppressed',)),
         Feature('unemp_rate', float, name_extended='Unemployment rate, via Census data',
@@ -263,6 +261,13 @@ COLLEGE_SCORECARD_FEATURES_ARGUABLYCAUSAL = FeatureList(features=[
                 na_values=('PrivacySuppressed',)),
         Feature('pell_ever', float, name_extended='Share of students who received a Pell Grant while in school',
                 na_values=('PrivacySuppressed',)),
+        Feature('PCTPELL', float, name_extended='Percentage of undergraduates who receive a Pell Grant'),\
+        Feature('faminc', float, name_extended='Average family income',
+                na_values=('PrivacySuppressed',)),
+        Feature('md_faminc', float, name_extended='Median family income',
+                na_values=('PrivacySuppressed',)),
+        Feature('UGDS', float, name_extended='Enrollment of undergraduate degree-seeking students'),
+        Feature('UG', float, name_extended='Enrollment of all undergraduate students'),
 ])
 
 arguablycausal_supersets = select_superset_plus_one(COLLEGE_SCORECARD_FEATURES_ARGUABLYCAUSAL.features, COLLEGE_SCORECARD_FEATURES.features)
