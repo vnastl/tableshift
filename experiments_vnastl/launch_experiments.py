@@ -86,7 +86,7 @@ TASKS = [
     # "brfss_blood_pressure_anticausal",
 
     # "college_scorecard",
-    "college_scorecard_causal",
+    # "college_scorecard_causal",
     # "college_scorecard_arguablycausal",
 
     # "nhanes_lead", 
@@ -120,11 +120,11 @@ TASKS = [
 ]
 
 # Robustness checks
-# for index in range(ACS_INCOME_FEATURES_CAUSAL_SUBSETS_NUMBER):
-#         TASKS.append("acsincome_causal_test_"+f"{index}")
+for index in range(ACS_INCOME_FEATURES_CAUSAL_SUBSETS_NUMBER):
+        TASKS.append("acsincome_causal_test_"+f"{index}")
 
-# for index in range(ACS_INCOME_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
-#         TASKS.append("acsincome_arguablycausal_test_"+f"{index}")
+for index in range(ACS_INCOME_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
+        TASKS.append("acsincome_arguablycausal_test_"+f"{index}")
 
 # for index in range(ACS_FOODSTAMPS_FEATURES_CAUSAL_SUBSETS_NUMBER):
 #         TASKS.append("acsfoodstamps_causal_test_"+f"{index}")
@@ -138,17 +138,17 @@ TASKS = [
 # for index in range(ACS_PUBCOV_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
 #     TASKS.append("acspubcov_arguablycausal_test_"+f"{index}")
 
-# for index in range(ACS_UNEMPLOYMENT_FEATURES_CAUSAL_SUBSETS_NUMBER):
-#         TASKS.append("acsunemployment_causal_test_"+f"{index}")
+for index in range(ACS_UNEMPLOYMENT_FEATURES_CAUSAL_SUBSETS_NUMBER):
+        TASKS.append("acsunemployment_causal_test_"+f"{index}")
 
-# for index in range(ACS_UNEMPLOYMENT_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
-#         TASKS.append("acsunemployment_arguablycausal_test_"+f"{index}")
+for index in range(ACS_UNEMPLOYMENT_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
+        TASKS.append("acsunemployment_arguablycausal_test_"+f"{index}")
 
-# for index in range(BRFSS_DIABETES_FEATURES_CAUSAL_SUBSETS_NUMBER):
-#         TASKS.append("brfss_diabetes_causal_test_"+f"{index}")
+for index in range(BRFSS_DIABETES_FEATURES_CAUSAL_SUBSETS_NUMBER):
+        TASKS.append("brfss_diabetes_causal_test_"+f"{index}")
 
-# for index in range(BRFSS_DIABETES_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
-#         TASKS.append("brfss_diabetes_arguablycausal_test_"+f"{index}")
+for index in range(BRFSS_DIABETES_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
+        TASKS.append("brfss_diabetes_arguablycausal_test_"+f"{index}")
               
 # for index in range(BRFSS_BLOOD_PRESSURE_FEATURES_CAUSAL_SUBSETS_NUMBER):
 #         TASKS.append("brfss_blood_pressure_causal_test_"+f"{index}")
@@ -186,11 +186,11 @@ TASKS = [
 # # for index in range(MIMIC_EXTRACT_LOS_3_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
 # #         TASKS.append("mimic_extract_los_3_arguablycausal_test_"+f"{index}")
 
-# for index in range(MIMIC_EXTRACT_MORT_HOSP_FEATURES_CAUSAL_SUBSETS_NUMBER):
-#         TASKS.append("mimic_extract_mort_hosp_causal_test_"+f"{index}")
+for index in range(MIMIC_EXTRACT_MORT_HOSP_FEATURES_CAUSAL_SUBSETS_NUMBER):
+        TASKS.append("mimic_extract_mort_hosp_causal_test_"+f"{index}")
 
-# # for index in range(MIMIC_EXTRACT_MORT_HOSP_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
-# #         TASKS.append("mimic_extract_mort_hosp_arguablycausal_test_"+f"{index}")
+# for index in range(MIMIC_EXTRACT_MORT_HOSP_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
+#         TASKS.append("mimic_extract_mort_hosp_arguablycausal_test_"+f"{index}")
 
 # for index in range(SIPP_FEATURES_CAUSAL_SUBSETS_NUMBER):
 #         TASKS.append("sipp_causal_test_"+f"{index}")
