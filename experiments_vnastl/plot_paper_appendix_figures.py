@@ -58,7 +58,7 @@ dic_title = {
 experiments = [
                             "acsfoodstamps",
                             "acsincome",
-                            #  "acspubcov",
+                            "acspubcov",
                             "acsunemployment",
                             "anes",
                             "assistments",
@@ -891,7 +891,7 @@ for experiment_group, experiments in experiment_groups.items():
 
         shift = pd.concat(dic_shift.values(), ignore_index=True)
         shift.drop_duplicates(inplace=True)
-        shift = shift.iloc[[0,2,1,3],:]
+        shift = shift.iloc[[0,2,1,3,4,5],:]
         
         barlist = ax[1].bar(shift["type"], shift["ood_test"]-ymin,
                                 yerr=shift['ood_test_ub']-shift['ood_test'],

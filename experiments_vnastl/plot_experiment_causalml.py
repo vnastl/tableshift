@@ -179,21 +179,24 @@ def get_results(experiment_name):
         for run in file_info:
             with open(str(RESULTS_DIR / run), "rb") as file:
                 # print(str(RESULTS_DIR / run))
-                eval_json = json.load(file)
-                eval_pd = pd.DataFrame([{
-                    'id_test':eval_json['id_test'],
-                    'id_test_lb':eval_json['id_test' + '_conf'][0],
-                    'id_test_ub':eval_json['id_test' + '_conf'][1],
-                    'ood_test':eval_json['ood_test'],
-                    'ood_test_lb':eval_json['ood_test' + '_conf'][0],
-                    'ood_test_ub':eval_json['ood_test' + '_conf'][1],
-                    'validation':eval_json['validation'],
-                    'features': get_feature_selection(experiment),
-                    'model':run.split("_")[0]}])
-                if get_feature_selection(experiment) == 'causal':
-                    causal_features = eval_json['features']
-                    causal_features.remove(domain_label)
-                eval_all = pd.concat([eval_all, eval_pd], ignore_index=True)
+                try:
+                    eval_json = json.load(file)
+                    eval_pd = pd.DataFrame([{
+                        'id_test':eval_json['id_test'],
+                        'id_test_lb':eval_json['id_test' + '_conf'][0],
+                        'id_test_ub':eval_json['id_test' + '_conf'][1],
+                        'ood_test':eval_json['ood_test'],
+                        'ood_test_lb':eval_json['ood_test' + '_conf'][0],
+                        'ood_test_ub':eval_json['ood_test' + '_conf'][1],
+                        'validation':eval_json['validation'],
+                        'features': get_feature_selection(experiment),
+                        'model':run.split("_")[0]}])
+                    if get_feature_selection(experiment) == 'causal':
+                        causal_features = eval_json['features']
+                        causal_features.remove(domain_label)
+                    eval_all = pd.concat([eval_all, eval_pd], ignore_index=True)
+                except:
+                    print(str(RESULTS_DIR / run))
 
     RESULTS_DIR = Path(__file__).parents[0]  / "results" 
     filename = f"{experiment_name}_constant"
