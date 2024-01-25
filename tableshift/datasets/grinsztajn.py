@@ -56,7 +56,7 @@ BANK_MARKETING_FEATURES = FeatureList(features=[
     Feature('default', int, "default: has credit in default? (binary: yes,no)",
             is_target=True,
             name_extended="Had credit in default"),
-    Feature('V1', int, "age", name_extended="age"),
+    Feature('V1', int, "age", name_extended="age of client in years"),
     Feature('V6', float, "balance: average yearly balance, in euros (numeric)",
             name_extended="Average yearly balance in Euros"),
     Feature('V10', int, 'day: last contact day of the month (numeric)',
@@ -66,13 +66,13 @@ BANK_MARKETING_FEATURES = FeatureList(features=[
             name_extended='duration of last contact in seconds'),
     Feature('V13', int,
             'campaign: number of contacts performed during this campaign and for this client (numeric, includes last contact)',
-            name_extended='number of days performed during campaign for this client'),
+            name_extended='number of days during campaign for which this client was contacted'),
     Feature('V14', float,
             'pdays: number of days that passed by after the client was last contacted from a previous campaign (numeric, -1 means client was not previously contacted)',
             name_extended='number of days since client was last contacted'),
     Feature('V15', int,
             'previous: number of contacts performed before this campaign and for this client (numeric)',
-            name_extended='number of contacts prior to this campaign'),
+            name_extended='number of contacts prior to this campaign for this client'),
 ],
     documentation="https://www.openml.org/d/44126")
 
@@ -230,7 +230,7 @@ CREDIT_FEATURES = FeatureList(features=[
     Feature('NumberOfTime30-59DaysPastDueNotWorse', int,
             name_extended='number of times between 30 and 59 days past due'),
     Feature('NumberOfTime60-89DaysPastDueNotWorse', int,
-            name_extended='numer of time between 60 and 89 days past due'),
+            name_extended='number of times between 60 and 89 days past due'),
     Feature('NumberOfTimes90DaysLate', int,
             name_extended='number of times 90 days late'),
     Feature('DebtRatio', float, name_extended='debt ratio'),
@@ -238,7 +238,7 @@ CREDIT_FEATURES = FeatureList(features=[
     Feature('NumberOfOpenCreditLinesAndLoans', int,
             name_extended='number of open credit lines and loans'),
     Feature('NumberRealEstateLoansOrLines', int,
-            name_extended='numer of real estate loans or lines'),
+            name_extended='number of real estate loans or lines'),
     Feature('NumberOfDependents', int, name_extended='number of dependents'),
 ])
 
@@ -539,8 +539,8 @@ ROAD_SAFETY_FEATURES = FeatureList(features=[
     Feature('Was_Vehicle_Left_Hand_Drive?', int,
             name_extended='indicator for whether vehicle was left-hand drive',
             value_mapping={
+                0: 'Yes',
                 1: 'No',
-                2: 'Yes',
                 9: 'Unknown',
                 -1: 'Data missing or out of range'}),
     Feature('Age_of_Driver', int,
@@ -936,25 +936,26 @@ JANNIS_FEATURES = FeatureList(features=[
                  "https://link.springer.com/chapter/10.1007/978-3-030-05318-5_10")
 
 HOUSE_16H_FEATURES = FeatureList([
-    Feature('P1', float),
-    Feature('P5p1', float),
-    Feature('P6p2', float),
-    Feature('P11p4', float),
-    Feature('P14p9', float),
-    Feature('P15p1', float),
-    Feature('P15p3', float),
-    Feature('P16p2', float),
-    Feature('P18p2', float),
-    Feature('P27p4', float),
-    Feature('H2p2', float),
-    Feature('H8p2', float),
-    Feature('H10p1', float),
-    Feature('H13p1', float),
-    Feature('H18pA', float),
-    Feature('H40p4', float),
+    Feature('P1', float, name_extended="total persons count in the region"),
+    Feature('P5p1', float, name_extended="percentage of males"),
+    Feature('P6p2', float, name_extended="percentage of black people"),
+    Feature('P11p4', float, name_extended="percentage over 64 years old"),
+    Feature('P14p9', float, name_extended="percentage widowed females"),
+    Feature('P15p1', float, name_extended="percentage of people in family households"),
+    Feature('P15p3', float, name_extended="percentage of people in group quarters (including jails)"),
+    Feature('P16p2', float, name_extended="percentage of households with 2 or more persons which are family households"),
+    Feature('P18p2', float, name_extended="percentage of households with 1+ persons under 18 which are non-family households"),
+    Feature('P27p4', float, name_extended="percentage of households which are non-family with 2+ persons"),
+    Feature('H2p2', float, name_extended="percentage of housing units vacant"),
+    Feature('H8p2', float, name_extended="percentage of occupied housing units with black householder"),
+    Feature('H10p1', float, name_extended="percentage of occupied housing units with householder not of Hispanic origin"),
+    Feature('H13p1', float, name_extended="percentage of housing units with 1-4 rooms"),
+    Feature('H18pA', float, name_extended="average number of persons per owner-occupied housing units"),
+    Feature('H40p4', float, name_extended="percentage of vacant-for-sale housing units vacant more then 6 months"),
     Feature('binaryClass', int, is_target=True, name_extended='class label'),
 ], documentation="https://www.openml.org/d/44123 , "
-                 "https://www.openml.org/search?type=data&status=active&id=574&sort=runs")
+                 "https://www.openml.org/search?type=data&status=active&id=574&sort=runs ,"
+                 "http://www.cs.toronto.edu/~delve/data/census-house/censusDetail.html")
 
 
 def preprocess_binaryclass_np_label(df: pd.DataFrame) -> pd.DataFrame:

@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 from distutils.core import setup
+from setuptools import find_packages
 
 setup(name='tableshift',
       version='0.1',
@@ -12,7 +13,8 @@ setup(name='tableshift',
                        'Gardner, Popovic, and Schmidt, 2023.',
       author='Josh Gardner',
       author_email='jpgard@cs.washington.edu',
-      packages=['tableshift'],
+      packages=find_packages(),
+      include_package_data=True,
       data_files=[('tableshift/datasets',
                    ['tableshift/datasets/nhanes_data_sources.json',
                     'tableshift/datasets/icd9-codes.json'])],

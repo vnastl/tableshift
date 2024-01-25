@@ -1,6 +1,10 @@
+import copy
 import logging
 from typing import Optional, Dict, Any, Union
 
+from tableshift.core.tasks import _TASK_REGISTRY
+from tableshift.core.data_source import DataSource
+from tableshift import exceptions
 from tableshift.configs.experiment_defaults import DEFAULT_RANDOM_STATE
 from tableshift.configs.benchmark_configs import BENCHMARK_CONFIGS
 from tableshift.configs.non_benchmark_configs import NON_BENCHMARK_CONFIGS
@@ -13,6 +17,12 @@ EXPERIMENT_CONFIGS = {
     **NON_BENCHMARK_CONFIGS
 }
 
+def get_data_source(name:str, cache_dir:str, download=True, **kwargs) -> DataSource:
+    """Get the data source for a dataset, if it exists in the task registry."""
+    if name not in _TASK_REGISTRY:
+        raise ValueError(f"Dataset '{name}' not in available task registry: {sorted(_TASK_REGISTRY.keys())}")
+    task_config = _TASK_REGISTRY[name]
+    return task_config.data_source_cls(cache_dir=cache_dir, download=download, **kwargs)
 
 def get_dataset(name: str, cache_dir: str = "tmp",
                 preprocessor_config: Optional[
@@ -34,13 +44,14 @@ def get_dataset(name: str, cache_dir: str = "tmp",
         kwargs: optional kwargs to be passed to TabularDataset; these will
             override their respective kwargs in the experiment config.
         """
-    assert name in EXPERIMENT_CONFIGS.keys(), \
-        f"Dataset name {name} is not available; choices are: " \
-        f"{sorted(EXPERIMENT_CONFIGS.keys())}"
+    if name not in EXPERIMENT_CONFIGS.keys():
+        raise exceptions.ConfigNotFoundException(
+            f"Dataset name {name} is not available; choices are: " \
+        f"{sorted(EXPERIMENT_CONFIGS.keys())}")
 
     expt_config = EXPERIMENT_CONFIGS[name]
     dataset_config = DatasetConfig(cache_dir=cache_dir)
-    tabular_dataset_kwargs = expt_config.tabular_dataset_kwargs
+    tabular_dataset_kwargs = copy.copy(expt_config.tabular_dataset_kwargs)
     if "name" not in tabular_dataset_kwargs:
         tabular_dataset_kwargs["name"] = name
 
@@ -102,14 +113,15 @@ def get_iid_dataset(name: str, cache_dir: str = "tmp",
         kwargs: optional kwargs to be passed to TabularDataset; these will
             override their respective kwargs in the experiment config.
         """
-    assert name in EXPERIMENT_CONFIGS.keys(), \
-        f"Dataset name {name} is not available; choices are: " \
-        f"{sorted(EXPERIMENT_CONFIGS.keys())}"
+    if name not in EXPERIMENT_CONFIGS.keys():
+        raise exceptions.ConfigNotFoundException(
+            f"Dataset name {name} is not available; choices are: "
+            f"{sorted(EXPERIMENT_CONFIGS.keys())}")
 
     expt_config = EXPERIMENT_CONFIGS[name]
     dataset_config = DatasetConfig(cache_dir=cache_dir)
 
-    _tabular_dataset_kwargs = expt_config.tabular_dataset_kwargs
+    _tabular_dataset_kwargs = copy.copy(expt_config.tabular_dataset_kwargs)
     if tabular_dataset_kwargs:
         _tabular_dataset_kwargs.update(tabular_dataset_kwargs)
     if "name" not in _tabular_dataset_kwargs:

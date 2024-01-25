@@ -13,9 +13,9 @@ import pandas as pd
 import ray.data
 import torch
 from pandas import DataFrame, Series
+from tableshift.third_party.domainbed import InfiniteDataLoader
 from torch.utils.data import DataLoader
 
-from tableshift.third_party.domainbed import InfiniteDataLoader
 from .features import Preprocessor, PreprocessorConfig, is_categorical
 from .grouper import Grouper
 from .metrics import metrics_by_group
@@ -130,6 +130,9 @@ class Dataset(ABC):
         """Fetch a list of the feature names."""
         raise
 
+    def _get_info(self) -> Dict[str, Any]:
+        raise
+
     def _check_split(self, split):
         """Check that a split name is valid."""
         assert self._is_valid_split(split), \
@@ -198,10 +201,17 @@ class TabularDataset(Dataset):
         # Dataset-specific info: features, data source, preprocessing.
 
         self.task_config = get_task_config(self.name) if task_config is None else task_config
-        self.data_source = self.task_config.data_source_cls(
-            cache_dir=self.config.cache_dir,
-            download=self.config.download,
-            **kwargs)
+        try:
+            self.data_source = self.task_config.data_source_cls(
+                cache_dir=self.config.cache_dir,
+                download=self.config.download,
+                **kwargs)
+        except TypeError:
+            kwargs.update({"dataset_name": self.name})
+            self.data_source = self.task_config.data_source_cls(
+                cache_dir=self.config.cache_dir,
+                download=self.config.download,
+                **kwargs)
 
         self.preprocessor = Preprocessor(
             config=self.preprocessor_config,
