@@ -78,8 +78,7 @@ for index, experiment_name in enumerate(experiments):
     dic_shift = {}
     dic_shift_acc ={}
 
-    ax[0].set_xlabel(f"in-domain accuracy") #\n({dic_id_domain[experiment_name]})")
-    ax[0].set_ylabel(f"out-of-domain accuracy") #\n({dic_ood_domain[experiment_name]})")
+    
 
     #############################################################################
     # plot errorbars and shift gap for constant
