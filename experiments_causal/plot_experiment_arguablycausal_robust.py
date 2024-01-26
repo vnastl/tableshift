@@ -18,7 +18,7 @@ from  statsmodels.stats.proportion import proportion_confint
 from paretoset import paretoset
 from scipy.spatial import ConvexHull
 
-from experiments_vnastl.plot_config_colors import *
+from experiments_causal.plot_config_colors import *
 from tableshift.datasets import ACS_INCOME_FEATURES_CAUSAL_SUBSETS_NUMBER, ACS_INCOME_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER, \
     ACS_FOODSTAMPS_FEATURES_CAUSAL_SUBSETS_NUMBER, ACS_FOODSTAMPS_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER, \
     ACS_PUBCOV_FEATURES_CAUSAL_SUBSETS_NUMBER, ACS_PUBCOV_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER,\
@@ -653,11 +653,11 @@ def plot_experiment(experiment_name):
 
 completed_experiments = [
                         # "acsemployment", # old
-                         "acsfoodstamps",
+                        #  "acsfoodstamps",
                         #  "acsincome",
                         #  "acspubcov",
                         #  "acsunemployment",
-                         "anes",
+                        #  "anes",
                         #  "assistments",
                         #  "brfss_blood_pressure",
                          "brfss_diabetes",

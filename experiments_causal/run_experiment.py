@@ -15,7 +15,7 @@ from tableshift.core.tabular_dataset import TabularDataset
 from tableshift.datasets import ACS_INCOME_FEATURES_CAUSAL_SUBSETS_NUMBER, ACS_INCOME_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER, \
     ACS_FOODSTAMPS_FEATURES_CAUSAL_SUBSETS_NUMBER, ACS_FOODSTAMPS_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER
 
-from experiments_vnastl.metrics import balanced_accuracy_score
+from experiments_causal.metrics import balanced_accuracy_score
 
 import json
 from  statsmodels.stats.proportion import proportion_confint
@@ -108,73 +108,34 @@ def main(experiment, dset, model, debug: bool):
     return
 
 if __name__ == "__main__":
-    ROOT_DIR = Path("/Users/vnastl/Seafile/My Library/mpi project causal vs noncausal/tableshift/experiments_vnastl")
+    ROOT_DIR = Path("/Users/vnastl/Seafile/My Library/mpi project causal vs noncausal/tableshift/experiments_causal")
     experiments = []
-    # for index in range(ACS_INCOME_FEATURES_CAUSAL_SUBSETS_NUMBER-1):
-    #     experiments.append("acsincome_causal_test_"+f"{index}")
-    #     RESULTS_DIR = ROOT_DIR / f"acsincome_causal_test_{index}"
-    #     RESULTS_DIR.mkdir(exist_ok=True, parents=False)
-    # for index in range(ACS_INCOME_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER-1):
-    #     experiments.append("acsincome_arguablycausal_test_"+f"{index}")
-    #     RESULTS_DIR = ROOT_DIR / f"acsincome_arguablycausal_test_{index}"
-    #     RESULTS_DIR.mkdir(exist_ok=True, parents=False)
-    # experiments.append("acsincome_arguablycausal_test_1")
-    # RESULTS_DIR = ROOT_DIR / f"acsincome_arguablycausal_test_1"
-    # RESULTS_DIR.mkdir(exist_ok=True, parents=False)
-    # experiments = ["acsincome" ,"acsincome_causal", "acsincome_arguablycausal","acsincome_anticausal",]
-    # experiments=["acspubcov", "acspubcov_causal"]
-    # experiments = ["acsunemployment","acsunemployment_causal", "acsunemployment_anticausal"] 
-    # experiments=["acsfoodstamps", "acsfoodstamps_causal"]
-    # for index in range(ACS_INCOME_FEATURES_CAUSAL_SUBSETS_NUMBER-1):
-    #     experiments.append("acsfoodstamps_causal_test_"+f"{index}")
-    #     RESULTS_DIR = ROOT_DIR / f"acsfoodstamps_causal_test_{index}"
-    #     RESULTS_DIR.mkdir(exist_ok=True, parents=False)
-    # for index in range(ACS_INCOME_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER-1):
-    #     experiments.append("acsfoodstamps_arguablycausal_test_"+f"{index}")
-    #     RESULTS_DIR = ROOT_DIR / f"acsfoodstamps_arguablycausal_test_{index}"
-    #     RESULTS_DIR.mkdir(exist_ok=True, parents=False)
-    # experiments = ["anes","anes_causal"]
-    # experiments = ["assistments","assistments_causal"]
-    # experiments.append("brfss_diabetes_causal")
-    # experiments.append("brfss_diabetes_causal_test_0")
-    # RESULTS_DIR = ROOT_DIR / f"brfss_diabetes_test_0"
-    # RESULTS_DIR.mkdir(exist_ok=True, parents=False)
-    # experiments = ["brfss_diabetes","brfss_diabetes_causal","brfss_diabetes_anticausal"] #,]
-    # experiments = ["brfss_blood_pressure_causal","brfss_blood_pressure"]
-    # experiments=["college_scorecard_arguablycausal"] #,"college_scorecard_causal"]
-    # experiments = ["nhanes_lead", "nhanes_lead_causal"]
-    experiments = ["diabetes_readmission"] #, "diabetes_readmission_causal"]
-    # experiments = ["meps"] #,"meps_causal"]
-    # experiments = ["mimic_extract_los_3","mimic_extract_los_3_causal"] 
-    # experiments = ["mimic_extract_mort_hosp","mimic_extract_mort_hosp_causal"]
-    # experiments = ["physionet","physionet_causal", "physionet_anticausal"]
-    # experiments = ["sipp","sipp_causal"]
+    experiments = ["diabetes_readmission", "diabetes_readmission_causal", "diabetes_readmission_arguablycausal"]
 
     cache_dir="tmp"
 
     for experiment in experiments:
         dset = get_dataset(experiment, cache_dir)
-        # X, y, _, _ = dset.get_pandas("train")
         models = [
-            # "ft_transformer",
-            # "histgbm",
-            # "mlp",
-            # "saint",
-            # "tabtransformer",
-            # "resnet",
+            "ft_transformer",
+            "histgbm",
+            "mlp",
+            "saint",
+            "tabtransformer",
+            "resnet",
             "xgb",
-            # "aldro",
-            # "dro",
-            # "node",
-            # "group_dro",
-            # "label_group_dro",
-            # "irm",
-            # "vrex",
-            # "mixup",
-            # "dann",
-            # "mmd",
-            # "lightgbm",
-            # "deepcoral"
+            "aldro",
+            "dro",
+            "node",
+            "group_dro",
+            "label_group_dro",
+            "irm",
+            "vrex",
+            "mixup",
+            "dann",
+            "mmd",
+            "lightgbm",
+            "deepcoral"
             ]
         for model in models:
             main(experiment=experiment,dset=dset,model=model,debug=False)
