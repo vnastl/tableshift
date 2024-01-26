@@ -68,7 +68,7 @@ def main(experiment, dset, model, debug: bool):
             evaluation[test_split + "_balanced" + "_conf"] = balanced_acc_conf
             print(f"training completed! {test_split} balanced accuracy: {balanced_acc:.4f}")
 
-        with open(f'experiments_vnastl/results/drafts/{experiment}_{model}_eval.json', 'w') as f:
+        with open(f'experiments_causal/results/drafts/{experiment}_{model}_eval.json', 'w') as f:
             # Use json.dump to write the dictionary into the file
             evaluation["features"] = dset.predictors
             json.dump(evaluation, f)
@@ -76,7 +76,7 @@ def main(experiment, dset, model, debug: bool):
     else:
         # Case: pytorch estimator; eval is already performed + printed by train().
         print("training completed!")
-        with open(f'experiments_vnastl/results/drafts/{experiment}_{model}_eval.json', 'w') as f:
+        with open(f'experiments_causal/results/drafts/{experiment}_{model}_eval.json', 'w') as f:
             # Use json.dump to write the dictionary into the file
             evaluation = estimator.fit_metrics
             evaluation_balanced = estimator.fit_metrics_balanced
@@ -109,7 +109,6 @@ def main(experiment, dset, model, debug: bool):
 
 if __name__ == "__main__":
     ROOT_DIR = Path("/Users/vnastl/Seafile/My Library/mpi project causal vs noncausal/tableshift/experiments_causal")
-    experiments = []
     experiments = ["diabetes_readmission", "diabetes_readmission_causal", "diabetes_readmission_arguablycausal"]
 
     cache_dir="tmp"
