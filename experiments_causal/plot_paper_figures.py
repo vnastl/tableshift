@@ -30,6 +30,10 @@ from experiments_causal.plot_experiment import get_results
 from experiments_causal.plot_experiment_balanced import get_results as get_results_balanced
 from experiments_causal.plot_experiment_causalml import get_results as get_results_causalml
 from experiments_causal.plot_experiment_anticausal import get_results as get_results_anticausal
+from experiments_causal.plot_experiment_causal_robust import get_results as get_results_causal_robust
+from experiments_causal.plot_experiment_arguablycausal_robust import get_results as get_results_arguablycausal_robust
+from experiments_causal.plot_experiment_causal_robust import dic_robust_number as dic_robust_number_causal
+from experiments_causal.plot_experiment_arguablycausal_robust import dic_robust_number as dic_robust_number_arguablycausal
 import warnings
 warnings.filterwarnings('ignore')
 
@@ -101,7 +105,7 @@ for index, experiment_name in enumerate(experiments):
     ax[1].yaxis.set_major_formatter(FormatStrFormatter('%.3f'))
 
     ax[0].set_xlabel(f"in-domain accuracy") #\n({dic_id_domain[experiment_name]})")
-    ax[0].set_ylabel(f"out-of-domain accuracy") #\n({dic_ood_domain[experiment_name]})")
+    ax[0].set_ylabel(f"Out-of-domain accuracy") #\n({dic_ood_domain[experiment_name]})")
     #############################################################################
     # plot errorbars and shift gap for constant
     #############################################################################
@@ -307,7 +311,7 @@ for index, experiment_name in enumerate(experiments):
     # #############################################################################
     # # Plot ood accuracy as bars
     # #############################################################################
-    # ax[2].set_ylabel("out-of-domain accuracy")
+    # ax[2].set_ylabel("Out-of-domain accuracy")
     # # add constant shift gap
     # shift = eval_constant
     # shift["type"] = "constant"
@@ -328,7 +332,7 @@ for index, experiment_name in enumerate(experiments):
     # #############################################################################
     # # Plot shift gap as bars
     # #############################################################################
-    # ax[3].set_ylabel("shift gap")
+    # ax[3].set_ylabel("Shift gap")
 
     # shift["gap"] = shift["id_test"] - shift["ood_test"]
     # shift['id_test_var'] = ((shift['id_test_ub']-shift['id_test']))**2
@@ -345,8 +349,8 @@ for index, experiment_name in enumerate(experiments):
     # Plot shift gap vs accuarcy
     #############################################################################
     if (eval_all['features'] == "arguablycausal").any():
-        ax[1].set_xlabel("shift gap")
-        ax[1].set_ylabel("out-of-domain accuracy")
+        ax[1].set_xlabel("Shift gap")
+        ax[1].set_ylabel("Out-of-domain accuracy")
         shift_acc = pd.concat(dic_shift_acc.values(), ignore_index=True)
         markers = {'constant': 'X','all': 's', 'causal': 'o', 'arguablycausal':'D'}
         for type, marker in markers.items():
@@ -397,20 +401,20 @@ fig.savefig(str(Path(__file__).parents[0]/f"plots_paper/plot_main_result.pdf"), 
 # Next figure
 #############################################################################
 
-fig = plt.figure(figsize=[8*2, 4.8])
+fig = plt.figure(figsize=[8, 4.8])
 
 experiments = ["acsunemployment"]
 subfig1 = fig.subfigures(1, 1, hspace=0.1) # create 4x1 subfigures
 
 subfigs = (subfig1,)
-ax1 = subfig1.subplots(1, 2, gridspec_kw={'width_ratios':[0.5,0.5]})       # create 1x4 subplots on subfig1
+ax1 = subfig1.subplots(1, 1,)       # create 1x4 subplots on subfig1
 axes = (ax1,)
 
 for index, experiment_name in enumerate(experiments):
     sns.set_style('whitegrid')
     subfig = subfigs[index]
     subfig.subplots_adjust(wspace=0.3)
-    ax = axes[index]
+    ax = axes
     subfig.suptitle(dic_title[experiment_name])        # set suptitle for subfig1
 
     eval_all, causal_features, extra_features = get_results_balanced(experiment_name)
@@ -419,11 +423,9 @@ for index, experiment_name in enumerate(experiments):
 
     ax[0].xaxis.set_major_formatter(FormatStrFormatter('%.3f'))
     ax[0].yaxis.set_major_formatter(FormatStrFormatter('%.3f'))
-    ax[1].xaxis.set_major_formatter(FormatStrFormatter('%.3f'))
-    ax[1].yaxis.set_major_formatter(FormatStrFormatter('%.3f'))
 
     ax[0].set_xlabel(f"balanced in-domain accuracy") #\n({dic_id_domain[experiment_name]})")
-    ax[0].set_ylabel(f"balanced out-of-domain accuracy") #\n({dic_ood_domain[experiment_name]})")
+    ax[0].set_ylabel(f"balanced Out-of-domain accuracy") #\n({dic_ood_domain[experiment_name]})")
 
     #############################################################################
     # plot errorbars and shift gap for constant
@@ -617,7 +619,7 @@ for index, experiment_name in enumerate(experiments):
     # #############################################################################
     # # Plot ood accuracy as bars
     # #############################################################################
-    # ax[1].set_ylabel("balanced\nout-of-domain accuracy")
+    # ax[1].set_ylabel("balanced\nOut-of-domain accuracy")
 
     # # add constant shift gap
     # shift = eval_constant
@@ -636,48 +638,48 @@ for index, experiment_name in enumerate(experiments):
     #                           bottom=ymin)
     #     ax[1].tick_params(axis='x', labelrotation = 90)
 
-    #############################################################################
-    # Plot shift gap vs accuarcy
-    #############################################################################
-    if (eval_all['features'] == "arguablycausal").any():
-        ax[1].set_xlabel("shift gap")
-        ax[1].set_ylabel("out-of-domain accuracy")
-        shift_acc = pd.concat(dic_shift_acc.values(), ignore_index=True)
-        markers = {'constant': 'X','all': 's', 'causal': 'o', 'arguablycausal':'D'}
-        for type, marker in markers.items():
-            type_shift = shift_acc[shift_acc['type']==type]
-            type_shift['id_test_var'] = ((type_shift['id_test_ub']-type_shift['id_test']))**2
-            type_shift['ood_test_var'] = ((type_shift['ood_test_ub']-type_shift['ood_test']))**2
-            type_shift['gap_var'] = type_shift['id_test_var']+type_shift['ood_test_var']
+    # #############################################################################
+    # # Plot shift gap vs accuarcy
+    # #############################################################################
+    # if (eval_all['features'] == "arguablycausal").any():
+    #     ax[1].set_xlabel("Shift gap")
+    #     ax[1].set_ylabel("Out-of-domain accuracy")
+    #     shift_acc = pd.concat(dic_shift_acc.values(), ignore_index=True)
+    #     markers = {'constant': 'X','all': 's', 'causal': 'o', 'arguablycausal':'D'}
+    #     for type, marker in markers.items():
+    #         type_shift = shift_acc[shift_acc['type']==type]
+    #         type_shift['id_test_var'] = ((type_shift['id_test_ub']-type_shift['id_test']))**2
+    #         type_shift['ood_test_var'] = ((type_shift['ood_test_ub']-type_shift['ood_test']))**2
+    #         type_shift['gap_var'] = type_shift['id_test_var']+type_shift['ood_test_var']
 
-            # Get markers
-            ax[1].errorbar(x=-type_shift["gap"],
-                         y=type_shift["ood_test"],
-                         xerr= type_shift['gap_var']**0.5,
-                         yerr= type_shift['ood_test_ub']-type_shift['ood_test'],
-                        color=eval(f"color_{type}"), ecolor=color_error,
-                        fmt=marker, markersize=markersize, capsize=capsize,  label="arguably\ncausal" if type == 'arguablycausal' else f"{type}",
-                        zorder=3)
-        xmin, xmax = ax[1].get_xlim()
-        ymin, ymax = ax[1].get_ylim()
-        for type, marker in markers.items():
-            type_shift = shift_acc[shift_acc['type']==type]
-            # Get 1 - shift gap
-            type_shift["-gap"] = -type_shift['gap']
-            # Calculate the pareto set
-            points = type_shift[['-gap','ood_test']]
-            mask = paretoset(points, sense=["max", "max"])
-            points = points[mask]
-            #get extra points for the plot
-            new_row = pd.DataFrame({'-gap':[xmin,max(points['-gap'])], 'ood_test':[max(points['ood_test']),ymin]},)
-            points = pd.concat([points,new_row], ignore_index=True)
-            points.sort_values('-gap',inplace=True)
-            ax[1].plot(points['-gap'],points['ood_test'],color=eval(f"color_{type}"),linestyle=(0, (1, 1)),linewidth=linewidth_bound)
-            new_row = pd.DataFrame({'-gap':[xmin], 'ood_test':[ymin]},)
-            points = pd.concat([points,new_row], ignore_index=True)
-            points = points.to_numpy()
-            hull = ConvexHull(points)
-            ax[1].fill(points[hull.vertices, 0], points[hull.vertices, 1], color=eval(f"color_{type}"),alpha=0.05)
+    #         # Get markers
+    #         ax[1].errorbar(x=-type_shift["gap"],
+    #                      y=type_shift["ood_test"],
+    #                      xerr= type_shift['gap_var']**0.5,
+    #                      yerr= type_shift['ood_test_ub']-type_shift['ood_test'],
+    #                     color=eval(f"color_{type}"), ecolor=color_error,
+    #                     fmt=marker, markersize=markersize, capsize=capsize,  label="arguably\ncausal" if type == 'arguablycausal' else f"{type}",
+    #                     zorder=3)
+    #     xmin, xmax = ax[1].get_xlim()
+    #     ymin, ymax = ax[1].get_ylim()
+    #     for type, marker in markers.items():
+    #         type_shift = shift_acc[shift_acc['type']==type]
+    #         # Get 1 - shift gap
+    #         type_shift["-gap"] = -type_shift['gap']
+    #         # Calculate the pareto set
+    #         points = type_shift[['-gap','ood_test']]
+    #         mask = paretoset(points, sense=["max", "max"])
+    #         points = points[mask]
+    #         #get extra points for the plot
+    #         new_row = pd.DataFrame({'-gap':[xmin,max(points['-gap'])], 'ood_test':[max(points['ood_test']),ymin]},)
+    #         points = pd.concat([points,new_row], ignore_index=True)
+    #         points.sort_values('-gap',inplace=True)
+    #         ax[1].plot(points['-gap'],points['ood_test'],color=eval(f"color_{type}"),linestyle=(0, (1, 1)),linewidth=linewidth_bound)
+    #         new_row = pd.DataFrame({'-gap':[xmin], 'ood_test':[ymin]},)
+    #         points = pd.concat([points,new_row], ignore_index=True)
+    #         points = points.to_numpy()
+    #         hull = ConvexHull(points)
+    #         ax[1].fill(points[hull.vertices, 0], points[hull.vertices, 1], color=eval(f"color_{type}"),alpha=0.05)
         
 fig.legend(list(zip(list_color,list_mak)), list_lab, 
           handler_map={tuple:MarkerHandler()},loc='upper center', bbox_to_anchor=(0.5, -0.1),fancybox=True, ncol=5)
@@ -721,7 +723,7 @@ for index, experiment_name in enumerate(experiments):
     ax[1].yaxis.set_major_formatter(FormatStrFormatter('%.3f'))
 
     ax[0].set_xlabel(f"in-domain accuracy") #\n({dic_id_domain[experiment_name]})")
-    ax[0].set_ylabel(f"out-of-domain accuracy") #\n({dic_ood_domain[experiment_name]})")
+    ax[0].set_ylabel(f"Out-of-domain accuracy") #\n({dic_ood_domain[experiment_name]})")
     
     ##############################################################################
     # plot errorbars and shift gap for constant
@@ -975,7 +977,7 @@ for index, experiment_name in enumerate(experiments):
     # #############################################################################
     # # plt.title(
     # # f"{dic_title[experiment_name]}")
-    # ax[1].set_ylabel("out-of-domain accuracy")
+    # ax[1].set_ylabel("Out-of-domain accuracy")
 
     # # add constant shift gap
     # shift = eval_constant
@@ -995,7 +997,7 @@ for index, experiment_name in enumerate(experiments):
     # #############################################################################
     # # Plot shift gap as bars
     # #############################################################################
-    # ax[2].set_ylabel("shift gap")
+    # ax[2].set_ylabel("Shift gap")
 
     # shift["gap"] = shift["id_test"] - shift["ood_test"]
     # shift['id_test_var'] = ((shift['id_test_ub']-shift['id_test']))**2
@@ -1010,8 +1012,8 @@ for index, experiment_name in enumerate(experiments):
     # Plot shift gap vs accuarcy
     #############################################################################
     if (eval_all['features'] == "arguablycausal").any():
-        ax[1].set_xlabel("shift gap")
-        ax[1].set_ylabel("out-of-domain accuracy")
+        ax[1].set_xlabel("Shift gap")
+        ax[1].set_ylabel("Out-of-domain accuracy")
         shift_acc = pd.concat(dic_shift_acc.values(), ignore_index=True)
         markers = {'constant': 'X','all': 's', 'causal': 'o', 'arguablycausal':'D', 'irm':"v", "vrex": "^"}
         for type, marker in markers.items():
@@ -1109,7 +1111,7 @@ for index, experiment_name in enumerate(experiments):
     ax[1].yaxis.set_major_formatter(FormatStrFormatter('%.3f'))
 
     ax[0].set_xlabel(f"in-domain accuracy") #\n({dic_id_domain[experiment_name]})")
-    ax[0].set_ylabel(f"out-of-domain accuracy") #\n({dic_ood_domain[experiment_name]})")
+    ax[0].set_ylabel(f"Out-of-domain accuracy") #\n({dic_ood_domain[experiment_name]})")
 
     #############################################################################
     # plot errorbars and shift gap for constant
@@ -1371,7 +1373,7 @@ for index, experiment_name in enumerate(experiments):
     # #############################################################################
     # # Plot ood accuracy as bars
     # #############################################################################
-    # ax[1].set_ylabel("out-of-domain accuracy")
+    # ax[1].set_ylabel("Out-of-domain accuracy")
     # # add constant shift gap
     # shift = eval_constant
     # shift["type"] = "constant"
@@ -1392,7 +1394,7 @@ for index, experiment_name in enumerate(experiments):
     # #############################################################################
     # # Plot shift gap as bars
     # #############################################################################
-    # ax[2].set_ylabel("shift gap")
+    # ax[2].set_ylabel("Shift gap")
 
     # shift["gap"] = shift["id_test"] - shift["ood_test"]
     # shift['id_test_var'] = ((shift['id_test_ub']-shift['id_test']))**2
@@ -1409,8 +1411,8 @@ for index, experiment_name in enumerate(experiments):
     # Plot shift gap vs accuarcy
     #############################################################################
     if (eval_all['features'] == "arguablycausal").any():
-        ax[1].set_xlabel("shift gap")
-        ax[1].set_ylabel("out-of-domain accuracy")
+        ax[1].set_xlabel("Shift gap")
+        ax[1].set_ylabel("Out-of-domain accuracy")
         shift_acc = pd.concat(dic_shift_acc.values(), ignore_index=True)
         markers = {'constant': 'X','all': 's', 'causal': 'o', 'arguablycausal':'D', 'anticausal':'P'}
         for type, marker in markers.items():
@@ -1468,4 +1470,211 @@ fig.legend(list(zip(list_color_anticausal,list_mak_anticausal)), list_lab_antica
 
 
 fig.savefig(str(Path(__file__).parents[0]/f"plots_paper/plot_main_anticausal.pdf"), bbox_inches='tight')
+# %%
+#%% 
+#############################################################################
+# Next figure
+#############################################################################
+
+fig = plt.figure(figsize=[8*2, 4.8*2])
+
+experiments = ["brfss_diabetes"]
+subfig1 = fig.subfigures(1, 1, hspace=0.1) # create 4x1 subfigures
+
+subfigs = (subfig1,)
+ax1 = subfig1.subplots(2, 2, gridspec_kw={'width_ratios':[0.5,0.5],'hspace':0.5})       # create 1x4 subplots on subfig1
+axes = (ax1,)
+
+for index, experiment_name in enumerate(experiments):
+    sns.set_style('whitegrid')
+    subfig = subfigs[index]
+    subfig.subplots_adjust(wspace=0.3)
+    ax = axes[index]
+    subfig.suptitle(dic_title[experiment_name], y=0.95)        # set suptitle for subfig1
+
+    eval_all, _ = get_results_causal_robust(experiment_name)
+    eval_constant = eval_all[eval_all['features']=="constant"]
+    dic_shift = {}
+
+    ax[0,0].yaxis.set_major_formatter(FormatStrFormatter('%.3f'))
+    ax[0,1].yaxis.set_major_formatter(FormatStrFormatter('%.3f'))
+
+    ax[0,0].set_ylabel(f"Out-of-domain accuracy") #\n({dic_ood_domain[experiment_name]})")
+    #############################################################################
+    # plot errorbars and shift gap for constant
+    #############################################################################
+    
+    #############################################################################
+    # plot errorbars and shift gap for all features
+    #############################################################################
+    eval_plot = eval_all[eval_all['features']=="all"]
+    eval_plot.sort_values('id_test',inplace=True)
+    # Calculate the pareto set
+    points = eval_plot[['id_test','ood_test']]
+    mask = paretoset(points, sense=["max", "max"])
+    shift = eval_plot[mask]
+    shift = shift[shift["ood_test"] == shift["ood_test"].max()]
+    shift["type"] = "all"
+    dic_shift["all"] = shift
+    
+    #############################################################################
+    # plot errorbars and shift gap for causal features
+    #############################################################################
+    eval_plot = eval_all[eval_all['features']=="causal"]
+    eval_plot.sort_values('id_test',inplace=True)
+    # Calculate the pareto set
+    points = eval_plot[['id_test','ood_test']]
+    mask = paretoset(points, sense=["max", "max"])
+    shift = eval_plot[mask]
+    shift = shift[shift["ood_test"] == shift["ood_test"].max()]
+    shift["type"] = "causal"
+    dic_shift["causal"] = shift
+
+    #############################################################################
+    # plot errorbars and shift gap for robustness tests
+    #############################################################################
+    for index in range(dic_robust_number_causal[experiment_name]):
+        if (eval_all['features'] == f"test{index}").any():
+            eval_plot = eval_all[eval_all['features']==f"test{index}"]
+            eval_plot.sort_values('id_test',inplace=True)
+            # Calculate the pareto set
+            points = eval_plot[['id_test','ood_test']]
+            mask = paretoset(points, sense=["max", "max"])
+            points = points[mask]
+            shift = eval_plot[mask]
+            shift = shift[shift["ood_test"] == shift["ood_test"].max()]
+            shift["type"] = f"test {index}"
+            dic_shift[f"test{index}"] = shift
+            
+    #############################################################################
+    # Plot ood accuracy as bars
+    #############################################################################
+    # plt.title(
+    # f"{dic_title[experiment_name]}")
+    ax[0,0].set_ylabel("Out-of-domain accuracy")
+
+    # add constant shift gap
+    shift = eval_constant
+    shift["type"] = "constant"
+    dic_shift["constant"] = shift
+
+    shift = pd.concat(dic_shift.values(), ignore_index=True)
+    # shift["gap"] = shift["id_test"] - shift["ood_test"]
+    barlist = ax[0,0].bar(shift["type"], shift["ood_test"]-ymin,
+                              yerr=shift['ood_test_ub']-shift['ood_test'],
+                              color=[color_all,color_causal]+[color_causal_robust for index in range(dic_robust_number_causal[experiment_name])]+[color_constant],
+                              ecolor=color_error,align='center', capsize=5,
+                              bottom=ymin)
+    ax[0,0].tick_params(axis='x', labelrotation = 90)
+
+    #############################################################################
+    # Plot shift gap as bars
+    #############################################################################
+    # plt.title(
+    # f"{dic_title[experiment_name]}")
+    ax[0,1].set_ylabel("Shift gap")
+    
+    shift = pd.concat(dic_shift.values(), ignore_index=True)
+    shift["gap"] = shift["id_test"] - shift["ood_test"]
+    shift['id_test_var'] = ((shift['id_test_ub']-shift['id_test']))**2
+    shift['ood_test_var'] = ((shift['ood_test_ub']-shift['ood_test']))**2
+    shift['gap_var'] = shift['id_test_var']+shift['ood_test_var']
+    barlist = ax[0,1].bar(shift["type"], -shift["gap"],
+                      yerr=shift['gap_var']**0.5,ecolor=color_error,align='center', capsize=5,
+                      color=[color_all,color_causal]+[color_causal_robust for index in range(dic_robust_number_causal[experiment_name])]+[color_constant])
+    ax[0,1].tick_params(axis='x', labelrotation = 90)
+
+
+    eval_all, _ = get_results_arguablycausal_robust(experiment_name)
+    eval_constant = eval_all[eval_all['features']=="constant"]
+    dic_shift = {}
+
+    ax[1,0].yaxis.set_major_formatter(FormatStrFormatter('%.3f'))
+    ax[1,1].yaxis.set_major_formatter(FormatStrFormatter('%.3f'))
+
+    #############################################################################
+    # plot errorbars and shift gap for constant
+    #############################################################################
+    
+    #############################################################################
+    # plot errorbars and shift gap for all features
+    #############################################################################
+    eval_plot = eval_all[eval_all['features']=="all"]
+    eval_plot.sort_values('id_test',inplace=True)
+    # Calculate the pareto set
+    points = eval_plot[['id_test','ood_test']]
+    mask = paretoset(points, sense=["max", "max"])
+    shift = eval_plot[mask]
+    shift = shift[shift["ood_test"] == shift["ood_test"].max()]
+    shift["type"] = "all"
+    dic_shift["all"] = shift
+    
+    #############################################################################
+    # plot errorbars and shift gap for arguably causal features
+    #############################################################################
+    eval_plot = eval_all[eval_all['features']=="arguablycausal"]
+    eval_plot.sort_values('id_test',inplace=True)
+    # Calculate the pareto set
+    points = eval_plot[['id_test','ood_test']]
+    mask = paretoset(points, sense=["max", "max"])
+    shift = eval_plot[mask]
+    shift = shift[shift["ood_test"] == shift["ood_test"].max()]
+    shift["type"] = "arg. causal"
+    dic_shift["arguablycausal"] = shift
+
+    #############################################################################
+    # plot errorbars and shift gap for robustness tests
+    #############################################################################
+    for index in range(dic_robust_number_arguablycausal[experiment_name]):
+        if (eval_all['features'] == f"test{index}").any():
+            eval_plot = eval_all[eval_all['features']==f"test{index}"]
+            eval_plot.sort_values('id_test',inplace=True)
+            # Calculate the pareto set
+            points = eval_plot[['id_test','ood_test']]
+            mask = paretoset(points, sense=["max", "max"])
+            points = points[mask]
+            shift = eval_plot[mask]
+            shift = shift[shift["ood_test"] == shift["ood_test"].max()]
+            shift["type"] = f"test {index}"
+            dic_shift[f"test{index}"] = shift
+            
+    #############################################################################
+    # Plot ood accuracy as bars
+    #############################################################################
+    # plt.title(
+    # f"{dic_title[experiment_name]}")
+    ax[1,0].set_ylabel("Out-of-domain accuracy")
+
+    # add constant shift gap
+    shift = eval_constant
+    shift["type"] = "constant"
+    dic_shift["constant"] = shift
+
+    shift = pd.concat(dic_shift.values(), ignore_index=True)
+    # shift["gap"] = shift["id_test"] - shift["ood_test"]
+    barlist = ax[1,0].bar(shift["type"], shift["ood_test"]-ymin,
+                              yerr=shift['ood_test_ub']-shift['ood_test'],
+                              color=[color_all,color_arguablycausal]+[color_arguablycausal_robust for index in range(dic_robust_number_arguablycausal[experiment_name])]+[color_constant],
+                              ecolor=color_error,align='center', capsize=5,
+                              bottom=ymin)
+    ax[1,0].tick_params(axis='x', labelrotation = 90)
+
+    #############################################################################
+    # Plot shift gap as bars
+    #############################################################################
+    # plt.title(
+    # f"{dic_title[experiment_name]}")
+    ax[1,1].set_ylabel("Shift gap")
+    
+    shift = pd.concat(dic_shift.values(), ignore_index=True)
+    shift["gap"] = shift["id_test"] - shift["ood_test"]
+    shift['id_test_var'] = ((shift['id_test_ub']-shift['id_test']))**2
+    shift['ood_test_var'] = ((shift['ood_test_ub']-shift['ood_test']))**2
+    shift['gap_var'] = shift['id_test_var']+shift['ood_test_var']
+    barlist = ax[1,1].bar(shift["type"], -shift["gap"],
+                      yerr=shift['gap_var']**0.5,ecolor=color_error,align='center', capsize=5,
+                      color=[color_all,color_arguablycausal]+[color_arguablycausal_robust for index in range(dic_robust_number_arguablycausal[experiment_name])]+[color_constant])
+    ax[1,1].tick_params(axis='x', labelrotation = 90)
+
+fig.savefig(str(Path(__file__).parents[0]/f"plots_paper/plot_main_robust.pdf"), bbox_inches='tight')
 # %%
