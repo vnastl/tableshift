@@ -9,7 +9,7 @@ from tab_transformer_pytorch import TabTransformer
 from tqdm import tqdm
 
 from tableshift.third_party.saint.models import SAINT
-from experiments_vnastl.metrics import balanced_accuracy_score
+from experiments_causal.metrics import balanced_accuracy_score
 
 
 def get_module_attr(model, attr):

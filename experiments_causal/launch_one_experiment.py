@@ -207,7 +207,7 @@ if __name__ == "__main__":
 
             "+MaxRunningPrice": 100,
             # "+RunningPriceExceededAction": classad.quote("restart"),
-            "periodic_remove": f"(JobStatus == 2) && (time() - EnteredCurrentStatus) > (4 * 3600)",
+            "periodic_remove": f"(JobStatus == 2) && (time() - EnteredCurrentStatus) > (6 * 3600)",
         })
 
         # Submit `n_trials` jobs to the scheduler
