@@ -19,7 +19,7 @@ from  statsmodels.stats.proportion import proportion_confint
 from paretoset import paretoset
 from scipy.spatial import ConvexHull
 
-from experiments_vnastl.plot_config_colors import *
+from experiments_causal.plot_config_colors import *
 import warnings
 warnings.filterwarnings('ignore')
 
@@ -682,17 +682,17 @@ if __name__ == "__main__":
     completed_experiments = [
                             
                             "acsfoodstamps",
-                            "acsincome",
+                            # "acsincome",
                             
-                            "acsunemployment",
-                            "anes",
-                            #  "assistments",
+                            # "acsunemployment",
+                            # "anes",
+                            # #  "assistments",
                             
-                            "college_scorecard",
-                            "diabetes_readmission",
+                            # "college_scorecard",
+                            # "diabetes_readmission",
                             
-                            "mimic_extract_mort_hosp",
-                            "mimic_extract_los_3",
+                            # "mimic_extract_mort_hosp",
+                            # "mimic_extract_los_3",
                             
                             ]
     for experiment_name in completed_experiments:

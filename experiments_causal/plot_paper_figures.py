@@ -14,6 +14,8 @@ from matplotlib.colors import ListedColormap
 import matplotlib.gridspec as gridspec
 import matplotlib.markers as mmark
 from matplotlib.ticker import StrMethodFormatter
+from matplotlib.ticker import FormatStrFormatter
+from matplotlib import ticker
 import seaborn as sns
 sns.set_context("paper", font_scale=1)
 sns.set_style("whitegrid")
@@ -56,7 +58,7 @@ dic_title = {
     "physionet": 'Sepsis',
     "sipp": 'SIPP: Poverty',
 }
-list_mak = [mmark.MarkerStyle('s'),mmark.MarkerStyle('H'),mmark.MarkerStyle('o'),mmark.MarkerStyle('D')]
+list_mak = [mmark.MarkerStyle('s'),mmark.MarkerStyle('D'),mmark.MarkerStyle('o'),mmark.MarkerStyle('X')]
 list_lab = ['All','Arguably causal','Causal', 'Constant']
 list_color  = [color_all, color_arguablycausal, color_causal, color_constant]
 
@@ -65,15 +67,17 @@ class MarkerHandler(HandlerBase):
     def create_artists(self, legend, tup,xdescent, ydescent,
                         width, height, fontsize,trans):
         return [plt.Line2D([width/2], [height/2.],ls="",
-                       marker=tup[1],markersize=markersize*1.5,color=tup[0], transform=trans)]
+                       marker=tup[1],markersize=markersize,color=tup[0], transform=trans)]
     
 #%%
 fig = plt.figure(figsize=[8*2, 4.8*4])
 experiments = ["brfss_diabetes","acsunemployment","acsincome","mimic_extract_mort_hosp"]
 
-(subfig1, subfig2, subfig3, subfig4) = fig.subfigures(4, 1, hspace=0.2) # create 4x1 subfigures
+(subfig1, subfig2, subfig3, subfig4) = fig.subfigures(4, 1, hspace=0.1) # create 4x1 subfigures
 
 subfigs = (subfig1, subfig2, subfig3, subfig4)
+
+
 ax1 = subfig1.subplots(1, 2, gridspec_kw={'width_ratios':[0.5,0.5]})       # create 1x4 subplots on subfig1
 ax2 = subfig2.subplots(1, 2, gridspec_kw={'width_ratios':[0.5,0.5]})       # create 1x4 subplots on subfig2
 ax3 = subfig3.subplots(1, 2, gridspec_kw={'width_ratios':[0.5,0.5]})       # create 1x4 subplots on subfig2
@@ -81,15 +85,20 @@ ax4 = subfig4.subplots(1, 2, gridspec_kw={'width_ratios':[0.5,0.5]})       # cre
 axes = (ax1, ax2, ax3, ax4)
 
 for index, experiment_name in enumerate(experiments):
+    sns.set_style('whitegrid')
     subfig = subfigs[index]
     subfig.subplots_adjust(wspace=0.3)
     ax = axes[index]
     subfig.suptitle(dic_title[experiment_name])        # set suptitle for subfig1
-    
     eval_all, causal_features, extra_features = get_results(experiment_name)
     eval_constant = eval_all[eval_all['features']=="constant"]
     dic_shift = {}
     dic_shift_acc ={}
+
+    ax[0].xaxis.set_major_formatter(FormatStrFormatter('%.3f'))
+    ax[0].yaxis.set_major_formatter(FormatStrFormatter('%.3f'))
+    ax[1].xaxis.set_major_formatter(FormatStrFormatter('%.3f'))
+    ax[1].yaxis.set_major_formatter(FormatStrFormatter('%.3f'))
 
     ax[0].set_xlabel(f"in-domain accuracy") #\n({dic_id_domain[experiment_name]})")
     ax[0].set_ylabel(f"out-of-domain accuracy") #\n({dic_ood_domain[experiment_name]})")
@@ -100,8 +109,8 @@ for index, experiment_name in enumerate(experiments):
             x=eval_constant['id_test'],
             y=eval_constant['ood_test'],
             xerr=eval_constant['id_test_ub']-eval_constant['id_test'],
-            yerr=eval_constant['ood_test_ub']-eval_constant['ood_test'], fmt="D",
-            color=color_constant, ecolor=color_constant,
+            yerr=eval_constant['ood_test_ub']-eval_constant['ood_test'], fmt='X',
+            color=color_constant, ecolor=color_error,
             markersize=markersize, capsize=capsize, label="constant")
     # ax[0].hlines(y=eval_constant['ood_test'].values[0], xmin=eval_constant['ood_test'].values[0], xmax=eval_constant['id_test'].values[0],
     #             color=color_constant, linewidth=linewidth_shift, alpha=0.7)
@@ -127,7 +136,7 @@ for index, experiment_name in enumerate(experiments):
                 y=markers['ood_test'],
                 xerr=markers['id_test_ub']-markers['id_test'],
                 yerr=markers['ood_test_ub']-markers['ood_test'], fmt="s",
-                color=color_all, ecolor=color_all,
+                color=color_all, ecolor=color_error,
                 markersize=markersize, capsize=capsize, label="all")
     # highlight bar
     shift = eval_plot[mask]
@@ -159,7 +168,7 @@ for index, experiment_name in enumerate(experiments):
                 y=markers['ood_test'],
                 xerr=markers['id_test_ub']-markers['id_test'],
                 yerr=markers['ood_test_ub']-markers['ood_test'], fmt="o",
-                color=color_causal, ecolor=color_causal,
+                color=color_causal, ecolor=color_error,
                 markersize=markersize, capsize=capsize, label="causal")
     # highlight bar
     shift = eval_plot[mask]
@@ -190,8 +199,8 @@ for index, experiment_name in enumerate(experiments):
                     x=markers['id_test'],
                     y=markers['ood_test'],
                     xerr=markers['id_test_ub']-markers['id_test'],
-                    yerr=markers['ood_test_ub']-markers['ood_test'], fmt="H",
-                    color=color_arguablycausal, ecolor=color_arguablycausal,
+                    yerr=markers['ood_test_ub']-markers['ood_test'], fmt='D',
+                    color=color_arguablycausal, ecolor=color_error,
                     markersize=markersize, capsize=capsize, label="arguably\ncausal")
         # highlight bar
         shift = eval_plot[mask]
@@ -220,7 +229,7 @@ for index, experiment_name in enumerate(experiments):
     ax[0].fill_between([xmin, eval_constant['id_test'].values[0]],
                      [ymin,ymin],
                      [eval_constant['ood_test'].values[0],eval_constant['ood_test'].values[0]],
-                        color=color_constant, alpha=0.1)
+                        color=color_constant, alpha=0.05)
     
     #############################################################################
     # plot pareto dominated area for all features
@@ -241,7 +250,7 @@ for index, experiment_name in enumerate(experiments):
     points = pd.concat([points,new_row], ignore_index=True)
     points = points.to_numpy()
     hull = ConvexHull(points)
-    ax[0].fill(points[hull.vertices, 0], points[hull.vertices, 1], color=color_all,alpha=0.1)
+    ax[0].fill(points[hull.vertices, 0], points[hull.vertices, 1], color=color_all,alpha=0.05)
 
     #############################################################################
     # plot pareto dominated area for causal features
@@ -264,7 +273,7 @@ for index, experiment_name in enumerate(experiments):
     points = pd.concat([points,new_row], ignore_index=True)
     points = points.to_numpy()
     hull = ConvexHull(points)
-    ax[0].fill(points[hull.vertices, 0], points[hull.vertices, 1], color=color_causal,alpha=0.1)
+    ax[0].fill(points[hull.vertices, 0], points[hull.vertices, 1], color=color_causal,alpha=0.05)
 
     #############################################################################
     # plot pareto dominated area for arguablycausal features
@@ -286,7 +295,7 @@ for index, experiment_name in enumerate(experiments):
         points = pd.concat([points,new_row], ignore_index=True)
         points = points.to_numpy()
         hull = ConvexHull(points)
-        ax[0].fill(points[hull.vertices, 0], points[hull.vertices, 1], color=color_arguablycausal,alpha=0.1)
+        ax[0].fill(points[hull.vertices, 0], points[hull.vertices, 1], color=color_arguablycausal,alpha=0.05)
     
     #############################################################################
     # Add legend & diagonal, save plot
@@ -295,8 +304,6 @@ for index, experiment_name in enumerate(experiments):
     start_lim = max(xmin, ymin)
     end_lim = min(xmax, ymax)
     ax[0].plot([start_lim, end_lim], [start_lim, end_lim], color=color_error)
-
-
     # #############################################################################
     # # Plot ood accuracy as bars
     # #############################################################################
@@ -314,7 +321,7 @@ for index, experiment_name in enumerate(experiments):
     #     ax[2].bar(shift["type"], shift["ood_test"]-ymin,
     #                           yerr=shift['ood_test_ub']-shift['ood_test'],
     #                           color=[color_all,color_arguablycausal,color_causal,color_constant],
-    #                           ecolor=color_error,align='center', capsize=capsize,
+    #                           ecolor=color_error,
     #                           bottom=ymin)
     #     ax[2].tick_params(axis='x', labelrotation = 90)
         
@@ -331,7 +338,7 @@ for index, experiment_name in enumerate(experiments):
     #     ax[3].bar(shift["type"], shift["gap"],
     #                           yerr=shift['gap_var']**0.5,
     #                           color=[color_all,color_arguablycausal,color_causal,color_constant],
-    #                           ecolor=color_error,align='center', capsize=capsize)
+    #                           ecolor=color_error,
     #     ax[3].tick_params(axis='x', labelrotation = 90)
 
     #############################################################################
@@ -341,7 +348,7 @@ for index, experiment_name in enumerate(experiments):
         ax[1].set_xlabel("shift gap")
         ax[1].set_ylabel("out-of-domain accuracy")
         shift_acc = pd.concat(dic_shift_acc.values(), ignore_index=True)
-        markers = {'constant': 'D','all': 's', 'causal': 'o', 'arguablycausal':'H'}
+        markers = {'constant': 'X','all': 's', 'causal': 'o', 'arguablycausal':'D'}
         for type, marker in markers.items():
             type_shift = shift_acc[shift_acc['type']==type]
             type_shift['id_test_var'] = ((type_shift['id_test_ub']-type_shift['id_test']))**2
@@ -353,9 +360,9 @@ for index, experiment_name in enumerate(experiments):
                          y=type_shift["ood_test"],
                          xerr= type_shift['gap_var']**0.5,
                          yerr= type_shift['ood_test_ub']-type_shift['ood_test'],
-                        color=eval(f"color_{type}"), ecolor=eval(f"color_{type}"),
-                        fmt=marker, markersize=markersize, capsize=capsize,  label="arguably\ncausal" if type == 'arguablycausal' else f"{type}",
-                        zorder=3)
+                         color=eval(f"color_{type}"), ecolor=color_error,
+                         fmt=marker, markersize=markersize, capsize=capsize,  label="arguably\ncausal" if type == 'arguablycausal' else f"{type}",
+                         zorder=3)
         xmin, xmax = ax[1].get_xlim()
         ymin, ymax = ax[1].get_ylim()
         for type, marker in markers.items():
@@ -375,18 +382,14 @@ for index, experiment_name in enumerate(experiments):
             points = pd.concat([points,new_row], ignore_index=True)
             points = points.to_numpy()
             hull = ConvexHull(points)
-            ax[1].fill(points[hull.vertices, 0], points[hull.vertices, 1], color=eval(f"color_{type}"),alpha=0.1)
+            ax[1].fill(points[hull.vertices, 0], points[hull.vertices, 1], color=eval(f"color_{type}"),alpha=0.05)
             
 
-fig.legend(list(zip(list_color,list_mak)), list_lab, 
-          handler_map={tuple:MarkerHandler()},loc='upper center', bbox_to_anchor=(0.5, -0.03),fancybox=True, ncol=5)
-fig.gca().yaxis.set_major_formatter(StrMethodFormatter('{x:,.2f}')) # 2 decimal places
+fig.legend(list(zip(list_color,list_mak)), list_lab,
+           handler_map={tuple:MarkerHandler()},loc='upper center', bbox_to_anchor=(0.5, -0.03),fancybox=True, ncol=5)
+
+
 fig.savefig(str(Path(__file__).parents[0]/f"plots_paper/plot_main_result.pdf"), bbox_inches='tight')
-
-
-
-
-
 
 
 #%% 
@@ -404,6 +407,7 @@ ax1 = subfig1.subplots(1, 2, gridspec_kw={'width_ratios':[0.5,0.5]})       # cre
 axes = (ax1,)
 
 for index, experiment_name in enumerate(experiments):
+    sns.set_style('whitegrid')
     subfig = subfigs[index]
     subfig.subplots_adjust(wspace=0.3)
     ax = axes[index]
@@ -412,6 +416,11 @@ for index, experiment_name in enumerate(experiments):
     eval_all, causal_features, extra_features = get_results_balanced(experiment_name)
     eval_constant = eval_all[eval_all['features']=="constant"]
     dic_shift = {}
+
+    ax[0].xaxis.set_major_formatter(FormatStrFormatter('%.3f'))
+    ax[0].yaxis.set_major_formatter(FormatStrFormatter('%.3f'))
+    ax[1].xaxis.set_major_formatter(FormatStrFormatter('%.3f'))
+    ax[1].yaxis.set_major_formatter(FormatStrFormatter('%.3f'))
 
     ax[0].set_xlabel(f"balanced in-domain accuracy") #\n({dic_id_domain[experiment_name]})")
     ax[0].set_ylabel(f"balanced out-of-domain accuracy") #\n({dic_ood_domain[experiment_name]})")
@@ -423,8 +432,8 @@ for index, experiment_name in enumerate(experiments):
             x=eval_constant['id_test'],
             y=eval_constant['ood_test'],
             xerr=eval_constant['id_test_ub']-eval_constant['id_test'],
-            yerr=eval_constant['ood_test_ub']-eval_constant['ood_test'], fmt="D",
-            color=color_constant, ecolor=color_constant,
+            yerr=eval_constant['ood_test_ub']-eval_constant['ood_test'], fmt='X',
+            color=color_constant, ecolor=color_error,
             markersize=markersize, capsize=capsize, label="constant")
     # ax[0].hlines(y=eval_constant['ood_test'].values[0], xmin=eval_constant['ood_test'].values[0], xmax=eval_constant['id_test'].values[0],
     #             color=color_constant, linewidth=linewidth_shift, alpha=0.7)
@@ -446,7 +455,7 @@ for index, experiment_name in enumerate(experiments):
                 y=markers['ood_test'],
                 xerr=markers['id_test_ub']-markers['id_test'],
                 yerr=markers['ood_test_ub']-markers['ood_test'], fmt="s",
-                color=color_all, ecolor=color_all,
+                color=color_all, ecolor=color_error,
                 markersize=markersize, capsize=capsize, label="all")
     # highlight bar
     shift = eval_plot[mask]
@@ -474,7 +483,7 @@ for index, experiment_name in enumerate(experiments):
                 y=markers['ood_test'],
                 xerr=markers['id_test_ub']-markers['id_test'],
                 yerr=markers['ood_test_ub']-markers['ood_test'], fmt="o",
-                color=color_causal, ecolor=color_causal,
+                color=color_causal, ecolor=color_error,
                 markersize=markersize, capsize=capsize, label="causal")
     # highlight bar
     shift = eval_plot[mask]
@@ -502,8 +511,8 @@ for index, experiment_name in enumerate(experiments):
                     x=markers['id_test'],
                     y=markers['ood_test'],
                     xerr=markers['id_test_ub']-markers['id_test'],
-                    yerr=markers['ood_test_ub']-markers['ood_test'], fmt="H",
-                    color=color_arguablycausal, ecolor=color_arguablycausal,
+                    yerr=markers['ood_test_ub']-markers['ood_test'], fmt='D',
+                    color=color_arguablycausal, ecolor=color_error,
                     markersize=markersize, capsize=capsize, label="arguably causal")
         # highlight bar
         shift = eval_plot[mask]
@@ -527,7 +536,7 @@ for index, experiment_name in enumerate(experiments):
     ax[0].fill_between([xmin, eval_constant['id_test'].values[0]],
                      [ymin,ymin],
                      [eval_constant['ood_test'].values[0],eval_constant['ood_test'].values[0]],
-                        color=color_constant, alpha=0.1)
+                        color=color_constant, alpha=0.05)
     
     #############################################################################
     # plot pareto dominated area for all features
@@ -548,7 +557,7 @@ for index, experiment_name in enumerate(experiments):
     points = pd.concat([points,new_row], ignore_index=True)
     points = points.to_numpy()
     hull = ConvexHull(points)
-    ax[0].fill(points[hull.vertices, 0], points[hull.vertices, 1], color=color_all,alpha=0.1)
+    ax[0].fill(points[hull.vertices, 0], points[hull.vertices, 1], color=color_all,alpha=0.05)
 
     #############################################################################
     # plot pareto dominated area for causal features
@@ -571,7 +580,7 @@ for index, experiment_name in enumerate(experiments):
     points = pd.concat([points,new_row], ignore_index=True)
     points = points.to_numpy()
     hull = ConvexHull(points)
-    ax[0].fill(points[hull.vertices, 0], points[hull.vertices, 1], color=color_causal,alpha=0.1)
+    ax[0].fill(points[hull.vertices, 0], points[hull.vertices, 1], color=color_causal,alpha=0.05)
 
     #############################################################################
     # plot pareto dominated area for arguablycausal features
@@ -593,7 +602,7 @@ for index, experiment_name in enumerate(experiments):
         points = pd.concat([points,new_row], ignore_index=True)
         points = points.to_numpy()
         hull = ConvexHull(points)
-        ax[0].fill(points[hull.vertices, 0], points[hull.vertices, 1], color=color_arguablycausal,alpha=0.1)
+        ax[0].fill(points[hull.vertices, 0], points[hull.vertices, 1], color=color_arguablycausal,alpha=0.05)
     
     #############################################################################
     # Add legend & diagonal, save plot
@@ -623,7 +632,7 @@ for index, experiment_name in enumerate(experiments):
     #     barlist = ax[1].bar(shift["type"], shift["ood_test"]-ymin,
     #                           yerr=shift['ood_test_ub']-shift['ood_test'],
     #                           color=[color_all,color_arguablycausal,color_causal,color_constant],
-    #                           ecolor=color_error,align='center', capsize=10,
+    #                           ecolor=color_error,
     #                           bottom=ymin)
     #     ax[1].tick_params(axis='x', labelrotation = 90)
 
@@ -634,7 +643,7 @@ for index, experiment_name in enumerate(experiments):
         ax[1].set_xlabel("shift gap")
         ax[1].set_ylabel("out-of-domain accuracy")
         shift_acc = pd.concat(dic_shift_acc.values(), ignore_index=True)
-        markers = {'constant': 'D','all': 's', 'causal': 'o', 'arguablycausal':'H'}
+        markers = {'constant': 'X','all': 's', 'causal': 'o', 'arguablycausal':'D'}
         for type, marker in markers.items():
             type_shift = shift_acc[shift_acc['type']==type]
             type_shift['id_test_var'] = ((type_shift['id_test_ub']-type_shift['id_test']))**2
@@ -646,7 +655,7 @@ for index, experiment_name in enumerate(experiments):
                          y=type_shift["ood_test"],
                          xerr= type_shift['gap_var']**0.5,
                          yerr= type_shift['ood_test_ub']-type_shift['ood_test'],
-                        color=eval(f"color_{type}"), ecolor=eval(f"color_{type}"),
+                        color=eval(f"color_{type}"), ecolor=color_error,
                         fmt=marker, markersize=markersize, capsize=capsize,  label="arguably\ncausal" if type == 'arguablycausal' else f"{type}",
                         zorder=3)
         xmin, xmax = ax[1].get_xlim()
@@ -668,11 +677,12 @@ for index, experiment_name in enumerate(experiments):
             points = pd.concat([points,new_row], ignore_index=True)
             points = points.to_numpy()
             hull = ConvexHull(points)
-            ax[1].fill(points[hull.vertices, 0], points[hull.vertices, 1], color=eval(f"color_{type}"),alpha=0.1)
+            ax[1].fill(points[hull.vertices, 0], points[hull.vertices, 1], color=eval(f"color_{type}"),alpha=0.05)
         
 fig.legend(list(zip(list_color,list_mak)), list_lab, 
           handler_map={tuple:MarkerHandler()},loc='upper center', bbox_to_anchor=(0.5, -0.1),fancybox=True, ncol=5)
-fig.gca().yaxis.set_major_formatter(StrMethodFormatter('{x:,.2f}')) # 2 decimal places
+
+
 fig.savefig(str(Path(__file__).parents[0]/f"plots_paper/plot_main_balanced.pdf"), bbox_inches='tight')
 
 
@@ -695,6 +705,7 @@ ax1 = subfig1.subplots(1, 2, gridspec_kw={'width_ratios':[0.5,0.5]})       # cre
 axes = (ax1,)
 
 for index, experiment_name in enumerate(experiments):
+    sns.set_style('whitegrid')
     subfig = subfigs[index]
     subfig.subplots_adjust(wspace=0.3)
     ax = axes[index]
@@ -703,6 +714,11 @@ for index, experiment_name in enumerate(experiments):
     eval_all, causal_features = get_results_causalml(experiment_name)
     eval_constant = eval_all[eval_all['features']=="constant"]
     dic_shift = {}
+
+    ax[0].xaxis.set_major_formatter(FormatStrFormatter('%.3f'))
+    ax[0].yaxis.set_major_formatter(FormatStrFormatter('%.3f'))
+    ax[1].xaxis.set_major_formatter(FormatStrFormatter('%.3f'))
+    ax[1].yaxis.set_major_formatter(FormatStrFormatter('%.3f'))
 
     ax[0].set_xlabel(f"in-domain accuracy") #\n({dic_id_domain[experiment_name]})")
     ax[0].set_ylabel(f"out-of-domain accuracy") #\n({dic_ood_domain[experiment_name]})")
@@ -714,8 +730,8 @@ for index, experiment_name in enumerate(experiments):
             x=eval_constant['id_test'],
             y=eval_constant['ood_test'],
             xerr=eval_constant['id_test_ub']-eval_constant['id_test'],
-            yerr=eval_constant['ood_test_ub']-eval_constant['ood_test'], fmt="D",
-            color=color_constant, ecolor=color_constant,
+            yerr=eval_constant['ood_test_ub']-eval_constant['ood_test'], fmt='X',
+            color=color_constant, ecolor=color_error,
             markersize=markersize, capsize=capsize, label="constant")
     # ax[0].hlines(y=eval_constant['ood_test'].values[0], xmin=eval_constant['ood_test'].values[0], xmax=eval_constant['id_test'].values[0],
     #             color=color_constant, linewidth=linewidth_shift, alpha=0.7)
@@ -738,7 +754,7 @@ for index, experiment_name in enumerate(experiments):
                 y=markers['ood_test'],
                 xerr=markers['id_test_ub']-markers['id_test'],
                 yerr=markers['ood_test_ub']-markers['ood_test'], fmt="s",
-                color=color_all, ecolor=color_all,
+                color=color_all, ecolor=color_error,
                 markersize=markersize, capsize=capsize, label="all")
     # highlight bar
     shift = markers
@@ -765,7 +781,7 @@ for index, experiment_name in enumerate(experiments):
                 y=markers['ood_test'],
                 xerr=markers['id_test_ub']-markers['id_test'],
                 yerr=markers['ood_test_ub']-markers['ood_test'], fmt="o",
-                color=color_causal, ecolor=color_causal,
+                color=color_causal, ecolor=color_error,
                 markersize=markersize, capsize=capsize, label="causal")
     # highlight bar
     shift = markers
@@ -793,8 +809,8 @@ for index, experiment_name in enumerate(experiments):
                     x=markers['id_test'],
                     y=markers['ood_test'],
                     xerr=markers['id_test_ub']-markers['id_test'],
-                    yerr=markers['ood_test_ub']-markers['ood_test'], fmt="H",
-                    color=color_arguablycausal, ecolor=color_arguablycausal,
+                    yerr=markers['ood_test_ub']-markers['ood_test'], fmt='D',
+                    color=color_arguablycausal, ecolor=color_error,
                     markersize=markersize, capsize=capsize, label="arguably\ncausal")
         # highlight bar
         shift = markers
@@ -824,7 +840,7 @@ for index, experiment_name in enumerate(experiments):
                     y=markers['ood_test'],
                     xerr=markers['id_test_ub']-markers['id_test'],
                     yerr=markers['ood_test_ub']-markers['ood_test'], fmt="v" if causalml == "irm" else "^",
-                    color=eval(f"color_{causalml}"), ecolor=eval(f"color_{causalml}"), 
+                    color=eval(f"color_{causalml}"), ecolor=color_error,
                     markersize=markersize, capsize=capsize, label="causal ml")
         # highlight bar
     
@@ -853,7 +869,7 @@ for index, experiment_name in enumerate(experiments):
     ax[0].fill_between([xmin, eval_constant['id_test'].values[0]],
                      [ymin,ymin],
                      [eval_constant['ood_test'].values[0],eval_constant['ood_test'].values[0]],
-                        color=color_constant, alpha=0.1)
+                        color=color_constant, alpha=0.05)
     
     #############################################################################
     # plot pareto dominated area for all features
@@ -875,7 +891,7 @@ for index, experiment_name in enumerate(experiments):
     points = pd.concat([points,new_row], ignore_index=True)
     points = points.to_numpy()
     hull = ConvexHull(points)
-    ax[0].fill(points[hull.vertices, 0], points[hull.vertices, 1], color=color_all,alpha=0.1)
+    ax[0].fill(points[hull.vertices, 0], points[hull.vertices, 1], color=color_all,alpha=0.05)
 
     #############################################################################
     # plot pareto dominated area for causal features
@@ -899,7 +915,7 @@ for index, experiment_name in enumerate(experiments):
     points = pd.concat([points,new_row], ignore_index=True)
     points = points.to_numpy()
     hull = ConvexHull(points)
-    ax[0].fill(points[hull.vertices, 0], points[hull.vertices, 1], color=color_causal,alpha=0.1)
+    ax[0].fill(points[hull.vertices, 0], points[hull.vertices, 1], color=color_causal,alpha=0.05)
 
     #############################################################################
     # plot pareto dominated area for arguablycausal features
@@ -922,7 +938,7 @@ for index, experiment_name in enumerate(experiments):
         points = pd.concat([points,new_row], ignore_index=True)
         points = points.to_numpy()
         hull = ConvexHull(points)
-        ax[0].fill(points[hull.vertices, 0], points[hull.vertices, 1], color=color_arguablycausal,alpha=0.1)
+        ax[0].fill(points[hull.vertices, 0], points[hull.vertices, 1], color=color_arguablycausal,alpha=0.05)
 
     #############################################################################
     # plot pareto dominated area for causalml
@@ -945,7 +961,7 @@ for index, experiment_name in enumerate(experiments):
         points = pd.concat([points,new_row], ignore_index=True)
         points = points.to_numpy()
         hull = ConvexHull(points)
-        ax[0].fill(points[hull.vertices, 0], points[hull.vertices, 1], color=eval(f"color_{causalml}"),alpha=0.1)
+        ax[0].fill(points[hull.vertices, 0], points[hull.vertices, 1], color=eval(f"color_{causalml}"),alpha=0.05)
     #############################################################################
     # Add legend & diagonal, save plot
     #############################################################################
@@ -973,7 +989,7 @@ for index, experiment_name in enumerate(experiments):
     # barlist = ax[1].bar(shift["type"], shift["ood_test"]-ymin,
     #                           yerr=shift['ood_test_ub']-shift['ood_test'],
     #                           color=[color_all,color_arguablycausal,color_causal]+[color_irm,color_vrex,]+[color_constant],
-    #                           ecolor=color_error,align='center', capsize=10,
+    #                           ecolor=color_error,
     #                           bottom=ymin)
     # ax[1].tick_params(axis='x', labelrotation = 90)
     # #############################################################################
@@ -987,7 +1003,7 @@ for index, experiment_name in enumerate(experiments):
     # shift['gap_var'] = shift['id_test_var']+shift['ood_test_var']
     # barlist = ax[2].bar(shift["type"], shift["gap"],
     #                   yerr=shift['gap_var']**0.5,
-    #                   ecolor=color_error,align='center', capsize=10,
+    #                   ecolor=color_error,
     #                   color=[color_all,color_arguablycausal,color_causal]+[color_irm,color_vrex]+[color_constant])
     # ax[2].tick_params(axis='x', labelrotation = 90)
     #############################################################################
@@ -997,7 +1013,7 @@ for index, experiment_name in enumerate(experiments):
         ax[1].set_xlabel("shift gap")
         ax[1].set_ylabel("out-of-domain accuracy")
         shift_acc = pd.concat(dic_shift_acc.values(), ignore_index=True)
-        markers = {'constant': 'D','all': 's', 'causal': 'o', 'arguablycausal':'H', 'irm':"v", "vrex": "^"}
+        markers = {'constant': 'X','all': 's', 'causal': 'o', 'arguablycausal':'D', 'irm':"v", "vrex": "^"}
         for type, marker in markers.items():
             type_shift = shift_acc[shift_acc['type']==type]
             type_shift['id_test_var'] = ((type_shift['id_test_ub']-type_shift['id_test']))**2
@@ -1009,7 +1025,7 @@ for index, experiment_name in enumerate(experiments):
                          y=type_shift["ood_test"],
                          xerr= type_shift['gap_var']**0.5,
                          yerr= type_shift['ood_test_ub']-type_shift['ood_test'],
-                        color=eval(f"color_{type}"), ecolor=eval(f"color_{type}"),
+                        color=eval(f"color_{type}"), ecolor=color_error,
                         fmt=marker, markersize=markersize, capsize=capsize,  label="arguably\ncausal" if type == 'arguablycausal' else f"{type}",
                         zorder=3)
         xmin, xmax = ax[1].get_xlim()
@@ -1031,7 +1047,7 @@ for index, experiment_name in enumerate(experiments):
             points = pd.concat([points,new_row], ignore_index=True)
             points = points.to_numpy()
             hull = ConvexHull(points)
-            ax[1].fill(points[hull.vertices, 0], points[hull.vertices, 1], color=eval(f"color_{type}"),alpha=0.1)
+            ax[1].fill(points[hull.vertices, 0], points[hull.vertices, 1], color=eval(f"color_{type}"),alpha=0.05)
 
 list_color_causalml = list_color.copy()
 list_color_causalml.remove(color_constant)
@@ -1050,7 +1066,8 @@ list_lab_causalml.append("REx")
 list_lab_causalml.append("Constant")
 fig.legend(list(zip(list_color_causalml,list_mak_causalml)), list_lab_causalml, 
           handler_map={tuple:MarkerHandler()},loc='upper center', bbox_to_anchor=(0.5, -0.1),fancybox=True, ncol=6)
-fig.gca().yaxis.set_major_formatter(StrMethodFormatter('{x:,.2f}')) # 2 decimal places
+
+
 fig.savefig(str(Path(__file__).parents[0]/f"plots_paper/plot_main_causalml.pdf"), bbox_inches='tight')
 
 
@@ -1074,6 +1091,7 @@ ax1 = subfig1.subplots(1, 2, gridspec_kw={'width_ratios':[0.5,0.5]})       # cre
 axes = (ax1,)
 
 for index, experiment_name in enumerate(experiments):
+    sns.set_style('whitegrid')
     subfig = subfigs[index]
     subfig.subplots_adjust(wspace=0.3)
     ax = axes[index]
@@ -1085,6 +1103,11 @@ for index, experiment_name in enumerate(experiments):
     dic_shift = {}
     dic_shift_acc ={}
 
+    ax[0].xaxis.set_major_formatter(FormatStrFormatter('%.3f'))
+    ax[0].yaxis.set_major_formatter(FormatStrFormatter('%.3f'))
+    ax[1].xaxis.set_major_formatter(FormatStrFormatter('%.3f'))
+    ax[1].yaxis.set_major_formatter(FormatStrFormatter('%.3f'))
+
     ax[0].set_xlabel(f"in-domain accuracy") #\n({dic_id_domain[experiment_name]})")
     ax[0].set_ylabel(f"out-of-domain accuracy") #\n({dic_ood_domain[experiment_name]})")
 
@@ -1095,8 +1118,8 @@ for index, experiment_name in enumerate(experiments):
             x=eval_constant['id_test'],
             y=eval_constant['ood_test'],
             xerr=eval_constant['id_test_ub']-eval_constant['id_test'],
-            yerr=eval_constant['ood_test_ub']-eval_constant['ood_test'], fmt="D",
-            color=color_constant, ecolor=color_constant,
+            yerr=eval_constant['ood_test_ub']-eval_constant['ood_test'], fmt='X',
+            color=color_constant, ecolor=color_error,
             markersize=markersize, capsize=capsize, label="constant")
     # ax[0].hlines(y=eval_constant['ood_test'].values[0], xmin=eval_constant['ood_test'].values[0], xmax=eval_constant['id_test'].values[0],
     #             color=color_constant, linewidth=linewidth_shift, alpha=0.7)
@@ -1122,7 +1145,7 @@ for index, experiment_name in enumerate(experiments):
                 y=markers['ood_test'],
                 xerr=markers['id_test_ub']-markers['id_test'],
                 yerr=markers['ood_test_ub']-markers['ood_test'], fmt="s",
-                color=color_all, ecolor=color_all,
+                color=color_all, ecolor=color_error,
                 markersize=markersize, capsize=capsize, label="all")
     # highlight bar
     shift = eval_plot[mask]
@@ -1154,7 +1177,7 @@ for index, experiment_name in enumerate(experiments):
                 y=markers['ood_test'],
                 xerr=markers['id_test_ub']-markers['id_test'],
                 yerr=markers['ood_test_ub']-markers['ood_test'], fmt="o",
-                color=color_causal, ecolor=color_causal,
+                color=color_causal, ecolor=color_error,
                 markersize=markersize, capsize=capsize, label="causal")
     # highlight bar
     shift = eval_plot[mask]
@@ -1185,8 +1208,8 @@ for index, experiment_name in enumerate(experiments):
                     x=markers['id_test'],
                     y=markers['ood_test'],
                     xerr=markers['id_test_ub']-markers['id_test'],
-                    yerr=markers['ood_test_ub']-markers['ood_test'], fmt="H",
-                    color=color_arguablycausal, ecolor=color_arguablycausal,
+                    yerr=markers['ood_test_ub']-markers['ood_test'], fmt='D',
+                    color=color_arguablycausal, ecolor=color_error,
                     markersize=markersize, capsize=capsize, label="arguably\ncausal")
         # highlight bar
         shift = eval_plot[mask]
@@ -1219,7 +1242,7 @@ for index, experiment_name in enumerate(experiments):
                     y=markers['ood_test'],
                     xerr=markers['id_test_ub']-markers['id_test'],
                     yerr=markers['ood_test_ub']-markers['ood_test'], fmt="P",
-                    color=color_anticausal, ecolor=color_anticausal,
+                    color=color_anticausal, ecolor=color_error,
                     markersize=markersize, capsize=capsize, label="anticausal")
         # highlight bar
         shift = eval_plot[mask]
@@ -1246,7 +1269,7 @@ for index, experiment_name in enumerate(experiments):
     ax[0].fill_between([xmin, eval_constant['id_test'].values[0]],
                      [ymin,ymin],
                      [eval_constant['ood_test'].values[0],eval_constant['ood_test'].values[0]],
-                        color=color_constant, alpha=0.1)
+                        color=color_constant, alpha=0.05)
     
     #############################################################################
     # plot pareto dominated area for all features
@@ -1267,7 +1290,7 @@ for index, experiment_name in enumerate(experiments):
     points = pd.concat([points,new_row], ignore_index=True)
     points = points.to_numpy()
     hull = ConvexHull(points)
-    ax[0].fill(points[hull.vertices, 0], points[hull.vertices, 1], color=color_all,alpha=0.1)
+    ax[0].fill(points[hull.vertices, 0], points[hull.vertices, 1], color=color_all,alpha=0.05)
 
     #############################################################################
     # plot pareto dominated area for causal features
@@ -1290,7 +1313,7 @@ for index, experiment_name in enumerate(experiments):
     points = pd.concat([points,new_row], ignore_index=True)
     points = points.to_numpy()
     hull = ConvexHull(points)
-    ax[0].fill(points[hull.vertices, 0], points[hull.vertices, 1], color=color_causal,alpha=0.1)
+    ax[0].fill(points[hull.vertices, 0], points[hull.vertices, 1], color=color_causal,alpha=0.05)
 
     #############################################################################
     # plot pareto dominated area for arguablycausal features
@@ -1312,7 +1335,7 @@ for index, experiment_name in enumerate(experiments):
         points = pd.concat([points,new_row], ignore_index=True)
         points = points.to_numpy()
         hull = ConvexHull(points)
-        ax[0].fill(points[hull.vertices, 0], points[hull.vertices, 1], color=color_arguablycausal,alpha=0.1)
+        ax[0].fill(points[hull.vertices, 0], points[hull.vertices, 1], color=color_arguablycausal,alpha=0.05)
     
     #############################################################################
     # plot pareto dominated area for anticausal features
@@ -1335,7 +1358,7 @@ for index, experiment_name in enumerate(experiments):
         points = pd.concat([points,new_row], ignore_index=True)
         points = points.to_numpy()
         hull = ConvexHull(points)
-        ax[0].fill(points[hull.vertices, 0], points[hull.vertices, 1], color=color_anticausal,alpha=0.1)
+        ax[0].fill(points[hull.vertices, 0], points[hull.vertices, 1], color=color_anticausal,alpha=0.05)
     
     #############################################################################
     # Add legend & diagonal, save plot
@@ -1362,7 +1385,7 @@ for index, experiment_name in enumerate(experiments):
     #     ax[1].bar(shift["type"], shift["ood_test"]-ymin,
     #                           yerr=shift['ood_test_ub']-shift['ood_test'],
     #                           color=[color_all,color_arguablycausal,color_causal,color_anticausal,color_constant],
-    #                           ecolor=color_error,align='center', capsize=capsize,
+    #                           ecolor=color_error,
     #                           bottom=ymin)
     #     ax[1].tick_params(axis='x', labelrotation = 90)
         
@@ -1379,7 +1402,7 @@ for index, experiment_name in enumerate(experiments):
     #     ax[2].bar(shift["type"], shift["gap"],
     #                           yerr=shift['gap_var']**0.5,
     #                           color=[color_all,color_arguablycausal,color_causal,color_anticausal,color_constant],
-    #                           ecolor=color_error,align='center', capsize=capsize)
+    #                           ecolor=color_error,
     #     ax[2].tick_params(axis='x', labelrotation = 90)
 
     #############################################################################
@@ -1389,7 +1412,7 @@ for index, experiment_name in enumerate(experiments):
         ax[1].set_xlabel("shift gap")
         ax[1].set_ylabel("out-of-domain accuracy")
         shift_acc = pd.concat(dic_shift_acc.values(), ignore_index=True)
-        markers = {'constant': 'D','all': 's', 'causal': 'o', 'arguablycausal':'H', 'anticausal':'P'}
+        markers = {'constant': 'X','all': 's', 'causal': 'o', 'arguablycausal':'D', 'anticausal':'P'}
         for type, marker in markers.items():
             type_shift = shift_acc[shift_acc['type']==type]
             type_shift['id_test_var'] = ((type_shift['id_test_ub']-type_shift['id_test']))**2
@@ -1401,7 +1424,7 @@ for index, experiment_name in enumerate(experiments):
                          y=type_shift["ood_test"],
                          xerr= type_shift['gap_var']**0.5,
                          yerr= type_shift['ood_test_ub']-type_shift['ood_test'],
-                        color=eval(f"color_{type}"), ecolor=eval(f"color_{type}"),
+                        color=eval(f"color_{type}"), ecolor=color_error,
                         fmt=marker, markersize=markersize, capsize=capsize,  label="arguably\ncausal" if type == 'arguablycausal' else f"{type}",
                         zorder=3)
             
@@ -1424,7 +1447,7 @@ for index, experiment_name in enumerate(experiments):
             points = pd.concat([points,new_row], ignore_index=True)
             points = points.to_numpy()
             hull = ConvexHull(points)
-            ax[1].fill(points[hull.vertices, 0], points[hull.vertices, 1], color=eval(f"color_{type}"),alpha=0.1)
+            ax[1].fill(points[hull.vertices, 0], points[hull.vertices, 1], color=eval(f"color_{type}"),alpha=0.05)
 with open(str(Path(__file__).parents[0]/f"legend_anticausal.pkl"), 'rb') as f:
     legend = pickle.load(f)
 
@@ -1442,6 +1465,7 @@ list_lab_anticausal.append("Anticausal")
 list_lab_anticausal.append("Constant")
 fig.legend(list(zip(list_color_anticausal,list_mak_anticausal)), list_lab_anticausal, 
           handler_map={tuple:MarkerHandler()},loc='upper center', bbox_to_anchor=(0.5, -0.1),fancybox=True, ncol=5)
-fig.gca().yaxis.set_major_formatter(StrMethodFormatter('{x:,.2f}')) # 2 decimal places
+
+
 fig.savefig(str(Path(__file__).parents[0]/f"plots_paper/plot_main_anticausal.pdf"), bbox_inches='tight')
 # %%

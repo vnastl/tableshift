@@ -20,7 +20,7 @@ from  statsmodels.stats.proportion import proportion_confint
 from paretoset import paretoset
 from scipy.spatial import ConvexHull
 
-from experiments_vnastl.plot_config_colors import *
+from experiments_causal.plot_config_colors import *
 import warnings
 warnings.filterwarnings('ignore')
 
@@ -841,22 +841,22 @@ def plot_experiment(experiment_name):
 if __name__ == "__main__":
     completed_experiments = [
                             # "acsemployment", # old
-                            "acsfoodstamps",
-                            "acsincome",
-                            #  "acspubcov",
+                            # "acsfoodstamps",
+                            # "acsincome",
+                            # #  "acspubcov",
                             "acsunemployment",
-                            "anes",
-                            "assistments",
-                            "brfss_blood_pressure",
-                            "brfss_diabetes",
-                            "college_scorecard",
-                            "diabetes_readmission",
-                            "meps",
-                            "mimic_extract_mort_hosp",
-                            "mimic_extract_los_3",
-                            "nhanes_lead",
-                            "physionet",
-                            "sipp",
+                            # "anes",
+                            # "assistments",
+                            # "brfss_blood_pressure",
+                            # "brfss_diabetes",
+                            # "college_scorecard",
+                            # "diabetes_readmission",
+                            # "meps",
+                            # "mimic_extract_mort_hosp",
+                            # "mimic_extract_los_3",
+                            # "nhanes_lead",
+                            # "physionet",
+                            # "sipp",
                             ]
     for experiment_name in completed_experiments:
         plot_experiment(experiment_name)

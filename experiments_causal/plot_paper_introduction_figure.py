@@ -11,20 +11,22 @@ import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
 from matplotlib import cm
 from matplotlib.colors import ListedColormap
+import matplotlib.markers as mmark
 import matplotlib.gridspec as gridspec
 import seaborn as sns
 sns.set_context("paper", font_scale=1.75)
+sns.set_style("whitegrid")
 
 from tableshift import get_dataset
 from  statsmodels.stats.proportion import proportion_confint
 from paretoset import paretoset
 from scipy.spatial import ConvexHull
 
-from experiments_vnastl.plot_config_colors import *
-from experiments_vnastl.plot_experiment import get_results
-from experiments_vnastl.plot_experiment_balanced import get_results as get_results_balanced
-from experiments_vnastl.plot_experiment_causalml import get_results as get_results_causalml
-from experiments_vnastl.plot_experiment_anticausal import get_results as get_results_anticausal
+from experiments_causal.plot_config_colors import *
+from experiments_causal.plot_experiment import get_results
+from experiments_causal.plot_experiment_balanced import get_results as get_results_balanced
+from experiments_causal.plot_experiment_causalml import get_results as get_results_causalml
+from experiments_causal.plot_experiment_anticausal import get_results as get_results_anticausal
 import warnings
 warnings.filterwarnings('ignore')
 
@@ -53,7 +55,16 @@ dic_title = {
     "physionet": 'Sepsis',
     "sipp": 'Poverty',
 }
+list_mak = [mmark.MarkerStyle('s'),mmark.MarkerStyle('D'),mmark.MarkerStyle('o'),mmark.MarkerStyle('X')]
+list_lab = ['All','Arguably causal','Causal', 'Constant']
+list_color  = [color_all, color_arguablycausal, color_causal, color_constant]
 
+from matplotlib.legend_handler import HandlerBase
+class MarkerHandler(HandlerBase):
+    def create_artists(self, legend, tup,xdescent, ydescent,
+                        width, height, fontsize,trans):
+        return [plt.Line2D([width/2], [height/2.],ls="",
+                       marker=tup[1],markersize=markersize*1.5,color=tup[0], transform=trans)]
  #%%
 experiments = [
                 "acsfoodstamps",
@@ -93,58 +104,71 @@ for index, experiment_name in enumerate(experiments):
     dic_shift_acc ={}
 
 #%%
-fig = plt.figure(figsize=(12, 6))
-plt.xlabel(f"tasks")
-plt.ylabel(f"out-of-domain accuracy")
+fig = plt.figure(figsize=(10, 5))
+plt.xlabel(f"Tasks")
+plt.ylabel(f"Out-of-domain accuracy")
+
 #############################################################################
 # plot ood accuracy
 #############################################################################
-markers = {'constant': 'D','all': 's', 'causal': 'o', 'arguablycausal':'^'}
+markers = {'constant': 'X','all': 's', 'causal': 'o', 'arguablycausal':'D'}
 
 sets = list(eval_experiments["features"].unique())
 sets.sort()
-for set in sets:
+
+for index, set in enumerate(sets):
     eval_plot_features = eval_experiments[eval_experiments['features']==set]
+    eval_plot_features = eval_plot_features.sort_values('ood_test')
     plt.errorbar(
             x=eval_plot_features['task'],
             y=eval_plot_features['ood_test'],
             yerr=eval_plot_features['ood_test_ub']-eval_plot_features['ood_test'],
-            color=eval(f"color_{set}"), ecolor=eval(f"color_{set}"),fmt=markers[set],
-            markersize=markersize, capsize=capsize, label=set)
+            color=eval(f"color_{set}"), ecolor=color_error,
+            fmt=markers[set],
+            markersize=markersize, capsize=capsize, label=set.capitalize() if set != 'arguablycausal' else 'Arguably causal', zorder=len(sets)-index)
     # get pareto set for shift vs accuracy
     shift_acc = eval_plot_features
     shift_acc["type"] = set
-    shift_acc["gap"] = shift_acc["id_test"] - shift_acc["ood_test"]
+    shift_acc["gap"] =  shift_acc["ood_test"] - shift_acc["id_test"]
     shift_acc['id_test_var'] = ((shift_acc['id_test_ub']-shift_acc['id_test']))**2
     shift_acc['ood_test_var'] = ((shift_acc['ood_test_ub']-shift_acc['ood_test']))**2
     shift_acc['gap_var'] = shift_acc['id_test_var']+shift_acc['ood_test_var']
     dic_shift_acc[set] = shift_acc
 
 plt.tick_params(axis='x', labelrotation = 90)
-fig.legend(loc='upper center', bbox_to_anchor=(0.5, 1),fancybox=True, ncol=5)
 
-
+plt.legend(list(zip(list_color,list_mak)), list_lab, 
+          handler_map={tuple:MarkerHandler()},loc='upper center', bbox_to_anchor=(0.5, 1.2),fancybox=True, ncol=5)
+plt.ylim(top=1.0)
+plt.grid(axis='x')
 fig.savefig(str(Path(__file__).parents[0]/f"plots_paper/plot_introduction.pdf"), bbox_inches='tight')
 
 
 #%%
-fig = plt.figure(figsize=(12, 6))
-plt.xlabel(f"tasks")
-plt.ylabel(f"shift gap")
+fig = plt.figure(figsize=(10, 5))
+plt.xlabel(f"Tasks")
+plt.ylabel(f"Shift gap")
 #############################################################################
 # plot shift gap
 #############################################################################
 shift_acc = pd.concat(dic_shift_acc.values(), ignore_index=True)
 sets = list(eval_experiments["features"].unique())
 sets.sort()
-for set in sets:
+
+for index, set in enumerate(sets):
     shift_acc_plot = shift_acc[shift_acc['features']==set]
+    shift_acc_plot = shift_acc_plot.sort_values('ood_test')
     plt.errorbar(
             x=shift_acc_plot['task'],
             y=shift_acc_plot['gap'],
             yerr=shift_acc_plot['gap_var']**0.5,
-            color=eval(f"color_{set}"), ecolor=eval(f"color_{set}"),fmt=markers[set],
-            markersize=markersize, capsize=capsize, label=set)
+            color=eval(f"color_{set}"), ecolor=color_error,
+            fmt=markers[set],
+            markersize=markersize, capsize=capsize, label=set.capitalize() if set != 'arguablycausal' else 'Arguably causal', zorder=len(sets)-index)
+    
+plt.axhline(y=0, color='black', linestyle='--',)
 plt.tick_params(axis='x', labelrotation = 90)
-fig.legend(loc='upper center', bbox_to_anchor=(0.5, 1),fancybox=True, ncol=5)
+plt.legend(list(zip(list_color,list_mak)), list_lab, 
+          handler_map={tuple:MarkerHandler()},loc='upper center', bbox_to_anchor=(0.5, 1.2),fancybox=True, ncol=5)
+plt.grid(axis='x')
 fig.savefig(str(Path(__file__).parents[0]/f"plots_paper/plot_introduction_shift.pdf"), bbox_inches='tight')
