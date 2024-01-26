@@ -41,7 +41,7 @@ N_TRIALS    = 10
 # N_TRIALS    = 100
 
 # Cluster settings
-JOB_MIN_BID = 100    # htcondor bid (min. is 15 apparently...)
+JOB_MIN_BID = 30    # htcondor bid (min. is 15 apparently...)
 JOB_CPUS = 1     # number of CPUs per experiment (per cluster job)
 JOB_MEMORY_GB =  128  # GBs of memory
 BIG_JOB_MEMORY_GB = 256
@@ -204,17 +204,17 @@ for index in range(MEPS_FEATURES_CAUSAL_SUBSETS_NUMBER):
 for index in range(MEPS_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
         TASKS.append("meps_arguablycausal_test_"+f"{index}")
 
-for index in range(PHYSIONET_FEATURES_CAUSAL_SUBSETS_NUMBER):
-        TASKS.append("physionet_causal_test_"+f"{index}")
+# for index in range(PHYSIONET_FEATURES_CAUSAL_SUBSETS_NUMBER):
+#         TASKS.append("physionet_causal_test_"+f"{index}")
 
-for index in range(PHYSIONET_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
-        TASKS.append("physionet_arguablycausal_test_"+f"{index}")
+# for index in range(PHYSIONET_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
+#         TASKS.append("physionet_arguablycausal_test_"+f"{index}")
 
-for index in range(NHANES_LEAD_FEATURES_CAUSAL_SUBSETS_NUMBER):
-        TASKS.append("nhanes_lead_causal_test_"+f"{index}")
+# for index in range(NHANES_LEAD_FEATURES_CAUSAL_SUBSETS_NUMBER):
+#         TASKS.append("nhanes_lead_causal_test_"+f"{index}")
 
-for index in range(NHANES_LEAD_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
-        TASKS.append("nhanes_lead_arguablycausal_test_"+f"{index}")
+# for index in range(NHANES_LEAD_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
+#         TASKS.append("nhanes_lead_arguablycausal_test_"+f"{index}")
 
 # Useful directories
 if __name__ == '__main__':
