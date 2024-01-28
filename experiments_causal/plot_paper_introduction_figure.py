@@ -56,8 +56,9 @@ dic_title = {
     "sipp": 'Poverty',
 }
 list_mak = [mmark.MarkerStyle('s'),mmark.MarkerStyle('D'),mmark.MarkerStyle('o'),mmark.MarkerStyle('X')]
-list_lab = ['All','Arguably causal','Causal', 'Constant']
-list_color  = [color_all, color_arguablycausal, color_causal, color_constant]
+list_lines = ["","","",""]
+list_lab = ['All','Arguably causal','Causal', 'Constant',]
+list_color  = [color_all, color_arguablycausal, color_causal, color_constant,]
 
 from matplotlib.legend_handler import HandlerBase
 class MarkerHandler(HandlerBase):
@@ -137,8 +138,8 @@ for index, set in enumerate(sets):
 
 plt.tick_params(axis='x', labelrotation = 90)
 
-plt.legend(list(zip(list_color,list_mak)), list_lab, 
-          handler_map={tuple:MarkerHandler()},loc='upper center', bbox_to_anchor=(0.5, 1.2),fancybox=True, ncol=5)
+plt.legend(list(zip(list_color,list_mak,list_lines)), list_lab, 
+          handler_map={tuple:MarkerHandler()},loc='upper center', bbox_to_anchor=(0.5, 1.2),fancybox=True, ncol=4)
 plt.ylim(top=1.0)
 plt.grid(axis='x')
 fig.savefig(str(Path(__file__).parents[0]/f"plots_paper/plot_introduction.pdf"), bbox_inches='tight')
@@ -147,7 +148,7 @@ fig.savefig(str(Path(__file__).parents[0]/f"plots_paper/plot_introduction.pdf"),
 #%%
 fig = plt.figure(figsize=(10, 5))
 plt.xlabel(f"Tasks")
-plt.ylabel(f"Shift gap")
+plt.ylabel(f"Shift gap (higher better)")
 #############################################################################
 # plot shift gap
 #############################################################################
@@ -168,7 +169,13 @@ for index, set in enumerate(sets):
     
 plt.axhline(y=0, color='black', linestyle='--',)
 plt.tick_params(axis='x', labelrotation = 90)
-plt.legend(list(zip(list_color,list_mak)), list_lab, 
+
+list_mak.append("_")
+list_lines.append("")
+list_lab.append('Same performance')
+list_color.append("black")
+plt.legend(list(zip(list_color,list_mak,list_lines)), list_lab, 
           handler_map={tuple:MarkerHandler()},loc='upper center', bbox_to_anchor=(0.5, 1.2),fancybox=True, ncol=5)
+
 plt.grid(axis='x')
 fig.savefig(str(Path(__file__).parents[0]/f"plots_paper/plot_introduction_shift.pdf"), bbox_inches='tight')
