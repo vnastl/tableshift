@@ -365,7 +365,7 @@ for index, experiment_name in enumerate(experiments):
                          y=type_shift["ood_test"],
                          xerr= type_shift['gap_var']**0.5,
                          yerr= type_shift['ood_test_ub']-type_shift['ood_test'],
-                         color=eval(f"color_{type}"), ecolor=color_error, alpha=0.7,
+                         color=eval(f"color_{type}"), ecolor=color_error,
                          fmt=marker, markersize=markersize, capsize=capsize,  label="arguably\ncausal" if type == 'arguablycausal' else f"{type}",
                          zorder=3)
         xmin, xmax = ax[1].get_xlim()

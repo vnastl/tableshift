@@ -151,7 +151,7 @@ ax[0].grid(axis='y')
 
 
 ax[1].set_xlabel(f"Tasks")
-ax[1].set_ylabel(f"Shift gap (higher better)")
+ax[1].set_ylabel(f"Shift gap (higher is better)")
 #############################################################################
 # plot shift gap
 #############################################################################
@@ -181,6 +181,6 @@ list_lab.append('Same performance')
 list_color.append("black")
 # plt.tight_layout()
 fig.legend(list(zip(list_color,list_mak,list_lines)), list_lab, 
-          handler_map={tuple:MarkerHandler()},loc='upper center', bbox_to_anchor=(0.5, 1.1),fancybox=True, ncol=5)
+          handler_map={tuple:MarkerHandler()},loc='lower center', bbox_to_anchor=(0.5, -0.9),fancybox=True, ncol=5)
 
 fig.savefig(str(Path(__file__).parents[0]/f"plots_paper/plot_introduction.pdf"), bbox_inches='tight')
