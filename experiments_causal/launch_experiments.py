@@ -217,7 +217,6 @@ for index in range(NHANES_LEAD_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
 # Useful directories
 if __name__ == '__main__':
     ROOT_DIR = Path("/home")
-    # ROOT_DIR = Path("/Users/vnastl/Seafile/My Library/mpi project causal vs noncausal/causal-vs-noncausal/code")
 
     # Data directory
     DATA_DIR = ROOT_DIR / "fast/vnastl/data"
