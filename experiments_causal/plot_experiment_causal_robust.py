@@ -68,7 +68,7 @@ dic_robust_number = {
     "acspubcov": ACS_PUBCOV_FEATURES_CAUSAL_SUBSETS_NUMBER,
     "meps": MEPS_FEATURES_CAUSAL_SUBSETS_NUMBER,
     "physionet": PHYSIONET_FEATURES_CAUSAL_SUBSETS_NUMBER,
-    "nhanes_lead": NHANES_LEAD_FEATURES_CAUSAL_SUBSETS_NUMBER,
+    "nhanes_lead": 1,#NHANES_LEAD_FEATURES_CAUSAL_SUBSETS_NUMBER,
 }
 
 dic_experiments = {

@@ -16,7 +16,8 @@ from matplotlib.ticker import StrMethodFormatter
 from matplotlib.ticker import FormatStrFormatter
 import matplotlib.gridspec as gridspec
 import seaborn as sns
-sns.set_context("paper", font_scale=1.75)
+sns.set_context("paper")
+sns.set_style("white")
 
 from tableshift import get_dataset
 from  statsmodels.stats.proportion import proportion_confint
@@ -38,6 +39,7 @@ warnings.filterwarnings('ignore')
 
 plt.rcParams['figure.dpi'] = 300
 plt.rcParams['savefig.dpi'] = 1200
+# plt.rcParams['font.size'] = 6
 
 import os
 os.chdir("/Users/vnastl/Seafile/My Library/mpi project causal vs noncausal/tableshift")
@@ -76,35 +78,37 @@ class MarkerHandler(HandlerBase):
 experiments = [
                             "acsfoodstamps",
                             "acsincome",
-                            "acspubcov",
+                            # "acspubcov",
                             "acsunemployment",
                             "anes",
-                            "assistments",
+                            # "assistments",
                             "brfss_blood_pressure",
                             "brfss_diabetes",
-                            "college_scorecard",
+                            # "college_scorecard",
                             "diabetes_readmission",
-                            "meps",
-                            "mimic_extract_mort_hosp",
-                            "mimic_extract_los_3",
+                            # "meps",
+                            # "mimic_extract_mort_hosp",
+                            # "mimic_extract_los_3",
                             "nhanes_lead",
-                            "physionet",
+                            # "physionet",
                             "sipp",
                             ]
 
 for index, experiment_name in enumerate(experiments):
-    sns.set_style('whitegrid')
-    fig = plt.figure(figsize=(8*3, 4.8*2))
-    sns.set_style('whitegrid')
-    subfig1, subfig2 = fig.subfigures(2, 1, hspace=0.1) # create 4x1 subfigures
+    # sns.set_style('white')
+    # fig = plt.figure(figsize=[6.75, 4])
+    # sns.set_style('white')
+    
+    # , subfig2 = fig.subfigures(2, 1, hspace=0.2, height_ratios=[1, 2]) # create 4x1 subfigures
 
-    subfigs = (subfig1,subfig2)
-    sns.set_style('whitegrid')
+    # subfigs = (subfig1,subfig2)
+    # sns.set_style('white')
     for ax_index in range(2):
 
         if ax_index ==0:
-            sns.set_style('whitegrid')
-            ax = subfig1.subplots(1, 3, gridspec_kw={'width_ratios':[0.3,0.3,0.3],'hspace':0.5, 'wspace':0.3})       # create 3x2 subplots on fig
+            sns.set_style('white')
+            subfig1 = plt.figure(figsize=[6.75, 1.75])
+            ax = subfig1.subplots(1, 3, gridspec_kw={'width_ratios':[0.3,0.3,0.3], 'wspace':0.6, 'top':0.8})       # create 3x2 subplots on fig
         
             eval_all, causal_features, extra_features = get_results(experiment_name)
             eval_constant = eval_all[eval_all['features']=="constant"]
@@ -118,8 +122,8 @@ for index, experiment_name in enumerate(experiments):
             ax[2].xaxis.set_major_formatter(FormatStrFormatter('%.3f'))
             ax[2].yaxis.set_major_formatter(FormatStrFormatter('%.3f'))
 
-            ax[0].set_xlabel(f"in-domain accuracy") #\n({dic_id_domain[experiment_name]})")
-            ax[0].set_ylabel(f"out-of-domain accuracy") #\n({dic_ood_domain[experiment_name]})")
+            ax[0].set_xlabel(f"Id accuracy") #\n({dic_id_domain[experiment_name]})")
+            ax[0].set_ylabel(f"Ood accuracy") #\n({dic_ood_domain[experiment_name]})")
 
             #############################################################################
             # plot errorbars and shift gap for constant
@@ -329,7 +333,7 @@ for index, experiment_name in enumerate(experiments):
             # #############################################################################
             # # Plot ood accuracy as bars
             # #############################################################################
-            # ax[0,1].set_ylabel("out-of-domain accuracy")
+            # ax[0,1].set_ylabel("Ood accuracy")
             # # add constant shift gap
             # shift = eval_constant
             # shift["type"] = "constant"
@@ -367,10 +371,10 @@ for index, experiment_name in enumerate(experiments):
             # Plot shift gap vs accuarcy
             #############################################################################
             if (eval_all['features'] == "arguablycausal").any():
-                ax[1].set_xlabel("1 - shift gap")
-                ax[1].set_ylabel("out-of-domain accuracy")
+                ax[1].set_xlabel("Shift gap")
+                ax[1].set_ylabel("Ood accuracy")
                 shift_acc = pd.concat(dic_shift_acc.values(), ignore_index=True)
-                markers = {'constant': 'D','all': 's', 'causal': 'o', 'arguablycausal':'^'}
+                markers = {'constant': 'X', 'causal': 'o', 'arguablycausal':'D','all': 's',}
                 for type, marker in markers.items():
                     type_shift = shift_acc[shift_acc['type']==type]
                     type_shift['id_test_var'] = ((type_shift['id_test_ub']-type_shift['id_test']))**2
@@ -378,11 +382,11 @@ for index, experiment_name in enumerate(experiments):
                     type_shift['gap_var'] = type_shift['id_test_var']+type_shift['ood_test_var']
 
                     # Get markers
-                    ax[1].errorbar(x=1-type_shift["gap"],
+                    ax[1].errorbar(x=-type_shift["gap"],
                                 y=type_shift["ood_test"],
                                 xerr= type_shift['gap_var']**0.5,
                                 yerr= type_shift['ood_test_ub']-type_shift['ood_test'],
-                                color=eval(f"color_{type}"), ecolor=eval(f"color_{type}"),
+                                color=eval(f"color_{type}"), ecolor=color_error,
                                 fmt=marker, markersize=markersize, capsize=capsize,  label="arguably\ncausal" if type == 'arguablycausal' else f"{type}",
                                 zorder=3)
                 xmin, xmax = ax[1].get_xlim()
@@ -390,28 +394,28 @@ for index, experiment_name in enumerate(experiments):
                 for type, marker in markers.items():
                     type_shift = shift_acc[shift_acc['type']==type]
                     # Get 1 - shift gap
-                    type_shift["1-gap"] = 1-type_shift['gap']
+                    type_shift["-gap"] = -type_shift['gap']
                     # Calculate the pareto set
-                    points = type_shift[['1-gap','ood_test']]
+                    points = type_shift[['-gap','ood_test']]
                     mask = paretoset(points, sense=["max", "max"])
                     points = points[mask]
                     #get extra points for the plot
-                    new_row = pd.DataFrame({'1-gap':[xmin,max(points['1-gap'])], 'ood_test':[max(points['ood_test']),ymin]},)
+                    new_row = pd.DataFrame({'-gap':[xmin,max(points['-gap'])], 'ood_test':[max(points['ood_test']),ymin]},)
                     points = pd.concat([points,new_row], ignore_index=True)
-                    points.sort_values('1-gap',inplace=True)
-                    ax[1].plot(points['1-gap'],points['ood_test'],color=eval(f"color_{type}"),linestyle=(0, (1, 1)),linewidth=linewidth_bound)
-                    new_row = pd.DataFrame({'1-gap':[xmin], 'ood_test':[ymin]},)
+                    points.sort_values('-gap',inplace=True)
+                    ax[1].plot(points['-gap'],points['ood_test'],color=eval(f"color_{type}"),linestyle=(0, (1, 1)),linewidth=linewidth_bound)
+                    new_row = pd.DataFrame({'-gap':[xmin], 'ood_test':[ymin]},)
                     points = pd.concat([points,new_row], ignore_index=True)
                     points = points.to_numpy()
                     hull = ConvexHull(points)
-                    ax[1].fill(points[hull.vertices, 0], points[hull.vertices, 1], color=eval(f"color_{type}"),alpha=0.1)
-            
+                    ax[1].fill(points[hull.vertices, 0], points[hull.vertices, 1], color=eval(f"color_{type}"),alpha=0.05)
+
             eval_all, causal_features, extra_features = get_results_balanced(experiment_name)
             eval_constant = eval_all[eval_all['features']=="constant"]
             dic_shift = {}
 
-            ax[2].set_xlabel(f"balanced in-domain accuracy") #\n({dic_id_domain[experiment_name]})")
-            ax[2].set_ylabel(f"balanced out-of-domain accuracy") #\n({dic_ood_domain[experiment_name]})")
+            ax[2].set_xlabel(f"Balanced id accuracy") #\n({dic_id_domain[experiment_name]})")
+            ax[2].set_ylabel(f"Balanced\nood accuracy") #\n({dic_ood_domain[experiment_name]})")
 
             #############################################################################
             # plot errorbars and shift gap for constant
@@ -605,7 +609,7 @@ for index, experiment_name in enumerate(experiments):
             # #############################################################################
             # # Plot ood accuracy as bars
             # #############################################################################
-            # ax[2,1].set_ylabel("balanced out-of-domain accuracy")
+            # ax[2,1].set_ylabel("balanced Ood accuracy")
 
             # # add constant shift gap
             # shift = eval_constant
@@ -623,11 +627,22 @@ for index, experiment_name in enumerate(experiments):
             #                           ecolor=color_error,align='center', capsize=10,
             #                           bottom=ymin)
             #     ax[2,1].tick_params(axis='x', labelrotation = 90)
+            list_mak_results = list_mak.copy()
+            list_mak_results.append("_")
+            list_lab_results = list_lab.copy()
+            list_lab_results.append('Diagonal')
+            list_color_results = list_color.copy()
+            list_color_results.append("black")
+            subfig1.legend(list(zip(list_color_results,list_mak_results)), list_lab_results,
+                handler_map={tuple:MarkerHandler()},loc='upper center', bbox_to_anchor=(0.5, 1.1),fancybox=True, ncol=5)
+            # plt.tight_layout()
+            subfig1.savefig(str(Path(__file__).parents[0]/f"plots_paper/plot_appendix_{experiment_name}.pdf"), bbox_inches='tight')
         else:
-            sns.set_style('whitegrid')
-            ax = subfig2.subplots(2, 2, gridspec_kw={'width_ratios':[0.3,0.3],'hspace':0.5, 'wspace':0.3})
+            sns.set_style('white')
+            subfig2 = plt.figure(figsize=[6.75, 3])
+            ax = subfig2.subplots(2, 2, gridspec_kw={'width_ratios':[0.3,0.3],'hspace':1, 'wspace':0.4,'top':0.85})
         # plt.suptitle(dic_title[experiment_name])        # set suptitle for subfig1
-            if (Path(__file__).parents[0]  / "results" / f"{experiment_name}_causal_test_0").is_dir():
+            if (Path(__file__).parents[0]  / "results" / f"{experiment_name}_causal_test_0").is_dir() :
                 eval_all, _ = get_results_causal_robust(experiment_name)
                 eval_constant = eval_all[eval_all['features']=="constant"]
                 dic_shift = {}
@@ -635,7 +650,7 @@ for index, experiment_name in enumerate(experiments):
                 ax[0,0].yaxis.set_major_formatter(FormatStrFormatter('%.3f'))
                 ax[0,1].yaxis.set_major_formatter(FormatStrFormatter('%.3f'))
 
-                ax[0,0].set_ylabel(f"Out-of-domain\naccuracy") #\n({dic_ood_domain[experiment_name]})")
+                ax[0,0].set_ylabel(f"Ood accuracy") #\n({dic_ood_domain[experiment_name]})")
                 #############################################################################
                 # plot errorbars and shift gap for constant
                 #############################################################################
@@ -650,7 +665,7 @@ for index, experiment_name in enumerate(experiments):
                 mask = paretoset(points, sense=["max", "max"])
                 shift = eval_plot[mask]
                 shift = shift[shift["ood_test"] == shift["ood_test"].max()]
-                shift["type"] = "all"
+                shift["type"] = "All"
                 dic_shift["all"] = shift
                 
                 #############################################################################
@@ -663,7 +678,7 @@ for index, experiment_name in enumerate(experiments):
                 mask = paretoset(points, sense=["max", "max"])
                 shift = eval_plot[mask]
                 shift = shift[shift["ood_test"] == shift["ood_test"].max()]
-                shift["type"] = "causal"
+                shift["type"] = "Causal"
                 dic_shift["causal"] = shift
 
                 #############################################################################
@@ -679,7 +694,7 @@ for index, experiment_name in enumerate(experiments):
                         points = points[mask]
                         shift = eval_plot[mask]
                         shift = shift[shift["ood_test"] == shift["ood_test"].max()]
-                        shift["type"] = f"test {index}"
+                        shift["type"] = f"Test {index}"
                         dic_shift[f"test{index}"] = shift
                         
                 #############################################################################
@@ -687,20 +702,21 @@ for index, experiment_name in enumerate(experiments):
                 #############################################################################
                 # plt.title(
                 # f"{dic_title[experiment_name]}")
-                ax[0,0].set_ylabel("Out-of-domain\naccuracy")
+                ax[0,0].set_ylabel("Ood accuracy")
 
                 # add constant shift gap
                 shift = eval_constant
-                shift["type"] = "constant"
+                shift["type"] = "Constant"
                 dic_shift["constant"] = shift
 
                 shift = pd.concat(dic_shift.values(), ignore_index=True)
+                shift.drop_duplicates(inplace=True)
                 # shift["gap"] = shift["id_test"] - shift["ood_test"]
-                barlist = ax[0,0].bar(shift["type"], shift["ood_test"]-ymin,
+                barlist = ax[0,0].bar(shift["type"], shift["ood_test"]-eval_constant['ood_test'].values[0]+0.01, #0.3 for assistment and public coverage
                                         yerr=shift['ood_test_ub']-shift['ood_test'],
                                         color=[color_all,color_causal]+[color_causal_robust for index in range(dic_robust_number_causal[experiment_name])]+[color_constant],
-                                        ecolor=color_error,align='center', capsize=5,
-                                        bottom=ymin)
+                                        ecolor=color_error,align='center', capsize=capsize,
+                                        bottom=eval_constant['ood_test'].values[0]-0.01)
                 ax[0,0].tick_params(axis='x', labelrotation = 90)
 
                 #############################################################################
@@ -716,11 +732,11 @@ for index, experiment_name in enumerate(experiments):
                 shift['ood_test_var'] = ((shift['ood_test_ub']-shift['ood_test']))**2
                 shift['gap_var'] = shift['id_test_var']+shift['ood_test_var']
                 barlist = ax[0,1].bar(shift["type"], -shift["gap"],
-                                yerr=shift['gap_var']**0.5,ecolor=color_error,align='center', capsize=5,
+                                yerr=shift['gap_var']**0.5,ecolor=color_error,align='center', capsize=capsize,
                                 color=[color_all,color_causal]+[color_causal_robust for index in range(dic_robust_number_causal[experiment_name])]+[color_constant])
                 ax[0,1].tick_params(axis='x', labelrotation = 90)
 
-                ax[1,0].set_ylabel("Out-of-domain\naccuracy")
+                ax[1,0].set_ylabel("Ood accuracy")
                 ax[1,1].set_ylabel("Shift gap")
             if (Path(__file__).parents[0]  / "results" / f"{experiment_name}_arguablycausal_test_0").is_dir():
                 eval_all, _ = get_results_arguablycausal_robust(experiment_name)
@@ -744,7 +760,7 @@ for index, experiment_name in enumerate(experiments):
                 mask = paretoset(points, sense=["max", "max"])
                 shift = eval_plot[mask]
                 shift = shift[shift["ood_test"] == shift["ood_test"].max()]
-                shift["type"] = "all"
+                shift["type"] = "All"
                 dic_shift["all"] = shift
                 
                 #############################################################################
@@ -757,7 +773,7 @@ for index, experiment_name in enumerate(experiments):
                 mask = paretoset(points, sense=["max", "max"])
                 shift = eval_plot[mask]
                 shift = shift[shift["ood_test"] == shift["ood_test"].max()]
-                shift["type"] = "arg. causal"
+                shift["type"] = "Arg. causal"
                 dic_shift["arguablycausal"] = shift
 
                 #############################################################################
@@ -773,7 +789,7 @@ for index, experiment_name in enumerate(experiments):
                         points = points[mask]
                         shift = eval_plot[mask]
                         shift = shift[shift["ood_test"] == shift["ood_test"].max()]
-                        shift["type"] = f"test {index}"
+                        shift["type"] = f"Test {index}"
                         dic_shift[f"test{index}"] = shift
                         
                 #############################################################################
@@ -784,16 +800,17 @@ for index, experiment_name in enumerate(experiments):
 
                 # add constant shift gap
                 shift = eval_constant
-                shift["type"] = "constant"
+                shift["type"] = "Constant"
                 dic_shift["constant"] = shift
 
                 shift = pd.concat(dic_shift.values(), ignore_index=True)
+                shift.drop_duplicates(inplace=True)
                 # shift["gap"] = shift["id_test"] - shift["ood_test"]
-                barlist = ax[1,0].bar(shift["type"], shift["ood_test"]-ymin,
+                barlist = ax[1,0].bar(shift["type"], shift["ood_test"]-eval_constant['ood_test'].values[0]+0.01,
                                         yerr=shift['ood_test_ub']-shift['ood_test'],
                                         color=[color_all,color_arguablycausal]+[color_arguablycausal_robust for index in range(dic_robust_number_arguablycausal[experiment_name])]+[color_constant],
-                                        ecolor=color_error,align='center', capsize=5,
-                                        bottom=ymin)
+                                        ecolor=color_error,align='center', capsize=capsize,
+                                        bottom=eval_constant['ood_test'].values[0]-0.01)
                 ax[1,0].tick_params(axis='x', labelrotation = 90)
 
                 #############################################################################
@@ -808,14 +825,12 @@ for index, experiment_name in enumerate(experiments):
                 shift['ood_test_var'] = ((shift['ood_test_ub']-shift['ood_test']))**2
                 shift['gap_var'] = shift['id_test_var']+shift['ood_test_var']
                 barlist = ax[1,1].bar(shift["type"], -shift["gap"],
-                                yerr=shift['gap_var']**0.5,ecolor=color_error,align='center', capsize=5,
+                                yerr=shift['gap_var']**0.5,ecolor=color_error,align='center', capsize=capsize,
                                 color=[color_all,color_arguablycausal]+[color_arguablycausal_robust for index in range(dic_robust_number_arguablycausal[experiment_name])]+[color_constant])
                 ax[1,1].tick_params(axis='x', labelrotation = 90)
 
-    fig.legend(list(zip(list_color,list_mak)), list_lab, 
-          handler_map={tuple:MarkerHandler()},loc='upper center', bbox_to_anchor=(0.5, -0.1),fancybox=True, ncol=5)
-    # plt.tight_layout()
-    fig.savefig(str(Path(__file__).parents[0]/f"plots_paper/plot_appendix_{experiment_name}.pdf"), bbox_inches='tight')
+                subfig2.savefig(str(Path(__file__).parents[0]/f"plots_paper/plot_appendix_{experiment_name}_tests.pdf"), bbox_inches='tight')
+    
 
 
 
@@ -833,22 +848,23 @@ experiment_groups = {
                 "acsunemployment",
                 "anes",
                 #  "assistments",
-                "college_scorecard",
                 ],
     'group2':[
+                "college_scorecard",
                 "diabetes_readmission",
                 "mimic_extract_mort_hosp",
                 "mimic_extract_los_3",
                 ],}
 for experiment_group, experiments in experiment_groups.items():
-    fig = plt.figure(figsize=(16.8, 4.5*len(experiments)))
+    fig = plt.figure(figsize=(6.75, 1.75*len(experiments)))
     subfigs = fig.subfigures(len(experiments), 1, hspace=0.2) # create 4x1 subfigures
 
     for index, experiment_name in enumerate(experiments):
         subfig = subfigs[index]
         subfig.subplots_adjust(wspace=0.3)
+        subfig.subplots_adjust(top=0.85) 
         ax = subfig.subplots(1, 2, gridspec_kw={'width_ratios':[0.5,0.5]})
-        subfig.suptitle(dic_title[experiment_name])        # set suptitle for subfig1
+        subfig.suptitle(dic_title[experiment_name],fontsize = 11)        # set suptitle for subfig1
         eval_all, causal_features = get_results_causalml(experiment_name)
         eval_constant = eval_all[eval_all['features']=="constant"]
         dic_shift = {}
@@ -858,8 +874,8 @@ for experiment_group, experiments in experiment_groups.items():
         ax[1].xaxis.set_major_formatter(FormatStrFormatter('%.3f'))
         ax[1].yaxis.set_major_formatter(FormatStrFormatter('%.3f'))
 
-        ax[0].set_xlabel(f"in-domain accuracy") #\n({dic_id_domain[experiment_name]})")
-        ax[0].set_ylabel(f"Out-of-domain accuracy") #\n({dic_ood_domain[experiment_name]})")
+        ax[0].set_xlabel(f"Id accuracy") #\n({dic_id_domain[experiment_name]})")
+        ax[0].set_ylabel(f"Ood accuracy") #\n({dic_ood_domain[experiment_name]})")
         
         ##############################################################################
         # plot errorbars and shift gap for constant
@@ -1149,7 +1165,7 @@ for experiment_group, experiments in experiment_groups.items():
         #############################################################################
         if (eval_all['features'] == "arguablycausal").any():
             ax[1].set_xlabel("Shift gap")
-            ax[1].set_ylabel("Out-of-domain accuracy")
+            ax[1].set_ylabel("Ood accuracy")
             shift_acc = pd.concat(dic_shift.values(), ignore_index=True)
             markers = {'constant': 'X','all': 's', 'causal': 'o', 'arguablycausal':'D', 'irm':"v", "vrex": "^"}
             for type, marker in markers.items():
@@ -1204,8 +1220,11 @@ for experiment_group, experiments in experiment_groups.items():
     list_lab_causalml.append("IRM")
     list_lab_causalml.append("REx")
     list_lab_causalml.append("Constant")
+    list_mak_causalml.append("_")
+    list_color_causalml.append('Diagonal')
+    list_color_results.append("black")
     fig.legend(list(zip(list_color_causalml,list_mak_causalml)), list_lab_causalml, 
-            handler_map={tuple:MarkerHandler()},loc='upper center', bbox_to_anchor=(0.5, -0.1),fancybox=True, ncol=6)
+            handler_map={tuple:MarkerHandler()},loc='upper center', bbox_to_anchor=(0.5, -0.05),fancybox=True, ncol=6)
 
 
     fig.savefig(str(Path(__file__).parents[0]/f"plots_paper/plot_appendix_causalml_{experiment_group}.pdf"), bbox_inches='tight')
@@ -1219,18 +1238,22 @@ experiment_groups = {
                 "acsincome",
                 "acsunemployment",
                 "brfss_diabetes",
-                "brfss_blood_pressure",
-                "sipp"
-                ],}
+                
+                ],
+    'group2':[
+        "brfss_blood_pressure",
+    "sipp",
+    ]}
 for experiment_group, experiments in experiment_groups.items():
-    fig = plt.figure(figsize=(16.8, 4.5*len(experiments)))
+    fig = plt.figure(figsize=(6.75, 1.75*len(experiments)))
     subfigs = fig.subfigures(len(experiments), 1, hspace=0.2) # create 4x1 subfigures
 
     for index, experiment_name in enumerate(experiments):
         subfig = subfigs[index]
         subfig.subplots_adjust(wspace=0.3)
+        subfig.subplots_adjust(top=0.85) 
         ax = subfig.subplots(1, 2, gridspec_kw={'width_ratios':[0.5,0.5]})
-        subfig.suptitle(dic_title[experiment_name])        # set suptitle for subfig1
+        subfig.suptitle(dic_title[experiment_name],fontsize = 11)        # set suptitle for subfig1
         eval_all, causal_features, extra_features = get_results_anticausal(experiment_name)
         eval_constant = eval_all[eval_all['features']=="constant"]
         dic_shift = {}
@@ -1246,8 +1269,8 @@ for experiment_group, experiments in experiment_groups.items():
         ax[1].xaxis.set_major_formatter(FormatStrFormatter('%.3f'))
         ax[1].yaxis.set_major_formatter(FormatStrFormatter('%.3f'))
 
-        ax[0].set_xlabel(f"in-domain accuracy") #\n({dic_id_domain[experiment_name]})")
-        ax[0].set_ylabel(f"Out-of-domain accuracy") #\n({dic_ood_domain[experiment_name]})")
+        ax[0].set_xlabel(f"Id accuracy") #\n({dic_id_domain[experiment_name]})")
+        ax[0].set_ylabel(f"Ood accuracy") #\n({dic_ood_domain[experiment_name]})")
 
         #############################################################################
         # plot errorbars and shift gap for constant
@@ -1547,7 +1570,7 @@ for experiment_group, experiments in experiment_groups.items():
         #############################################################################
         if (eval_all['features'] == "arguablycausal").any():
             ax[1].set_xlabel("Shift gap")
-            ax[1].set_ylabel("Out-of-domain accuracy")
+            ax[1].set_ylabel("Ood accuracy")
             shift_acc = pd.concat(dic_shift_acc.values(), ignore_index=True)
             markers = {'constant': 'X', 'causal': 'o', 'arguablycausal':'D', 'anticausal':'P','all': 's',}
             for type, marker in markers.items():
@@ -1586,19 +1609,25 @@ for experiment_group, experiments in experiment_groups.items():
                 hull = ConvexHull(points)
                 ax[1].fill(points[hull.vertices, 0], points[hull.vertices, 1], color=eval(f"color_{type}"),alpha=0.05)
 
-list_color_anticausal = list_color.copy()
-list_color_anticausal.remove(color_constant)
-list_color_anticausal.append(color_anticausal)
-list_color_anticausal.append(color_constant)
-list_mak_anticausal = list_mak.copy()
-list_mak_anticausal.remove(list_mak[-1])
-list_mak_anticausal.append("P")
-list_mak_anticausal.append(list_mak[-1])
-list_lab_anticausal = list_lab.copy()
-list_lab_anticausal.remove("Constant")
-list_lab_anticausal.append("Anticausal")
-list_lab_anticausal.append("Constant")
-fig.legend(list(zip(list_color_anticausal,list_mak_anticausal)), list_lab_anticausal, 
-          handler_map={tuple:MarkerHandler()},loc='upper center', bbox_to_anchor=(0.5, -0.03),fancybox=True, ncol=5)
+    list_color_anticausal = list_color.copy()
+    list_color_anticausal.remove(color_constant)
+    list_color_anticausal.append(color_anticausal)
+    list_color_anticausal.append(color_constant)
+    list_mak_anticausal = list_mak.copy()
+    list_mak_anticausal.remove(list_mak[-1])
+    list_mak_anticausal.append("P")
+    list_mak_anticausal.append(list_mak[-1])
+    list_lab_anticausal = list_lab.copy()
+    list_lab_anticausal.remove("Constant")
+    list_lab_anticausal.append("Anticausal")
+    list_lab_anticausal.append("Constant")
 
-fig.savefig(str(Path(__file__).parents[0]/f"plots_paper/plot_appendix_anticausal_{experiment_group}.pdf"), bbox_inches='tight')
+    if experiment_group == 'group1':
+        fig.legend(list(zip(list_color_anticausal,list_mak_anticausal)), list_lab_anticausal, 
+                handler_map={tuple:MarkerHandler()},loc='upper center', bbox_to_anchor=(0.5, -0.05),fancybox=True, ncol=5)
+    else:
+        fig.legend(list(zip(list_color_anticausal,list_mak_anticausal)), list_lab_anticausal, 
+                handler_map={tuple:MarkerHandler()},loc='upper center', bbox_to_anchor=(0.5, -0.1),fancybox=True, ncol=5)
+
+
+    fig.savefig(str(Path(__file__).parents[0]/f"plots_paper/plot_appendix_anticausal_{experiment_group}.pdf"), bbox_inches='tight')

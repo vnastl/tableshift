@@ -14,8 +14,8 @@ from matplotlib.colors import ListedColormap
 import matplotlib.markers as mmark
 import matplotlib.gridspec as gridspec
 import seaborn as sns
-sns.set_context("paper", font_scale=1.75)
-sns.set_style("whitegrid")
+sns.set_context("paper")
+sns.set_style("white")
 
 from tableshift import get_dataset
 from  statsmodels.stats.proportion import proportion_confint
@@ -32,6 +32,9 @@ warnings.filterwarnings('ignore')
 
 plt.rcParams['figure.dpi'] = 300
 plt.rcParams['savefig.dpi'] = 1200
+# plt.rcParams['font.size'] = 8
+# plt.rcParams["font.family"] = "Times New Roman"
+
 
 import os
 os.chdir("/Users/vnastl/Seafile/My Library/mpi project causal vs noncausal/tableshift")
@@ -55,17 +58,13 @@ dic_title = {
     "physionet": 'Sepsis',
     "sipp": 'Poverty',
 }
-list_mak = [mmark.MarkerStyle('s'),mmark.MarkerStyle('D'),mmark.MarkerStyle('o'),mmark.MarkerStyle('X')]
-list_lines = ["","","",""]
-list_lab = ['All','Arguably causal','Causal', 'Constant',]
-list_color  = [color_all, color_arguablycausal, color_causal, color_constant,]
 
 from matplotlib.legend_handler import HandlerBase
 class MarkerHandler(HandlerBase):
     def create_artists(self, legend, tup,xdescent, ydescent,
                         width, height, fontsize,trans):
         return [plt.Line2D([width/2], [height/2.],ls="",
-                       marker=tup[1],markersize=markersize*1.5,color=tup[0], transform=trans)]
+                       marker=tup[1],markersize=markersize,color=tup[0], transform=trans)]
  #%%
 experiments = [
                 "acsfoodstamps",
@@ -105,9 +104,16 @@ for index, experiment_name in enumerate(experiments):
     dic_shift_acc ={}
 
 #%%
-fig = plt.figure(figsize=(10, 5))
-plt.xlabel(f"Tasks")
-plt.ylabel(f"Out-of-domain accuracy")
+list_mak = [mmark.MarkerStyle('s'),mmark.MarkerStyle('D'),mmark.MarkerStyle('o'),mmark.MarkerStyle('X')]
+list_lines = ["","","",""]
+list_lab = ['All','Arguably causal','Causal', 'Constant',]
+list_color  = [color_all, color_arguablycausal, color_causal, color_constant,]
+
+fig = plt.figure(figsize=(6.75, 1.5))
+ax = fig.subplots(1, 2, gridspec_kw={'width_ratios':[0.5,0.5],'wspace':0.3})       # create 1x4 subplots on subfig1
+
+ax[0].set_xlabel(f"Tasks")
+ax[0].set_ylabel(f"Out-of-domain accuracy")
 
 #############################################################################
 # plot ood accuracy
@@ -120,7 +126,7 @@ sets.sort()
 for index, set in enumerate(sets):
     eval_plot_features = eval_experiments[eval_experiments['features']==set]
     eval_plot_features = eval_plot_features.sort_values('ood_test')
-    plt.errorbar(
+    ax[0].errorbar(
             x=eval_plot_features['task'],
             y=eval_plot_features['ood_test'],
             yerr=eval_plot_features['ood_test_ub']-eval_plot_features['ood_test'],
@@ -136,19 +142,17 @@ for index, set in enumerate(sets):
     shift_acc['gap_var'] = shift_acc['id_test_var']+shift_acc['ood_test_var']
     dic_shift_acc[set] = shift_acc
 
-plt.tick_params(axis='x', labelrotation = 90)
+ax[0].tick_params(axis='x', labelrotation = 90)
 
-plt.legend(list(zip(list_color,list_mak,list_lines)), list_lab, 
-          handler_map={tuple:MarkerHandler()},loc='upper center', bbox_to_anchor=(0.5, 1.2),fancybox=True, ncol=4)
-plt.ylim(top=1.0)
-plt.grid(axis='x')
-fig.savefig(str(Path(__file__).parents[0]/f"plots_paper/plot_introduction.pdf"), bbox_inches='tight')
+# plt.legend(list(zip(list_color,list_mak,list_lines)), list_lab, 
+#           handler_map={tuple:MarkerHandler()},loc='upper center', bbox_to_anchor=(0.5, 1.2),fancybox=True, ncol=4)
+ax[0].set_ylim(top=1.0)
+ax[0].grid(axis='y')
+# fig.savefig(str(Path(__file__).parents[0]/f"plots_paper/plot_introduction.pdf"), bbox_inches='tight')
 
 
-#%%
-fig = plt.figure(figsize=(10, 5))
-plt.xlabel(f"Tasks")
-plt.ylabel(f"Shift gap (higher better)")
+ax[1].set_xlabel(f"Tasks")
+ax[1].set_ylabel(f"Shift gap (higher better)")
 #############################################################################
 # plot shift gap
 #############################################################################
@@ -159,7 +163,7 @@ sets.sort()
 for index, set in enumerate(sets):
     shift_acc_plot = shift_acc[shift_acc['features']==set]
     shift_acc_plot = shift_acc_plot.sort_values('ood_test')
-    plt.errorbar(
+    ax[1].errorbar(
             x=shift_acc_plot['task'],
             y=shift_acc_plot['gap'],
             yerr=shift_acc_plot['gap_var']**0.5,
@@ -167,15 +171,17 @@ for index, set in enumerate(sets):
             fmt=markers[set],
             markersize=markersize, capsize=capsize, label=set.capitalize() if set != 'arguablycausal' else 'Arguably causal', zorder=len(sets)-index)
     
-plt.axhline(y=0, color='black', linestyle='--',)
-plt.tick_params(axis='x', labelrotation = 90)
+ax[1].axhline(y=0, color='black', linestyle='--',)
+ax[1].tick_params(axis='x', labelrotation = 90)
+
+ax[1].grid(axis='y')
 
 list_mak.append("_")
 list_lines.append("")
 list_lab.append('Same performance')
 list_color.append("black")
-plt.legend(list(zip(list_color,list_mak,list_lines)), list_lab, 
-          handler_map={tuple:MarkerHandler()},loc='upper center', bbox_to_anchor=(0.5, 1.2),fancybox=True, ncol=5)
+# plt.tight_layout()
+fig.legend(list(zip(list_color,list_mak,list_lines)), list_lab, 
+          handler_map={tuple:MarkerHandler()},loc='upper center', bbox_to_anchor=(0.5, 1.1),fancybox=True, ncol=5)
 
-plt.grid(axis='x')
-fig.savefig(str(Path(__file__).parents[0]/f"plots_paper/plot_introduction_shift.pdf"), bbox_inches='tight')
+fig.savefig(str(Path(__file__).parents[0]/f"plots_paper/plot_introduction.pdf"), bbox_inches='tight')
