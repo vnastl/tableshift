@@ -1,4 +1,4 @@
-![logo](experiments_causal/dag_diabetes.png)
+![logo](experiments_causal/dag_diabetes.svg)
 
 # Predictors from causal features do not generalize better to new domains
 
@@ -74,9 +74,12 @@ TableShift includes the preprocessing of the data files in their implementation.
 
 # Reproduction of experiments
 
-The training script we run is located at `experiments/run_expt.py`.
+The training script we run is located at `experiments_causal/run_experiment_on_cluster.py`.
 It takes the following arguments:
-* `experiment` (Experiment to run)
-* `model` (Model to use)
-* `cache_dir` (Directory to cache raw data files to)
-* `save_dir` (Directory to save result files to)
+* `experiment` (experiment to run)
+* `model` (model to use)
+* `cache_dir` (directory to cache raw data files to)
+* `save_dir` (directory to save result files to)
+* 
+# Raw results of experiments
+We provide the raw results of our experiments in the folder `experiments_causal/results/`. They contain a single `json` file for each task, feature selection and trained model.
