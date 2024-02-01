@@ -26,7 +26,6 @@ plt.rcParams['figure.dpi'] = 300
 plt.rcParams['savefig.dpi'] = 300
 
 import os
-os.chdir("/Users/vnastl/Seafile/My Library/mpi project causal vs noncausal/tableshift")
 #%%
 def get_dic_experiments_value(name):
     return [name, f"{name}_causal", f"{name}_arguablycausal"]
@@ -557,21 +556,21 @@ if __name__ == "__main__":
     completed_experiments = [
                             # "acsemployment", # old
                             "acsfoodstamps",
-                            # "acsincome",
-                            # #  "acspubcov",
-                            # "acsunemployment",
-                            # "anes",
-                            # "assistments",
-                            # "brfss_blood_pressure",
-                            # "brfss_diabetes",
-                            # "college_scorecard",
-                            # "diabetes_readmission",
-                            # "meps",
-                            # "mimic_extract_mort_hosp",
-                            # "mimic_extract_los_3",
-                            # "nhanes_lead",
-                            # "physionet",
-                            # "sipp",
+                            "acsincome",
+                             "acspubcov",
+                            "acsunemployment",
+                            "anes",
+                            "assistments",
+                            "brfss_blood_pressure",
+                            "brfss_diabetes",
+                            "college_scorecard",
+                            "diabetes_readmission",
+                            "meps",
+                            "mimic_extract_mort_hosp",
+                            "mimic_extract_los_3",
+                            "nhanes_lead",
+                            "physionet",
+                            "sipp",
                             ]
     for experiment_name in completed_experiments:
         plot_experiment(experiment_name)

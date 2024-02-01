@@ -30,7 +30,6 @@ plt.rcParams['savefig.dpi'] = 300
 from tqdm import tqdm
 
 import os
-os.chdir("/Users/vnastl/Seafile/My Library/mpi project causal vs noncausal/tableshift")
 #%%
 
 ANTICAUSAL = True
@@ -590,17 +589,6 @@ def do_plot(experiment_name,mymin,myname):
         if label not in newLabels:
             newLabels.append(label)
             newLines.append(line)
-
-    # Create a legend with only distinct labels
-    # plt.legend(newLines, newLabels, loc='upper left')
-    if (eval_all['features'] == "anticausal").any():
-        with open(str(Path(__file__).parents[0]/f"legend_anticausal.pkl"), 'wb') as f:
-            # Use pickle.dump to write data to the file
-            pickle.dump({"labels":newLabels, "lines":newLines}, f)
-    else:
-        with open(str(Path(__file__).parents[0]/f"legend.pkl"), 'wb') as f:
-            # Use pickle.dump to write data to the file
-            pickle.dump({"labels":newLabels, "lines":newLines}, f)
     
     if (eval_all['features'] == "anticausal").any():
         plt.savefig(f"{str(Path(__file__).parents[0]/myname)}_anticausal.pdf", bbox_inches='tight')
@@ -738,13 +726,7 @@ def do_plot(experiment_name,mymin,myname):
             if label not in newLabels:
                 newLabels.append(label)
                 newLines.append(line)
-        
-        
-        # Create a legend with only distinct labels
-        # plt.legend(newLines, newLabels, loc='upper left')
 
-        # plt.legend(newLines, newLabels, loc='upper left', bbox_to_anchor=(1, 1))
-            # TODO add pareto dominate lines & areas, see constant, maybe even add the multiple paretos
         plt.savefig(str(Path(__file__).parents[0]/f"{myname}_shift_accuracy.pdf"), bbox_inches='tight')
         plt.show()
         plt.close(fig2)

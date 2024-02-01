@@ -27,8 +27,6 @@ from tableshift.datasets import ACS_INCOME_FEATURES_CAUSAL_SUBSETS_NUMBER, ACS_I
     MEPS_FEATURES_CAUSAL_SUBSETS_NUMBER, MEPS_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER,\
     PHYSIONET_FEATURES_CAUSAL_SUBSETS_NUMBER, PHYSIONET_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER,\
     NHANES_LEAD_FEATURES_CAUSAL_SUBSETS_NUMBER, NHANES_LEAD_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER
-    # MIMIC_EXTRACT_MORT_HOSP_FEATURES_ARGUABLYCAUSAL_SUPERSETS, MIMIC_EXTRACT_MORT_HOSP_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER
-    # MIMIC_EXTRACT_LOS_3_FEATURES_ARGUABLYCAUSAL_SUPERSETS, MIMIC_EXTRACT_LOS_3_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER,\
 
 
 if __name__ == '__main__':
@@ -49,82 +47,82 @@ BIG_JOB_MEMORY_GB = 256
 VERBOSE = True
 
 TASKS = [
-    # "acsincome",
-    # "acsincome_causal",
-    # "acsincome_arguablycausal",
-    # "acsincome_anticausal",
+    "acsincome",
+    "acsincome_causal",
+    "acsincome_arguablycausal",
+    "acsincome_anticausal",
 
-    # "acspubcov",
-    # "acspubcov_causal",
-    # "acspubcov_arguablycausal",
+    "acspubcov",
+    "acspubcov_causal",
+    "acspubcov_arguablycausal",
 
-    # "acsfoodstamps",
-    # "acsfoodstamps_causal",
-    # "acsfoodstamps_arguablycausal",
+    "acsfoodstamps",
+    "acsfoodstamps_causal",
+    "acsfoodstamps_arguablycausal",
 
-    # "acsunemployment",
-    # "acsunemployment_causal",
-    # "acsunemployment_arguablycausal",
-    # "acsunemployment_anticausal",
+    "acsunemployment",
+    "acsunemployment_causal",
+    "acsunemployment_arguablycausal",
+    "acsunemployment_anticausal",
 
-    # "anes",
-    # "anes_causal",
-    # "anes_arguablycausal",
+    "anes",
+    "anes_causal",
+    "anes_arguablycausal",
 
-    # "assistments",
-    # "assistments_causal",
-    # "assistments_arguablycausal",
+    "assistments",
+    "assistments_causal",
+    "assistments_arguablycausal",
 
-    # "brfss_diabetes",
-    # "brfss_diabetes_causal",
-    # "brfss_diabetes_arguablycausal",
-    # "brfss_diabetes_anticausal",
+    "brfss_diabetes",
+    "brfss_diabetes_causal",
+    "brfss_diabetes_arguablycausal",
+    "brfss_diabetes_anticausal",
 
-    # "brfss_blood_pressure",
-    # "brfss_blood_pressure_causal",
-    # "brfss_blood_pressure_arguablycausal",
-    # "brfss_blood_pressure_anticausal",
+    "brfss_blood_pressure",
+    "brfss_blood_pressure_causal",
+    "brfss_blood_pressure_arguablycausal",
+    "brfss_blood_pressure_anticausal",
 
-    # "college_scorecard",
-    # "college_scorecard_causal",
-    # "college_scorecard_arguablycausal",
+    "college_scorecard",
+    "college_scorecard_causal",
+    "college_scorecard_arguablycausal",
 
-    # "nhanes_lead", 
-    # "nhanes_lead_causal",
-    # "nhanes_lead_arguablycausal",
+    "nhanes_lead", 
+    "nhanes_lead_causal",
+    "nhanes_lead_arguablycausal",
 
-    # "diabetes_readmission", 
-    # "diabetes_readmission_causal",
-    # "diabetes_readmission_arguablycausal",
+    "diabetes_readmission", 
+    "diabetes_readmission_causal",
+    "diabetes_readmission_arguablycausal",
 
-    # "mimic_extract_los_3",
-    # "mimic_extract_los_3_causal",
-    # "mimic_extract_los_3_arguablycausal",
+    "mimic_extract_los_3",
+    "mimic_extract_los_3_causal",
+    "mimic_extract_los_3_arguablycausal",
 
-    # "mimic_extract_mort_hosp",
-    # "mimic_extract_mort_hosp_causal",
-    # "mimic_extract_mort_hosp_arguablycausal",
+    "mimic_extract_mort_hosp",
+    "mimic_extract_mort_hosp_causal",
+    "mimic_extract_mort_hosp_arguablycausal",
 
-    # "physionet", 
-    # "physionet_causal",
-    # "physionet_arguablycausal",
+    "physionet", 
+    "physionet_causal",
+    "physionet_arguablycausal",
 
-    # "sipp", 
-    # "sipp_causal",
-    # "sipp_arguablycausal",
-    # "sipp_anticausal",
+    "sipp", 
+    "sipp_causal",
+    "sipp_arguablycausal",
+    "sipp_anticausal",
 
-    # "meps", 
-    # "meps_causal",
-    # "meps_arguablycausal",
+    "meps", 
+    "meps_causal",
+    "meps_arguablycausal",
 ]
 
 # Robustness checks
-# for index in range(ACS_INCOME_FEATURES_CAUSAL_SUBSETS_NUMBER):
-#         TASKS.append("acsincome_causal_test_"+f"{index}")
+for index in range(ACS_INCOME_FEATURES_CAUSAL_SUBSETS_NUMBER):
+        TASKS.append("acsincome_causal_test_"+f"{index}")
 
-# for index in range(ACS_INCOME_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
-#         TASKS.append("acsincome_arguablycausal_test_"+f"{index}")
+for index in range(ACS_INCOME_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
+        TASKS.append("acsincome_arguablycausal_test_"+f"{index}")
 
 for index in range(ACS_FOODSTAMPS_FEATURES_CAUSAL_SUBSETS_NUMBER):
         TASKS.append("acsfoodstamps_causal_test_"+f"{index}")
@@ -132,23 +130,23 @@ for index in range(ACS_FOODSTAMPS_FEATURES_CAUSAL_SUBSETS_NUMBER):
 for index in range(ACS_FOODSTAMPS_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
         TASKS.append("acsfoodstamps_arguablycausal_test_"+f"{index}")
 
-# for index in range(ACS_PUBCOV_FEATURES_CAUSAL_SUBSETS_NUMBER):
-#         TASKS.append("acspubcov_causal_test_"+f"{index}")
+for index in range(ACS_PUBCOV_FEATURES_CAUSAL_SUBSETS_NUMBER):
+        TASKS.append("acspubcov_causal_test_"+f"{index}")
 
-# for index in range(ACS_PUBCOV_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
-#     TASKS.append("acspubcov_arguablycausal_test_"+f"{index}")
+for index in range(ACS_PUBCOV_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
+    TASKS.append("acspubcov_arguablycausal_test_"+f"{index}")
 
-# for index in range(ACS_UNEMPLOYMENT_FEATURES_CAUSAL_SUBSETS_NUMBER):
-#         TASKS.append("acsunemployment_causal_test_"+f"{index}")
+for index in range(ACS_UNEMPLOYMENT_FEATURES_CAUSAL_SUBSETS_NUMBER):
+        TASKS.append("acsunemployment_causal_test_"+f"{index}")
 
-# for index in range(ACS_UNEMPLOYMENT_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
-#         TASKS.append("acsunemployment_arguablycausal_test_"+f"{index}")
+for index in range(ACS_UNEMPLOYMENT_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
+        TASKS.append("acsunemployment_arguablycausal_test_"+f"{index}")
 
-# for index in range(BRFSS_DIABETES_FEATURES_CAUSAL_SUBSETS_NUMBER):
-#         TASKS.append("brfss_diabetes_causal_test_"+f"{index}")
+for index in range(BRFSS_DIABETES_FEATURES_CAUSAL_SUBSETS_NUMBER):
+        TASKS.append("brfss_diabetes_causal_test_"+f"{index}")
 
-# for index in range(BRFSS_DIABETES_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
-#         TASKS.append("brfss_diabetes_arguablycausal_test_"+f"{index}")
+for index in range(BRFSS_DIABETES_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
+        TASKS.append("brfss_diabetes_arguablycausal_test_"+f"{index}")
               
 for index in range(BRFSS_BLOOD_PRESSURE_FEATURES_CAUSAL_SUBSETS_NUMBER):
         TASKS.append("brfss_blood_pressure_causal_test_"+f"{index}")
@@ -186,8 +184,8 @@ for index in range(MIMIC_EXTRACT_LOS_3_FEATURES_CAUSAL_SUBSETS_NUMBER):
 # for index in range(MIMIC_EXTRACT_LOS_3_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
 #         TASKS.append("mimic_extract_los_3_arguablycausal_test_"+f"{index}")
 
-# for index in range(MIMIC_EXTRACT_MORT_HOSP_FEATURES_CAUSAL_SUBSETS_NUMBER):
-#         TASKS.append("mimic_extract_mort_hosp_causal_test_"+f"{index}")
+for index in range(MIMIC_EXTRACT_MORT_HOSP_FEATURES_CAUSAL_SUBSETS_NUMBER):
+        TASKS.append("mimic_extract_mort_hosp_causal_test_"+f"{index}")
 
 # # for index in range(MIMIC_EXTRACT_MORT_HOSP_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
 # #         TASKS.append("mimic_extract_mort_hosp_arguablycausal_test_"+f"{index}")
@@ -222,10 +220,10 @@ if __name__ == '__main__':
     # ROOT_DIR = Path("/Users/vnastl/Seafile/My Library/mpi project causal vs noncausal/causal-vs-noncausal/code")
 
     # Data directory
-    DATA_DIR = ROOT_DIR / "fast/vnastl/data"  # TODO check again if it is in fact the fast driver
+    DATA_DIR = ROOT_DIR / "fast/vnastl/data"
 
     # Results directory
-    RESULTS_DIR = ROOT_DIR / "vnastl/results" #/tableshift/experiments_causal"
+    RESULTS_DIR = ROOT_DIR / "vnastl/results"
     RESULTS_DIR.mkdir(exist_ok=True, parents=False)
 
     # Directory to save cluster logs and job stdout/stderr
@@ -324,7 +322,6 @@ if __name__ == '__main__':
             "request_memory": f"{exp_obj.job_memory_gb}GB",
             # "request_disk": "2GB",
             "jobprio": f"{exp_obj.job_bid - 1000}",
-            "notify_user": "vivian.nastl@tuebingen.mpg.de",
             "notification": "error",
             # "job_seed_macro": f"$(Process) + {random.randrange(int(1e9))}",      # add random salt to all job seeds
             # "job_seed": "$INT(job_seed_macro)",

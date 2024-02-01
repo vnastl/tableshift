@@ -4,7 +4,6 @@ import numpy as np
 import pandas as pd
 import os
 from pathlib import Path
-import ast
 import pickle
 
 import matplotlib.pyplot as plt
@@ -26,8 +25,6 @@ warnings.filterwarnings('ignore')
 plt.rcParams['figure.dpi'] = 300
 plt.rcParams['savefig.dpi'] = 300
 
-import os
-os.chdir("/Users/vnastl/Seafile/My Library/mpi project causal vs noncausal/tableshift")
 #%%
 def get_dic_experiments_value(name):
     return [name, f"{name}_causal", f"{name}_arguablycausal"]

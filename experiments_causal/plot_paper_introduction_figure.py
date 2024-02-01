@@ -37,7 +37,6 @@ plt.rcParams['savefig.dpi'] = 1200
 
 
 import os
-os.chdir("/Users/vnastl/Seafile/My Library/mpi project causal vs noncausal/tableshift")
 
 dic_title = {
     "acsemployment":'Employment',
