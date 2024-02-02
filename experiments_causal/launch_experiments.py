@@ -252,7 +252,7 @@ class ExperimentConfigs:
     job_bid: int = JOB_MIN_BID
 
     def __post_init__(self):
-        self.job_bid = self.job_bid      # enforce min bid
+        self.job_bid = max(self.job_bid, JOB_MIN_BID)        # enforce min bid
 
 if __name__ == '__main__':
     all_task = []
