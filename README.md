@@ -81,5 +81,30 @@ It takes the following arguments:
 * `cache_dir` (directory to cache raw data files to)
 * `save_dir` (directory to save result files to)
   
+The full list of model names is given below. For more details on each algorithm, see TableShift.
+| Model                 | Name in TableShift |
+|-----------------------|--------------------|
+| XGBoost               | `xgb`              |
+| LightGBM              | `lightgbm`         |
+| SAINT                 | `saint`            |
+| NODE                  | `node`             |
+| Group DRO             | `group_dro`        |
+| MLP                   | `mlp`              |
+| Tabular ResNet        | `resnet`           |
+| Adversarial Label DRO | `aldro`            |
+| CORAL                 | `deepcoral`        |
+| MMD                   | `mmd`              | 
+| DRO                   | `dro`              |
+| DANN                  | `dann`             | 
+| TabTransformer        | `tabtransformer`   |
+| MixUp                 | `mixup`            |
+| Label Group DRO       | `label_group_dro`  |
+| IRM                   | `irm`              |
+| VREX                  | `vrex`             |
+| FT-Transformer        | `ft_transformer`   |
+
 # Raw results of experiments
 We provide the raw results of our experiments in the folder `experiments_causal/results/`. They contain a single `json` file for each task, feature selection and trained model.
+
+
+
