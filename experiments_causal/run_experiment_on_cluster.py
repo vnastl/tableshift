@@ -74,7 +74,6 @@ def balanced_accuracy_score(target,prediction):
     return balanced_acc.item(), balanced_acc_se.item()
 
 def main(experiment, model, cache_dir, save_dir, trial, debug: bool):
-    trial = int(trial)+25
     cache_dir = Path(cache_dir)
     save_dir = Path(save_dir)
     save_dir.mkdir(exist_ok=True,parents=False)
