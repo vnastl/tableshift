@@ -80,6 +80,6 @@ It takes the following arguments:
 * `model` (model to use)
 * `cache_dir` (directory to cache raw data files to)
 * `save_dir` (directory to save result files to)
-* 
+  
 # Raw results of experiments
 We provide the raw results of our experiments in the folder `experiments_causal/results/`. They contain a single `json` file for each task, feature selection and trained model.
