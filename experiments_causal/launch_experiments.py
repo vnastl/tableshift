@@ -47,172 +47,172 @@ BIG_JOB_MEMORY_GB = 256
 VERBOSE = True
 
 TASKS = [
-    "acsincome",
-    "acsincome_causal",
-    "acsincome_arguablycausal",
-    "acsincome_anticausal",
+#     "acsincome",
+#     "acsincome_causal",
+#     "acsincome_arguablycausal",
+#     "acsincome_anticausal",
 
-    "acspubcov",
-    "acspubcov_causal",
-    "acspubcov_arguablycausal",
+#     "acspubcov",
+#     "acspubcov_causal",
+#     "acspubcov_arguablycausal",
 
-    "acsfoodstamps",
-    "acsfoodstamps_causal",
-    "acsfoodstamps_arguablycausal",
+#     "acsfoodstamps",
+#     "acsfoodstamps_causal",
+#     "acsfoodstamps_arguablycausal",
 
-    "acsunemployment",
-    "acsunemployment_causal",
-    "acsunemployment_arguablycausal",
-    "acsunemployment_anticausal",
+#     "acsunemployment",
+#     "acsunemployment_causal",
+#     "acsunemployment_arguablycausal",
+#     "acsunemployment_anticausal",
 
-    "anes",
-    "anes_causal",
-    "anes_arguablycausal",
+#     "anes",
+#     "anes_causal",
+#     "anes_arguablycausal",
 
-    "assistments",
-    "assistments_causal",
-    "assistments_arguablycausal",
+#     "assistments",
+#     "assistments_causal",
+#     "assistments_arguablycausal",
 
-    "brfss_diabetes",
-    "brfss_diabetes_causal",
-    "brfss_diabetes_arguablycausal",
-    "brfss_diabetes_anticausal",
+#     "brfss_diabetes",
+#     "brfss_diabetes_causal",
+#     "brfss_diabetes_arguablycausal",
+#     "brfss_diabetes_anticausal",
 
-    "brfss_blood_pressure",
-    "brfss_blood_pressure_causal",
-    "brfss_blood_pressure_arguablycausal",
-    "brfss_blood_pressure_anticausal",
+#     "brfss_blood_pressure",
+#     "brfss_blood_pressure_causal",
+#     "brfss_blood_pressure_arguablycausal",
+#     "brfss_blood_pressure_anticausal",
 
-    "college_scorecard",
-    "college_scorecard_causal",
-    "college_scorecard_arguablycausal",
+#     "college_scorecard",
+#     "college_scorecard_causal",
+#     "college_scorecard_arguablycausal",
 
-    "nhanes_lead", 
-    "nhanes_lead_causal",
-    "nhanes_lead_arguablycausal",
+#     "nhanes_lead", 
+#     "nhanes_lead_causal",
+#     "nhanes_lead_arguablycausal",
 
-    "diabetes_readmission", 
-    "diabetes_readmission_causal",
-    "diabetes_readmission_arguablycausal",
+#     "diabetes_readmission", 
+#     "diabetes_readmission_causal",
+#     "diabetes_readmission_arguablycausal",
 
-    "mimic_extract_los_3",
-    "mimic_extract_los_3_causal",
-    "mimic_extract_los_3_arguablycausal",
+#     "mimic_extract_los_3",
+#     "mimic_extract_los_3_causal",
+#     "mimic_extract_los_3_arguablycausal",
 
-    "mimic_extract_mort_hosp",
-    "mimic_extract_mort_hosp_causal",
-    "mimic_extract_mort_hosp_arguablycausal",
+#     "mimic_extract_mort_hosp",
+#     "mimic_extract_mort_hosp_causal",
+#     "mimic_extract_mort_hosp_arguablycausal",
 
-    "physionet", 
-    "physionet_causal",
-    "physionet_arguablycausal",
+#     "physionet", 
+#     "physionet_causal",
+#     "physionet_arguablycausal",
 
-    "sipp", 
-    "sipp_causal",
-    "sipp_arguablycausal",
-    "sipp_anticausal",
+#     "sipp", 
+#     "sipp_causal",
+#     "sipp_arguablycausal",
+#     "sipp_anticausal",
 
-    "meps", 
-    "meps_causal",
-    "meps_arguablycausal",
+#     "meps", 
+#     "meps_causal",
+#     "meps_arguablycausal",
 ]
 
 # Robustness checks
-for index in range(ACS_INCOME_FEATURES_CAUSAL_SUBSETS_NUMBER):
-        TASKS.append("acsincome_causal_test_"+f"{index}")
+# for index in range(ACS_INCOME_FEATURES_CAUSAL_SUBSETS_NUMBER):
+#         TASKS.append("acsincome_causal_test_"+f"{index}")
 
-for index in range(ACS_INCOME_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
-        TASKS.append("acsincome_arguablycausal_test_"+f"{index}")
+# for index in range(ACS_INCOME_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
+#         TASKS.append("acsincome_arguablycausal_test_"+f"{index}")
 
-for index in range(ACS_FOODSTAMPS_FEATURES_CAUSAL_SUBSETS_NUMBER):
-        TASKS.append("acsfoodstamps_causal_test_"+f"{index}")
+# for index in range(ACS_FOODSTAMPS_FEATURES_CAUSAL_SUBSETS_NUMBER):
+#         TASKS.append("acsfoodstamps_causal_test_"+f"{index}")
 
-for index in range(ACS_FOODSTAMPS_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
-        TASKS.append("acsfoodstamps_arguablycausal_test_"+f"{index}")
+# for index in range(ACS_FOODSTAMPS_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
+#         TASKS.append("acsfoodstamps_arguablycausal_test_"+f"{index}")
 
-for index in range(ACS_PUBCOV_FEATURES_CAUSAL_SUBSETS_NUMBER):
-        TASKS.append("acspubcov_causal_test_"+f"{index}")
+# for index in range(ACS_PUBCOV_FEATURES_CAUSAL_SUBSETS_NUMBER):
+#         TASKS.append("acspubcov_causal_test_"+f"{index}")
 
-for index in range(ACS_PUBCOV_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
-    TASKS.append("acspubcov_arguablycausal_test_"+f"{index}")
+# for index in range(ACS_PUBCOV_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
+#     TASKS.append("acspubcov_arguablycausal_test_"+f"{index}")
 
-for index in range(ACS_UNEMPLOYMENT_FEATURES_CAUSAL_SUBSETS_NUMBER):
-        TASKS.append("acsunemployment_causal_test_"+f"{index}")
+# for index in range(ACS_UNEMPLOYMENT_FEATURES_CAUSAL_SUBSETS_NUMBER):
+#         TASKS.append("acsunemployment_causal_test_"+f"{index}")
 
-for index in range(ACS_UNEMPLOYMENT_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
-        TASKS.append("acsunemployment_arguablycausal_test_"+f"{index}")
+# for index in range(ACS_UNEMPLOYMENT_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
+#         TASKS.append("acsunemployment_arguablycausal_test_"+f"{index}")
 
-for index in range(BRFSS_DIABETES_FEATURES_CAUSAL_SUBSETS_NUMBER):
-        TASKS.append("brfss_diabetes_causal_test_"+f"{index}")
+# for index in range(BRFSS_DIABETES_FEATURES_CAUSAL_SUBSETS_NUMBER):
+#         TASKS.append("brfss_diabetes_causal_test_"+f"{index}")
 
-for index in range(BRFSS_DIABETES_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
-        TASKS.append("brfss_diabetes_arguablycausal_test_"+f"{index}")
+# for index in range(BRFSS_DIABETES_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
+#         TASKS.append("brfss_diabetes_arguablycausal_test_"+f"{index}")
               
-for index in range(BRFSS_BLOOD_PRESSURE_FEATURES_CAUSAL_SUBSETS_NUMBER):
-        TASKS.append("brfss_blood_pressure_causal_test_"+f"{index}")
+# for index in range(BRFSS_BLOOD_PRESSURE_FEATURES_CAUSAL_SUBSETS_NUMBER):
+#         TASKS.append("brfss_blood_pressure_causal_test_"+f"{index}")
 
-for index in range(BRFSS_BLOOD_PRESSURE_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
-        TASKS.append("brfss_blood_pressure_arguablycausal_test_"+f"{index}")
+# for index in range(BRFSS_BLOOD_PRESSURE_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
+#         TASKS.append("brfss_blood_pressure_arguablycausal_test_"+f"{index}")
 
-for index in range(DIABETES_READMISSION_FEATURES_CAUSAL_NUMBER):
-        TASKS.append("diabetes_readmission_causal_test_"+f"{index}")
+# for index in range(DIABETES_READMISSION_FEATURES_CAUSAL_NUMBER):
+#         TASKS.append("diabetes_readmission_causal_test_"+f"{index}")
 
-for index in range(DIABETES_READMISSION_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
-        TASKS.append("diabetes_readmission_arguablycausal_test_"+f"{index}")
+# for index in range(DIABETES_READMISSION_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
+#         TASKS.append("diabetes_readmission_arguablycausal_test_"+f"{index}")
         
-for index in range(ANES_FEATURES_CAUSAL_SUBSETS_NUMBER):
-        TASKS.append("anes_causal_test_"+f"{index}")
+# for index in range(ANES_FEATURES_CAUSAL_SUBSETS_NUMBER):
+#         TASKS.append("anes_causal_test_"+f"{index}")
 
-for index in range(ANES_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
-        TASKS.append("anes_arguablycausal_test_"+f"{index}")
+# for index in range(ANES_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
+#         TASKS.append("anes_arguablycausal_test_"+f"{index}")
 
-for index in range(ASSISTMENTS_FEATURES_CAUSAL_SUBSETS_NUMBER):
-        TASKS.append("assistments_causal_test_"+f"{index}")
+# for index in range(ASSISTMENTS_FEATURES_CAUSAL_SUBSETS_NUMBER):
+#         TASKS.append("assistments_causal_test_"+f"{index}")
 
-for index in range(ASSISTMENTS_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
-        TASKS.append("assistments_arguablycausal_test_"+f"{index}")
+# for index in range(ASSISTMENTS_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
+#         TASKS.append("assistments_arguablycausal_test_"+f"{index}")
 
-for index in range(COLLEGE_SCORECARD_FEATURES_CAUSAL_SUBSETS_NUMBER):
-        TASKS.append("college_scorecard_causal_test_"+f"{index}")
+# for index in range(COLLEGE_SCORECARD_FEATURES_CAUSAL_SUBSETS_NUMBER):
+#         TASKS.append("college_scorecard_causal_test_"+f"{index}")
 
-# for index in range(COLLEGE_SCORECARD_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
-#         TASKS.append("college_scorecard_arguablycausal_test_"+f"{index}")
+# # for index in range(COLLEGE_SCORECARD_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
+# #         TASKS.append("college_scorecard_arguablycausal_test_"+f"{index}")
 
-for index in range(MIMIC_EXTRACT_LOS_3_FEATURES_CAUSAL_SUBSETS_NUMBER):
-        TASKS.append("mimic_extract_los_3_causal_test_"+f"{index}")
+# for index in range(MIMIC_EXTRACT_LOS_3_FEATURES_CAUSAL_SUBSETS_NUMBER):
+#         TASKS.append("mimic_extract_los_3_causal_test_"+f"{index}")
 
-# for index in range(MIMIC_EXTRACT_LOS_3_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
-#         TASKS.append("mimic_extract_los_3_arguablycausal_test_"+f"{index}")
+# # for index in range(MIMIC_EXTRACT_LOS_3_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
+# #         TASKS.append("mimic_extract_los_3_arguablycausal_test_"+f"{index}")
 
-for index in range(MIMIC_EXTRACT_MORT_HOSP_FEATURES_CAUSAL_SUBSETS_NUMBER):
-        TASKS.append("mimic_extract_mort_hosp_causal_test_"+f"{index}")
+# for index in range(MIMIC_EXTRACT_MORT_HOSP_FEATURES_CAUSAL_SUBSETS_NUMBER):
+#         TASKS.append("mimic_extract_mort_hosp_causal_test_"+f"{index}")
 
-# # for index in range(MIMIC_EXTRACT_MORT_HOSP_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
-# #         TASKS.append("mimic_extract_mort_hosp_arguablycausal_test_"+f"{index}")
+# # # for index in range(MIMIC_EXTRACT_MORT_HOSP_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
+# # #         TASKS.append("mimic_extract_mort_hosp_arguablycausal_test_"+f"{index}")
 
-for index in range(SIPP_FEATURES_CAUSAL_SUBSETS_NUMBER):
-        TASKS.append("sipp_causal_test_"+f"{index}")
+# for index in range(SIPP_FEATURES_CAUSAL_SUBSETS_NUMBER):
+#         TASKS.append("sipp_causal_test_"+f"{index}")
 
-for index in range(SIPP_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
-        TASKS.append("sipp_arguablycausal_test_"+f"{index}")
+# for index in range(SIPP_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
+#         TASKS.append("sipp_arguablycausal_test_"+f"{index}")
 
-for index in range(MEPS_FEATURES_CAUSAL_SUBSETS_NUMBER):
-        TASKS.append("meps_causal_test_"+f"{index}")
+# for index in range(MEPS_FEATURES_CAUSAL_SUBSETS_NUMBER):
+#         TASKS.append("meps_causal_test_"+f"{index}")
 
-# # for index in range(MEPS_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
-# #         TASKS.append("meps_arguablycausal_test_"+f"{index}")
+# # # for index in range(MEPS_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
+# # #         TASKS.append("meps_arguablycausal_test_"+f"{index}")
 
-for index in range(PHYSIONET_FEATURES_CAUSAL_SUBSETS_NUMBER):
-        TASKS.append("physionet_causal_test_"+f"{index}")
+# for index in range(PHYSIONET_FEATURES_CAUSAL_SUBSETS_NUMBER):
+#         TASKS.append("physionet_causal_test_"+f"{index}")
 
-for index in range(PHYSIONET_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
-        TASKS.append("physionet_arguablycausal_test_"+f"{index}")
+# for index in range(PHYSIONET_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
+#         TASKS.append("physionet_arguablycausal_test_"+f"{index}")
 
 for index in range(NHANES_LEAD_FEATURES_CAUSAL_SUBSETS_NUMBER):
         TASKS.append("nhanes_lead_causal_test_"+f"{index}")
 
-for index in range(NHANES_LEAD_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
-        TASKS.append("nhanes_lead_arguablycausal_test_"+f"{index}")
+# for index in range(NHANES_LEAD_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER):
+#         TASKS.append("nhanes_lead_arguablycausal_test_"+f"{index}")
 
 # Useful directories
 if __name__ == '__main__':

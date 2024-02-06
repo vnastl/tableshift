@@ -5,3 +5,4 @@ tmp
 *.csv
 *.pkl
 *.pt
+data

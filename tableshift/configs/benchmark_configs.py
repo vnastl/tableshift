@@ -1204,8 +1204,7 @@ for index in range(NHANES_LEAD_FEATURES_CAUSAL_SUBSETS_NUMBER):
                                                                                                 domain_split_varname='INDFMPIRBelowCutoff',
                                                                                                 domain_split_ood_values=[1.]),
                                                                         # Race (non. hispanic white vs. all others; male vs. all others)
-                                                                        grouper=Grouper({"RIDRETH_merged": [3, ], "RIAGENDR": ["1.0", ]},
-                                                                                        drop=False),
+                                                                        grouper=None,
                                                                         preprocessor_config=PreprocessorConfig(
                                                                             passthrough_columns=["nhanes_year"],
                                                                             numeric_features="kbins"),
