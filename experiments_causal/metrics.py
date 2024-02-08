@@ -1,7 +1,8 @@
 import torch
 import pandas as pd
 
-def binary_stat_scores_format(target,prediction,threshold= 0.5):
+
+def binary_stat_scores_format(target, prediction, threshold=0.5):
     """Convert all input to label format.
 
     - If prediction tensor is floating point, applies sigmoid if pred tensor not in [0,1] range
@@ -24,7 +25,8 @@ def binary_stat_scores_format(target,prediction,threshold= 0.5):
 
     return target, prediction
 
-def balanced_accuracy_score(target,prediction):
+
+def balanced_accuracy_score(target, prediction):
     """Calculates balanced accuracy.
 
     Args:
@@ -36,7 +38,7 @@ def balanced_accuracy_score(target,prediction):
         list | float64: If inference is set to True, return list of balanced accuracy and standard error of balanced accuracy.
             Else return balanced accuracy.
     """
-    target, prediction = binary_stat_scores_format(target,prediction)
+    target, prediction = binary_stat_scores_format(target, prediction)
     n = len(prediction)
     tp = torch.count_nonzero((target == 1) & (prediction == 1))
     fn = torch.count_nonzero((target == 1) & (prediction == 0))

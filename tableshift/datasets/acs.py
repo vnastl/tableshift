@@ -339,7 +339,7 @@ ACS_INCOME_FEATURES_CAUSAL = FeatureList([
                 8: 'Mountain (West region)',
                 9: 'Pacific (West region)',
             }),
-    ## Causal features
+    # Causal features
     Feature('AGEP', int, "Age", name_extended='age in years'),
     Feature('SEX', int, "Sex",
             name_extended='sex',
@@ -365,41 +365,43 @@ ACS_INCOME_FEATURES_CAUSAL = FeatureList([
     documentation="https://www2.census.gov/programs-surveys/acs/tech_docs/pums/data_dict/PUMS_Data_Dictionary_2014-2018.pdf")
 
 causal_features = ACS_INCOME_FEATURES_CAUSAL.features.copy()
-causal_features.remove(Feature('PINCP', float, """Total person's income >= threshold.""",is_target=True))
+causal_features.remove(
+    Feature('PINCP', float, """Total person's income >= threshold.""", is_target=True))
 causal_features.remove(Feature('DIVISION', cat_dtype,
-                                "Division code based on 2010 Census definitions.",
-                                name_extended='geographic region',
-                                value_mapping={
-                                    0: 'Puerto Rico',
-                                    1: 'New England (Northeast region)',
-                                    2: 'Middle Atlantic (Northeast region)',
-                                    3: 'East North Central (Midwest region)',
-                                    4: 'West North Central (Midwest region)',
-                                    5: 'South Atlantic (South region)',
-                                    6: 'East South Central (South region)',
-                                    7: 'West South Central (South Region)',
-                                    8: 'Mountain (West region)',
-                                    9: 'Pacific (West region)',
-                                }))
+                               "Division code based on 2010 Census definitions.",
+                               name_extended='geographic region',
+                               value_mapping={
+                                   0: 'Puerto Rico',
+                                   1: 'New England (Northeast region)',
+                                   2: 'Middle Atlantic (Northeast region)',
+                                   3: 'East North Central (Midwest region)',
+                                   4: 'West North Central (Midwest region)',
+                                   5: 'South Atlantic (South region)',
+                                   6: 'East South Central (South region)',
+                                   7: 'West South Central (South Region)',
+                                   8: 'Mountain (West region)',
+                                   9: 'Pacific (West region)',
+                               }))
 causal_subsets = select_subset_minus_one(causal_features)
 ACS_INCOME_FEATURES_CAUSAL_SUBSETS = []
 for subset in causal_subsets:
-    subset.append(Feature('PINCP', float, """Total person's income >= threshold.""",is_target=True))
+    subset.append(
+        Feature('PINCP', float, """Total person's income >= threshold.""", is_target=True))
     subset.append(Feature('DIVISION', cat_dtype,
-            "Division code based on 2010 Census definitions.",
-            name_extended='geographic region',
-            value_mapping={
-                0: 'Puerto Rico',
-                1: 'New England (Northeast region)',
-                2: 'Middle Atlantic (Northeast region)',
-                3: 'East North Central (Midwest region)',
-                4: 'West North Central (Midwest region)',
-                5: 'South Atlantic (South region)',
-                6: 'East South Central (South region)',
-                7: 'West South Central (South Region)',
-                8: 'Mountain (West region)',
-                9: 'Pacific (West region)',
-            }))
+                          "Division code based on 2010 Census definitions.",
+                          name_extended='geographic region',
+                          value_mapping={
+                              0: 'Puerto Rico',
+                              1: 'New England (Northeast region)',
+                              2: 'Middle Atlantic (Northeast region)',
+                              3: 'East North Central (Midwest region)',
+                              4: 'West North Central (Midwest region)',
+                              5: 'South Atlantic (South region)',
+                              6: 'East South Central (South region)',
+                              7: 'West South Central (South Region)',
+                              8: 'Mountain (West region)',
+                              9: 'Pacific (West region)',
+                          }))
     ACS_INCOME_FEATURES_CAUSAL_SUBSETS.append(FeatureList(subset))
 ACS_INCOME_FEATURES_CAUSAL_SUBSETS_NUMBER = len(causal_subsets)
 
@@ -421,7 +423,7 @@ ACS_INCOME_FEATURES_ARGUABLYCAUSAL = FeatureList([
                 8: 'Mountain (West region)',
                 9: 'Pacific (West region)',
             }),
-    ## Causal features
+    # Causal features
     Feature('AGEP', int, "Age", name_extended='age in years'),
     Feature('SEX', int, "Sex",
             name_extended='sex',
@@ -443,7 +445,7 @@ ACS_INCOME_FEATURES_ARGUABLYCAUSAL = FeatureList([
                 8: 'Some Other Race alone',
                 9: 'Two or More Races'}),
     POBP_FEATURE,
-    ## Arguably causal features
+    # Arguably causal features
     Feature('ST', cat_dtype, "State Code based on 2010 Census definitions.",
             name_extended="State"),
     FER_FEATURE,
@@ -512,7 +514,8 @@ ACS_INCOME_FEATURES_ARGUABLYCAUSAL = FeatureList([
 ],
     documentation="https://www2.census.gov/programs-surveys/acs/tech_docs/pums/data_dict/PUMS_Data_Dictionary_2014-2018.pdf")
 
-arguablycausal_supersets = select_superset_plus_one(ACS_INCOME_FEATURES_ARGUABLYCAUSAL.features, ACS_INCOME_FEATURES.features + ACS_SHARED_FEATURES.features)
+arguablycausal_supersets = select_superset_plus_one(
+    ACS_INCOME_FEATURES_ARGUABLYCAUSAL.features, ACS_INCOME_FEATURES.features + ACS_SHARED_FEATURES.features)
 ACS_INCOME_FEATURES_ARGUABLYCAUSAL_SUPERSETS = []
 for superset in arguablycausal_supersets:
     ACS_INCOME_FEATURES_ARGUABLYCAUSAL_SUPERSETS.append(FeatureList(superset))
@@ -547,7 +550,7 @@ ACS_INCOME_FEATURES_ANTICAUSAL = FeatureList([
                           "incomes or a disability",
             value_mapping={'01': 'Yes', '02': 'No'}),
     NWLK_FEATURE,
-    ],
+],
     documentation="https://www2.census.gov/programs-surveys/acs/tech_docs/pums/data_dict/PUMS_Data_Dictionary_2014-2018.pdf")
 
 # PUBLIC COVERAGE
@@ -610,7 +613,7 @@ ACS_PUBCOV_FEATURES_CAUSAL = FeatureList(features=[
     NATIVITY_FEATURE,
     Feature('PUBCOV', int, """Public health coverage recode =With public 
     health coverage 0=Without public health coverage""", is_target=True)],
-    )
+)
 
 target = Feature('PUBCOV', int, """Public health coverage recode =With public 
     health coverage 0=Without public health coverage""", is_target=True)
@@ -722,7 +725,8 @@ ACS_PUBCOV_FEATURES_ARGUABLYCAUSAL = FeatureList(features=[
                 24: 'Doctorate degree',
             }),],
     documentation="https://www2.census.gov/programs-surveys/acs/tech_docs/pums/data_dict/PUMS_Data_Dictionary_2014-2018.pdf")
-arguablycausal_supersets = select_superset_plus_one(ACS_PUBCOV_FEATURES_ARGUABLYCAUSAL.features, ACS_PUBCOV_FEATURES.features + ACS_SHARED_FEATURES.features)
+arguablycausal_supersets = select_superset_plus_one(
+    ACS_PUBCOV_FEATURES_ARGUABLYCAUSAL.features, ACS_PUBCOV_FEATURES.features + ACS_SHARED_FEATURES.features)
 ACS_PUBCOV_FEATURES_ARGUABLYCAUSAL_SUPERSETS = []
 for superset in arguablycausal_supersets:
     ACS_PUBCOV_FEATURES_ARGUABLYCAUSAL_SUPERSETS.append(FeatureList(superset))
@@ -837,34 +841,34 @@ ACS_UNEMPLOYMENT_FEATURES_CAUSAL = FeatureList(features=[
 )
 target = Feature('ESR', int, "Employment status (is unemployed)", is_target=True)
 domain = Feature('SCHL', cat_dtype, "Educational attainment",
-            name_extended="Educational attainment",
-            value_mapping={
-                np.nan: 'NA (less than 3 years old)',
-                1: 'No schooling completed',
-                2: 'Nursery school, preschool',
-                3: 'Kindergarten',
-                4: 'Grade 1',
-                5: 'Grade 2',
-                6: 'Grade 3',
-                7: 'Grade 4',
-                8: 'Grade 5',
-                9: 'Grade 6',
-                10: 'Grade 7',
-                11: 'Grade 8',
-                12: 'Grade 9',
-                13: 'Grade 10',
-                14: 'Grade 11',
-                15: '12th grade - no diploma',
-                16: 'Regular high school diploma',
-                17: 'GED or alternative credential',
-                18: 'Some college, but less than 1 year',
-                19: '1 or more years of college credit, no degree',
-                20: "Associate's degree",
-                21: "Bachelor's degree",
-                22: "Master's degree",
-                23: "Professional degree beyond a bachelor's degree",
-                24: 'Doctorate degree',
-            })
+                 name_extended="Educational attainment",
+                 value_mapping={
+                     np.nan: 'NA (less than 3 years old)',
+                     1: 'No schooling completed',
+                     2: 'Nursery school, preschool',
+                     3: 'Kindergarten',
+                     4: 'Grade 1',
+                     5: 'Grade 2',
+                     6: 'Grade 3',
+                     7: 'Grade 4',
+                     8: 'Grade 5',
+                     9: 'Grade 6',
+                     10: 'Grade 7',
+                     11: 'Grade 8',
+                     12: 'Grade 9',
+                     13: 'Grade 10',
+                     14: 'Grade 11',
+                     15: '12th grade - no diploma',
+                     16: 'Regular high school diploma',
+                     17: 'GED or alternative credential',
+                     18: 'Some college, but less than 1 year',
+                     19: '1 or more years of college credit, no degree',
+                     20: "Associate's degree",
+                     21: "Bachelor's degree",
+                     22: "Master's degree",
+                     23: "Professional degree beyond a bachelor's degree",
+                     24: 'Doctorate degree',
+                 })
 causal_features = ACS_UNEMPLOYMENT_FEATURES_CAUSAL.features.copy()
 causal_features.remove(target)
 causal_features.remove(domain)
@@ -877,7 +881,7 @@ for subset in causal_subsets:
 ACS_UNEMPLOYMENT_FEATURES_CAUSAL_SUBSETS_NUMBER = len(causal_subsets)
 
 ACS_UNEMPLOYMENT_FEATURES_ARGUABLYCAUSAL = FeatureList(features=[
-   Feature('ESR', int, "Employment status (is unemployed)", is_target=True),
+    Feature('ESR', int, "Employment status (is unemployed)", is_target=True),
     ENG_FEATURE,
     POBP_FEATURE,
     OCCP_FEATURE,
@@ -980,12 +984,13 @@ ACS_UNEMPLOYMENT_FEATURES_ARGUABLYCAUSAL = FeatureList(features=[
                 7: 'West South Central (South Region)',
                 8: 'Mountain (West region)',
                 9: 'Pacific (West region)',
-                }),
+            }),
 ],
     documentation="https://www2.census.gov/programs-surveys/acs/tech_docs"
                   "/pums/data_dict/PUMS_Data_Dictionary_2019.pdf"
 )
-arguablycausal_supersets = select_superset_plus_one(ACS_UNEMPLOYMENT_FEATURES_ARGUABLYCAUSAL.features, ACS_UNEMPLOYMENT_FEATURES.features+ ACS_SHARED_FEATURES.features)
+arguablycausal_supersets = select_superset_plus_one(
+    ACS_UNEMPLOYMENT_FEATURES_ARGUABLYCAUSAL.features, ACS_UNEMPLOYMENT_FEATURES.features + ACS_SHARED_FEATURES.features)
 ACS_UNEMPLOYMENT_FEATURES_ARGUABLYCAUSAL_SUPERSETS = []
 for superset in arguablycausal_supersets:
     ACS_UNEMPLOYMENT_FEATURES_ARGUABLYCAUSAL_SUPERSETS.append(FeatureList(superset))
@@ -1139,14 +1144,14 @@ ACS_FOODSTAMPS_FEATURES_CAUSAL = FeatureList(features=[
     Feature('ST', cat_dtype, "State Code based on 2010 Census definitions.",
             name_extended="State"),
     Feature('MAR', cat_dtype, "Marital status",
-    name_extended='marital status',
-    value_mapping={
-        1: 'Married',
-        2: 'Widowed',
-        3: 'Divorced',
-        4: 'Separated',
-        5: 'Never married or under 15 years old'
-    }),
+            name_extended='marital status',
+            value_mapping={
+                1: 'Married',
+                2: 'Widowed',
+                3: 'Divorced',
+                4: 'Separated',
+                5: 'Never married or under 15 years old'
+            }),
 ],
     documentation="https://www2.census.gov/programs-surveys/acs/tech_docs"
                   "/pums/data_dict/PUMS_Data_Dictionary_2019.pdf"
@@ -1155,44 +1160,44 @@ ACS_FOODSTAMPS_FEATURES_CAUSAL = FeatureList(features=[
 causal_features = ACS_FOODSTAMPS_FEATURES_CAUSAL.features.copy()
 causal_features.remove(Feature('FS', int, """Yearly food stamp/Supplemental Nutrition Assistance 
     Program (SNAP) recipiency (household) b .N/A (vacant) 5 1 .Yes 2 .No""",
-            is_target=True))
+                               is_target=True))
 causal_features.remove(Feature('DIVISION', cat_dtype,
-                                "Division code based on 2010 Census definitions.",
-                                name_extended='geographic region',
-                                value_mapping={
-                                    0: 'Puerto Rico',
-                                    1: 'New England (Northeast region)',
-                                    2: 'Middle Atlantic (Northeast region)',
-                                    3: 'East North Central (Midwest region)',
-                                    4: 'West North Central (Midwest region)',
-                                    5: 'South Atlantic (South region)',
-                                    6: 'East South Central (South region)',
-                                    7: 'West South Central (South Region)',
-                                    8: 'Mountain (West region)',
-                                    9: 'Pacific (West region)',
-                                }))
+                               "Division code based on 2010 Census definitions.",
+                               name_extended='geographic region',
+                               value_mapping={
+                                   0: 'Puerto Rico',
+                                   1: 'New England (Northeast region)',
+                                   2: 'Middle Atlantic (Northeast region)',
+                                   3: 'East North Central (Midwest region)',
+                                   4: 'West North Central (Midwest region)',
+                                   5: 'South Atlantic (South region)',
+                                   6: 'East South Central (South region)',
+                                   7: 'West South Central (South Region)',
+                                   8: 'Mountain (West region)',
+                                   9: 'Pacific (West region)',
+                               }))
 causal_subsets = select_subset_minus_one(causal_features)
 ACS_FOODSTAMPS_FEATURES_CAUSAL_SUBSETS = []
 for subset in causal_subsets:
     subset.append(Feature('FS', int,
-                               """Yearly food stamp/Supplemental Nutrition Assistance 
+                          """Yearly food stamp/Supplemental Nutrition Assistance 
                                Program (SNAP) recipiency (household) b .N/A (vacant) 5 1 .Yes 2 .No""",
-                                is_target=True))
+                          is_target=True))
     subset.append(Feature('DIVISION', cat_dtype,
-            "Division code based on 2010 Census definitions.",
-            name_extended='geographic region',
-            value_mapping={
-                0: 'Puerto Rico',
-                1: 'New England (Northeast region)',
-                2: 'Middle Atlantic (Northeast region)',
-                3: 'East North Central (Midwest region)',
-                4: 'West North Central (Midwest region)',
-                5: 'South Atlantic (South region)',
-                6: 'East South Central (South region)',
-                7: 'West South Central (South Region)',
-                8: 'Mountain (West region)',
-                9: 'Pacific (West region)',
-            }))
+                          "Division code based on 2010 Census definitions.",
+                          name_extended='geographic region',
+                          value_mapping={
+                              0: 'Puerto Rico',
+                              1: 'New England (Northeast region)',
+                              2: 'Middle Atlantic (Northeast region)',
+                              3: 'East North Central (Midwest region)',
+                              4: 'West North Central (Midwest region)',
+                              5: 'South Atlantic (South region)',
+                              6: 'East South Central (South region)',
+                              7: 'West South Central (South Region)',
+                              8: 'Mountain (West region)',
+                              9: 'Pacific (West region)',
+                          }))
     ACS_FOODSTAMPS_FEATURES_CAUSAL_SUBSETS.append(FeatureList(subset))
 ACS_FOODSTAMPS_FEATURES_CAUSAL_SUBSETS_NUMBER = len(causal_subsets)
 
@@ -1215,7 +1220,7 @@ ACS_FOODSTAMPS_FEATURES_ARGUABLYCAUSAL = FeatureList(features=[
                 8: 'Mountain (West region)',
                 9: 'Pacific (West region)',
             }),
-    ## Causal Features
+    # Causal Features
     Feature('AGEP', int, "Age", name_extended='age in years'),
     Feature('SEX', int, "Sex",
             name_extended='sex',
@@ -1245,16 +1250,16 @@ ACS_FOODSTAMPS_FEATURES_ARGUABLYCAUSAL = FeatureList(features=[
     DREM_FEATURE,
     Feature('ST', cat_dtype, "State Code based on 2010 Census definitions.",
             name_extended="State"),
-        Feature('MAR', cat_dtype, "Marital status",
-        name_extended='marital status',
-        value_mapping={
-            1: 'Married',
-            2: 'Widowed',
-            3: 'Divorced',
-            4: 'Separated',
-            5: 'Never married or under 15 years old'
-        }),
-    ## Arguably causal features
+    Feature('MAR', cat_dtype, "Marital status",
+            name_extended='marital status',
+            value_mapping={
+                1: 'Married',
+                2: 'Widowed',
+                3: 'Divorced',
+                4: 'Separated',
+                5: 'Never married or under 15 years old'
+            }),
+    # Arguably causal features
     ENG_FEATURE,
     FER_FEATURE,
     Feature('CIT', cat_dtype, """Citizenship status""",
@@ -1329,7 +1334,8 @@ ACS_FOODSTAMPS_FEATURES_ARGUABLYCAUSAL = FeatureList(features=[
                   "/pums/data_dict/PUMS_Data_Dictionary_2019.pdf"
 )
 
-arguablycausal_supersets = select_superset_plus_one(ACS_FOODSTAMPS_FEATURES_ARGUABLYCAUSAL.features, ACS_FOODSTAMPS_FEATURES.features + ACS_SHARED_FEATURES.features)
+arguablycausal_supersets = select_superset_plus_one(
+    ACS_FOODSTAMPS_FEATURES_ARGUABLYCAUSAL.features, ACS_FOODSTAMPS_FEATURES.features + ACS_SHARED_FEATURES.features)
 ACS_FOODSTAMPS_FEATURES_ARGUABLYCAUSAL_SUPERSETS = []
 for superset in arguablycausal_supersets:
     ACS_FOODSTAMPS_FEATURES_ARGUABLYCAUSAL_SUPERSETS.append(FeatureList(superset))
@@ -1414,6 +1420,7 @@ def unemployment_target_transform(y, threshold):
     del threshold
     return y == 3
     # return y == 1
+
 
 def unemployment_filter(data):
     """
@@ -1500,7 +1507,8 @@ ACS_TASK_CONFIGS = frozendict.frozendict({
         'threshold': None,
     }),
     'unemployment_anticausal': ACSTaskConfig(**{
-        'features_to_use': ACS_UNEMPLOYMENT_FEATURES_CAUSAL, #[value for value in ACS_FOODSTAMPS_FEATURES + ACS_SHARED_FEATURES if value not in ACS_UNEMPLOYMENT_FEATURES_CAUSAL], 
+        # [value for value in ACS_FOODSTAMPS_FEATURES + ACS_SHARED_FEATURES if value not in ACS_UNEMPLOYMENT_FEATURES_CAUSAL],
+        'features_to_use': ACS_UNEMPLOYMENT_FEATURES_CAUSAL,
         'group_transform': default_acs_group_transform,
         'postprocess': default_acs_postprocess,
         'preprocess': unemployment_filter,
