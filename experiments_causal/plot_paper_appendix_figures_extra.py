@@ -5,6 +5,8 @@ from experiments_causal.plot_experiment_causal_robust import get_results as get_
 from experiments_causal.plot_experiment_anticausal import get_results as get_results_anticausal
 from experiments_causal.plot_experiment_causalml import get_results as get_results_causalml
 from experiments_causal.plot_experiment_balanced import get_results as get_results_balanced
+from experiments_causal.plot_experiment_causal_robust import dic_robust_number as dic_robust_number_causal
+from experiments_causal.plot_experiment_arguablycausal_robust import dic_robust_number as dic_robust_number_arguablycausal
 from experiments_causal.plot_config_colors import *
 from scipy.spatial import ConvexHull
 from paretoset import paretoset

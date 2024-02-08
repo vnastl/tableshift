@@ -4,6 +4,7 @@ import pandas as pd
 import os
 from pathlib import Path
 import pickle
+import ast
 from tableshift import get_dataset
 from statsmodels.stats.proportion import proportion_confint
 
