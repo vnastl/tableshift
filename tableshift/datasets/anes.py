@@ -7,13 +7,14 @@ For more information on datasets and access in TableShift, see:
 
 List of variables: https://electionstudies.org/wp-content/uploads/2019/09/anes_timeseries_cdf_codebook_Varlist.pdf
 Codebook: https://electionstudies.org/wp-content/uploads/2022/09/anes_timeseries_cdf_codebook_var_20220916.pdf
+
+Modified for 'Predictors from Causal Features Do Not Generalize Better to New Domains'
 """
 import pandas as pd
 
 from tableshift.core.features import Feature, cat_dtype, FeatureList
 
-from tableshift.datasets.robustness import select_subset_minus_one, select_superset_plus_one
-
+from tableshift.datasets.robustness import get_causal_robust, get_arguablycausal_robust
 
 # Note that "state" feature is named as VCF0901b; see below. Note that '99' is
 # also a valid value, but it contains all missing targets .
@@ -353,8 +354,7 @@ ANES_FEATURES = FeatureList(features=[
     Feature('VCF0612', cat_dtype, "VOTING IS THE ONLY WAY TO HAVE A SAY IN "
                                   "GOVERNMENT",
             name_extended='voting is the only way to have a say in government',
-            value_mapping=
-            {
+            value_mapping={
                 '1.0': "Agree",
                 '2.0': "Disagree",
                 '9.0': "Don't know or not sure",
@@ -532,9 +532,48 @@ ANES_FEATURES = FeatureList(features=[
                 # (AL, AR, DE, D.C., FL, GA, KY, LA, MD, MS, NC, OK, SC,TN, TX, VA, WV) 4. West (AK, AZ, CA, CO, HI, ID, MT, NV, NM, OR, UT, WA, WY)
                 '3.0': "South",
                 # (AK, AZ, CA, CO, HI, ID, MT, NV, NM, OR, UT, WA, WY)
-                '4.0': 'West',}),
+                '4.0': 'West', }),
 ],
     documentation="https://electionstudies.org/data-center/anes-time-series-cumulative-data-file/")
+
+causal_features = ANES_FEATURES_CAUSAL.features.copy()
+target = Feature('VCF0702', int, "DID RESPONDENT VOTE IN THE NATIONAL "
+                 "ELECTIONS 1. No, did not vote 2. Yes, "
+                 "voted 0. DK; NA; no Post IW; refused to "
+                 "say if voted; Washington D.C. ("
+                 "presidential years only)",
+                 is_target=True,
+                 name_extended='voted in national election')
+domain = Feature('VCF0112', cat_dtype, """Region - U.S. Census 1. Northeast (CT, 
+    ME, MA, NH, NJ, NY, PA, RI, VT) 2. North Central (IL, IN, IA, KS, MI, MN, 
+    MO, NE, ND, OH, SD, WI) 3. South (AL, AR, DE, D.C., FL, GA, KY, LA, MD, 
+    MS, NC, OK, SC,TN, TX, VA, WV) 4. West (AK, AZ, CA, CO, HI, ID, MT, NV, 
+    NM, OR, UT, WA, WY)""",
+                 name_extended='US census region',
+                 value_mapping={
+                     # (CT, ME, MA, NH, NJ, NY, PA, RI, VT)
+                     '1.0': "Northeast",
+                     # (IL, IN, IA, KS, MI, MN, MO, NE, ND, OH, SD, WI)
+                     '2.0': "North Central",
+                     # (AL, AR, DE, D.C., FL, GA, KY, LA, MD, MS, NC, OK, SC,TN, TX, VA, WV) 4. West (AK, AZ, CA, CO, HI, ID, MT, NV, NM, OR, UT, WA, WY)
+                     '3.0': "South",
+                     # (AK, AZ, CA, CO, HI, ID, MT, NV, NM, OR, UT, WA, WY)
+                     '4.0': 'West', })
+
+
+def preprocess_anes(df: pd.DataFrame) -> pd.DataFrame:
+    df = df.dropna(subset=[ANES_FEATURES.target])
+    df[ANES_FEATURES.target] = (
+        df[ANES_FEATURES.target].astype(float) == 2.0).astype(int)
+    for f in ANES_FEATURES.features:
+        if f.kind == cat_dtype:
+            df[f.name] = df[f.name].fillna("no answer").apply(str) \
+                .astype("category")
+    return df
+
+################################################################################
+# Feature list for causal, arguably causal and (if applicable) anticausal features
+################################################################################
 
 
 ANES_FEATURES_CAUSAL = FeatureList(features=[
@@ -551,18 +590,6 @@ ANES_FEATURES_CAUSAL = FeatureList(features=[
     used""",
             name_extended='state'),
 
-    # PARTISANSHIP AND ATTITUDES TOWARDS PARTIES
-
-    # CANDIDATE AND INCUMBENT EVALUATIONS
-
-    # CANDIDATE/INCUMBENT PERFORMANCE EVALUATIONS
-    
-    # ISSUES
-    
-    # IDEOLOGY AND VALUES
-    
-    # SYSTEM SUPPORT
-
     # REGISTRATION, TURNOUT, AND VOTE CHOICE
     Feature('VCF0701', cat_dtype, "REGISTERED TO VOTE PRE-ELECTION",
             name_extended='registered to vote pre-election',
@@ -570,8 +597,6 @@ ANES_FEATURES_CAUSAL = FeatureList(features=[
                 '1.0': "No ",
                 '2.0': "Yes",
                 '0.0': "no answer"}),
-
-    # MEDIA
 
     # PERSONAL AND DEMOGRAPHIC
     Feature('VCF0101', int, "RESPONDENT - AGE",
@@ -630,42 +655,34 @@ ANES_FEATURES_CAUSAL = FeatureList(features=[
                 # (AL, AR, DE, D.C., FL, GA, KY, LA, MD, MS, NC, OK, SC,TN, TX, VA, WV) 4. West (AK, AZ, CA, CO, HI, ID, MT, NV, NM, OR, UT, WA, WY)
                 '3.0': "South",
                 # (AK, AZ, CA, CO, HI, ID, MT, NV, NM, OR, UT, WA, WY)
-                '4.0': 'West',}),
+                '4.0': 'West', }),
 ],
     documentation="https://electionstudies.org/data-center/anes-time-series-cumulative-data-file/")
-causal_features = ANES_FEATURES_CAUSAL.features.copy()
+
 target = Feature('VCF0702', int, "DID RESPONDENT VOTE IN THE NATIONAL "
-                            "ELECTIONS 1. No, did not vote 2. Yes, "
-                            "voted 0. DK; NA; no Post IW; refused to "
-                            "say if voted; Washington D.C. ("
-                            "presidential years only)",
-            is_target=True,
-            name_extended='voted in national election')
+                 "ELECTIONS 1. No, did not vote 2. Yes, "
+                 "voted 0. DK; NA; no Post IW; refused to "
+                 "say if voted; Washington D.C. ("
+                 "presidential years only)",
+                 is_target=True,
+                 name_extended='voted in national election')
 domain = Feature('VCF0112', cat_dtype, """Region - U.S. Census 1. Northeast (CT, 
     ME, MA, NH, NJ, NY, PA, RI, VT) 2. North Central (IL, IN, IA, KS, MI, MN, 
     MO, NE, ND, OH, SD, WI) 3. South (AL, AR, DE, D.C., FL, GA, KY, LA, MD, 
     MS, NC, OK, SC,TN, TX, VA, WV) 4. West (AK, AZ, CA, CO, HI, ID, MT, NV, 
     NM, OR, UT, WA, WY)""",
-            name_extended='US census region',
-            value_mapping={
-                # (CT, ME, MA, NH, NJ, NY, PA, RI, VT)
-                '1.0': "Northeast",
-                # (IL, IN, IA, KS, MI, MN, MO, NE, ND, OH, SD, WI)
-                '2.0': "North Central",
-                # (AL, AR, DE, D.C., FL, GA, KY, LA, MD, MS, NC, OK, SC,TN, TX, VA, WV) 4. West (AK, AZ, CA, CO, HI, ID, MT, NV, NM, OR, UT, WA, WY)
-                '3.0': "South",
-                # (AK, AZ, CA, CO, HI, ID, MT, NV, NM, OR, UT, WA, WY)
-                '4.0': 'West',})
-causal_features.remove(target)
-causal_features.remove(domain)
-causal_subsets = select_subset_minus_one(causal_features)
-ANES_FEATURES_CAUSAL_SUBSETS = []
-for subset in causal_subsets:
-    subset.append(target)
-    subset.append(domain)
-    ANES_FEATURES_CAUSAL_SUBSETS.append(FeatureList(subset))
-ANES_FEATURES_CAUSAL_SUBSETS_NUMBER = len(causal_subsets)
+                 name_extended='US census region',
+                 value_mapping={
+                     # (CT, ME, MA, NH, NJ, NY, PA, RI, VT)
+                     '1.0': "Northeast",
+                     # (IL, IN, IA, KS, MI, MN, MO, NE, ND, OH, SD, WI)
+                     '2.0': "North Central",
+                     # (AL, AR, DE, D.C., FL, GA, KY, LA, MD, MS, NC, OK, SC,TN, TX, VA, WV) 4. West (AK, AZ, CA, CO, HI, ID, MT, NV, NM, OR, UT, WA, WY)
+                     '3.0': "South",
+                     # (AK, AZ, CA, CO, HI, ID, MT, NV, NM, OR, UT, WA, WY)
+                     '4.0': 'West', })
 
+ANES_FEATURES_CAUSAL_SUBSETS = get_causal_robust(ANES_FEATURES_CAUSAL, target, domain)
 
 ANES_FEATURES_ARGUABLYCAUSAL = FeatureList(features=[
     Feature('VCF0702', int, "DID RESPONDENT VOTE IN THE NATIONAL "
@@ -792,8 +809,7 @@ ANES_FEATURES_ARGUABLYCAUSAL = FeatureList(features=[
     Feature('VCF0612', cat_dtype, "VOTING IS THE ONLY WAY TO HAVE A SAY IN "
                                   "GOVERNMENT",
             name_extended='voting is the only way to have a say in government',
-            value_mapping=
-            {
+            value_mapping={
                 '1.0': "Agree",
                 '2.0': "Disagree",
                 '9.0': "Don't know or not sure",
@@ -971,23 +987,10 @@ ANES_FEATURES_ARGUABLYCAUSAL = FeatureList(features=[
                 # (AL, AR, DE, D.C., FL, GA, KY, LA, MD, MS, NC, OK, SC,TN, TX, VA, WV) 4. West (AK, AZ, CA, CO, HI, ID, MT, NV, NM, OR, UT, WA, WY)
                 '3.0': "South",
                 # (AK, AZ, CA, CO, HI, ID, MT, NV, NM, OR, UT, WA, WY)
-                '4.0': 'West',}),
+                '4.0': 'West', }),
 ],
     documentation="https://electionstudies.org/data-center/anes-time-series-cumulative-data-file/")
 
-arguablycausal_supersets = select_superset_plus_one(ANES_FEATURES_ARGUABLYCAUSAL.features, ANES_FEATURES.features)
-ANES_FEATURES_ARGUABLYCAUSAL_SUPERSETS = []
-for superset in arguablycausal_supersets:
-    ANES_FEATURES_ARGUABLYCAUSAL_SUPERSETS.append(FeatureList(superset))
-ANES_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER = len(arguablycausal_supersets)
-
-
-def preprocess_anes(df: pd.DataFrame) -> pd.DataFrame:
-    df = df.dropna(subset=[ANES_FEATURES.target])
-    df[ANES_FEATURES.target] = (
-            df[ANES_FEATURES.target].astype(float) == 2.0).astype(int)
-    for f in ANES_FEATURES.features:
-        if f.kind == cat_dtype:
-            df[f.name] = df[f.name].fillna("no answer").apply(str) \
-                .astype("category")
-    return df
+ANES_FEATURES_ARGUABLYCAUSAL_SUPERSETS = get_arguablycausal_robust(ANES_FEATURES_ARGUABLYCAUSAL,
+                                                                   ANES_FEATURES.features)
+ANES_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER = len(ANES_FEATURES_ARGUABLYCAUSAL_SUPERSETS)
