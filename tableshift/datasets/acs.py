@@ -443,253 +443,6 @@ ACS_FOODSTAMPS_FEATURES = FeatureList(features=[
                   "/pums/data_dict/PUMS_Data_Dictionary_2019.pdf"
 )
 
-ACS_FOODSTAMPS_FEATURES_CAUSAL = FeatureList(features=[
-    Feature('FS', int, """Yearly food stamp/Supplemental Nutrition Assistance
-    Program (SNAP) recipiency (household) b .N/A (vacant) 5 1 .Yes 2 .No""",
-            is_target=True),
-    Feature('DIVISION', cat_dtype,
-            "Division code based on 2010 Census definitions.",
-            name_extended='geographic region',
-            value_mapping={
-                0: 'Puerto Rico',
-                1: 'New England (Northeast region)',
-                2: 'Middle Atlantic (Northeast region)',
-                3: 'East North Central (Midwest region)',
-                4: 'West North Central (Midwest region)',
-                5: 'South Atlantic (South region)',
-                6: 'East South Central (South region)',
-                7: 'West South Central (South Region)',
-                8: 'Mountain (West region)',
-                9: 'Pacific (West region)',
-            }),
-    Feature('AGEP', int, "Age", name_extended='age in years'),
-    Feature('SEX', int, "Sex",
-            name_extended='sex',
-            value_mapping={
-                1: "Male", 2: "Female",
-            }),
-    Feature('RAC1P', int, """Recoded detailed race code""",
-            name_extended='race',
-            value_mapping={
-                1: 'White alone',
-                2: 'Black or African American alone',
-                3: 'American Indian alone',
-                4: 'Alaska Native alone',
-                5: 'American Indian and Alaska Native tribes specified; or'
-                   ' American Indian or Alaska Native, not specified and '
-                   'no other races',
-                6: 'Asian alone',
-                7: 'Native Hawaiian and Other Pacific Islander alone',
-                8: 'Some Other Race alone',
-                9: 'Two or More Races'}),
-    POBP_FEATURE,
-    DIS_FEATURE,
-    ANC_FEATURE,
-    NATIVITY_FEATURE,
-    DEAR_FEATURE,
-    DEYE_FEATURE,
-    DREM_FEATURE,
-    Feature('ST', cat_dtype, "State Code based on 2010 Census definitions.",
-            name_extended="State"),
-    Feature('MAR', cat_dtype, "Marital status",
-            name_extended='marital status',
-            value_mapping={
-                1: 'Married',
-                2: 'Widowed',
-                3: 'Divorced',
-                4: 'Separated',
-                5: 'Never married or under 15 years old'
-            }),
-],
-    documentation="https://www2.census.gov/programs-surveys/acs/tech_docs"
-                  "/pums/data_dict/PUMS_Data_Dictionary_2019.pdf"
-)
-
-causal_features = ACS_FOODSTAMPS_FEATURES_CAUSAL.features.copy()
-causal_features.remove(Feature('FS', int, """Yearly food stamp/Supplemental Nutrition Assistance
-    Program (SNAP) recipiency (household) b .N/A (vacant) 5 1 .Yes 2 .No""",
-                               is_target=True))
-causal_features.remove(Feature('DIVISION', cat_dtype,
-                               "Division code based on 2010 Census definitions.",
-                               name_extended='geographic region',
-                               value_mapping={
-                                   0: 'Puerto Rico',
-                                   1: 'New England (Northeast region)',
-                                   2: 'Middle Atlantic (Northeast region)',
-                                   3: 'East North Central (Midwest region)',
-                                   4: 'West North Central (Midwest region)',
-                                   5: 'South Atlantic (South region)',
-                                   6: 'East South Central (South region)',
-                                   7: 'West South Central (South Region)',
-                                   8: 'Mountain (West region)',
-                                   9: 'Pacific (West region)',
-                               }))
-causal_subsets = select_subset_minus_one(causal_features)
-ACS_FOODSTAMPS_FEATURES_CAUSAL_SUBSETS = []
-for subset in causal_subsets:
-    subset.append(Feature('FS', int,
-                          """Yearly food stamp/Supplemental Nutrition Assistance
-                               Program (SNAP) recipiency (household) b .N/A (vacant) 5 1 .Yes 2 .No""",
-                          is_target=True))
-    subset.append(Feature('DIVISION', cat_dtype,
-                          "Division code based on 2010 Census definitions.",
-                          name_extended='geographic region',
-                          value_mapping={
-                              0: 'Puerto Rico',
-                              1: 'New England (Northeast region)',
-                              2: 'Middle Atlantic (Northeast region)',
-                              3: 'East North Central (Midwest region)',
-                              4: 'West North Central (Midwest region)',
-                              5: 'South Atlantic (South region)',
-                              6: 'East South Central (South region)',
-                              7: 'West South Central (South Region)',
-                              8: 'Mountain (West region)',
-                              9: 'Pacific (West region)',
-                          }))
-    ACS_FOODSTAMPS_FEATURES_CAUSAL_SUBSETS.append(FeatureList(subset))
-ACS_FOODSTAMPS_FEATURES_CAUSAL_SUBSETS_NUMBER = len(causal_subsets)
-
-ACS_FOODSTAMPS_FEATURES_ARGUABLYCAUSAL = FeatureList(features=[
-    Feature('FS', int, """Yearly food stamp/Supplemental Nutrition Assistance
-    Program (SNAP) recipiency (household) b .N/A (vacant) 5 1 .Yes 2 .No""",
-            is_target=True),
-    Feature('DIVISION', cat_dtype,
-            "Division code based on 2010 Census definitions.",
-            name_extended='geographic region',
-            value_mapping={
-                0: 'Puerto Rico',
-                1: 'New England (Northeast region)',
-                2: 'Middle Atlantic (Northeast region)',
-                3: 'East North Central (Midwest region)',
-                4: 'West North Central (Midwest region)',
-                5: 'South Atlantic (South region)',
-                6: 'East South Central (South region)',
-                7: 'West South Central (South Region)',
-                8: 'Mountain (West region)',
-                9: 'Pacific (West region)',
-            }),
-    # Causal Features
-    Feature('AGEP', int, "Age", name_extended='age in years'),
-    Feature('SEX', int, "Sex",
-            name_extended='sex',
-            value_mapping={
-                1: "Male", 2: "Female",
-            }),
-    Feature('RAC1P', int, """Recoded detailed race code""",
-            name_extended='race',
-            value_mapping={
-                1: 'White alone',
-                2: 'Black or African American alone',
-                3: 'American Indian alone',
-                4: 'Alaska Native alone',
-                5: 'American Indian and Alaska Native tribes specified; or'
-                   ' American Indian or Alaska Native, not specified and '
-                   'no other races',
-                6: 'Asian alone',
-                7: 'Native Hawaiian and Other Pacific Islander alone',
-                8: 'Some Other Race alone',
-                9: 'Two or More Races'}),
-    POBP_FEATURE,
-    DIS_FEATURE,
-    ANC_FEATURE,
-    NATIVITY_FEATURE,
-    DEAR_FEATURE,
-    DEYE_FEATURE,
-    DREM_FEATURE,
-    Feature('ST', cat_dtype, "State Code based on 2010 Census definitions.",
-            name_extended="State"),
-    Feature('MAR', cat_dtype, "Marital status",
-            name_extended='marital status',
-            value_mapping={
-                1: 'Married',
-                2: 'Widowed',
-                3: 'Divorced',
-                4: 'Separated',
-                5: 'Never married or under 15 years old'
-            }),
-    # Arguably causal features
-    ENG_FEATURE,
-    FER_FEATURE,
-    Feature('CIT', cat_dtype, """Citizenship status""",
-            name_extended='citizenship status',
-            value_mapping={
-                1: 'Born in the U.S.',
-                2: 'Born in Puerto Rico, Guam, the U.S. Virgin Islands, '
-                   'or the Northern Marianas',
-                3: 'Born abroad of American parent(s)',
-                4: 'U.S. citizen by naturalization',
-                5: 'Not a citizen of the U.S.',
-            }),
-    Feature('SCHL', cat_dtype, "Educational attainment",
-            name_extended="Educational attainment",
-            value_mapping={
-                np.nan: 'NA (less than 3 years old)',
-                1: 'No schooling completed',
-                2: 'Nursery school, preschool',
-                3: 'Kindergarten',
-                4: 'Grade 1',
-                5: 'Grade 2',
-                6: 'Grade 3',
-                7: 'Grade 4',
-                8: 'Grade 5',
-                9: 'Grade 6',
-                10: 'Grade 7',
-                11: 'Grade 8',
-                12: 'Grade 9',
-                13: 'Grade 10',
-                14: 'Grade 11',
-                15: '12th grade - no diploma',
-                16: 'Regular high school diploma',
-                17: 'GED or alternative credential',
-                18: 'Some college, but less than 1 year',
-                19: '1 or more years of college credit, no degree',
-                20: "Associate's degree",
-                21: "Bachelor's degree",
-                22: "Master's degree",
-                23: "Professional degree beyond a bachelor's degree",
-                24: 'Doctorate degree',
-            }),
-    Feature('HUPAC', int, "Household presence and age of children",
-            name_extended="Household presence and age of children",
-            value_mapping={
-                '00': 'N/A (GQ/vacant)',
-                '01': 'With children under 6 years only',
-                '02': 'With children 6 to 17 years only',
-                '03': 'With children under 6 years and 6 to 17 years',
-                '04': 'No children'
-            }),
-    OCCP_FEATURE,
-    MIL_FEATURE,
-    Feature('WIF', int, "Workers in family during the past 12 months",
-            name_extended="Workers in family during the past 12 months",
-            value_mapping={
-                0: 'No workers',
-                1: '1 worker',
-                2: '2 workers',
-                3: '3 or more workers'}),
-    WKHP_FEATURE,
-    Feature('WKW', int,
-            "Weeks worked during past 12 months.",
-            name_extended="Weeks worked during past 12 months",
-            ),
-    Feature('WRK', cat_dtype, "Worked last week",
-            name_extended="worked last week",
-            value_mapping={'01': 'worked', '02': 'did not work'}),
-    NWLA_FEATURE,
-    NWLK_FEATURE,
-],
-    documentation="https://www2.census.gov/programs-surveys/acs/tech_docs"
-                  "/pums/data_dict/PUMS_Data_Dictionary_2019.pdf"
-)
-
-arguablycausal_supersets = select_superset_plus_one(
-    ACS_FOODSTAMPS_FEATURES_ARGUABLYCAUSAL.features, ACS_FOODSTAMPS_FEATURES.features + ACS_SHARED_FEATURES.features)
-ACS_FOODSTAMPS_FEATURES_ARGUABLYCAUSAL_SUPERSETS = []
-for superset in arguablycausal_supersets:
-    ACS_FOODSTAMPS_FEATURES_ARGUABLYCAUSAL_SUPERSETS.append(FeatureList(superset))
-ACS_FOODSTAMPS_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER = len(arguablycausal_supersets)
-
-
 ################################################################################
 # Preprocessing functions
 ################################################################################
@@ -843,45 +596,7 @@ ACS_TASK_CONFIGS = frozendict.frozendict({
         'target': 'FS',
         'target_transform': foodstamps_target_transform,
         'threshold': None,
-    }),
-    # causal features
-    'unemployment_causal': ACSTaskConfig(**{
-        'features_to_use': ACS_UNEMPLOYMENT_FEATURES_CAUSAL,
-        'group_transform': default_acs_group_transform,
-        'postprocess': default_acs_postprocess,
-        'preprocess': unemployment_filter,
-        'target': 'ESR',
-        'target_transform': unemployment_target_transform,
-        'threshold': None,
-    }),
-    'unemployment_anticausal': ACSTaskConfig(**{
-        # [value for value in ACS_FOODSTAMPS_FEATURES + ACS_SHARED_FEATURES if value not in ACS_UNEMPLOYMENT_FEATURES_CAUSAL],
-        'features_to_use': ACS_UNEMPLOYMENT_FEATURES_CAUSAL,
-        'group_transform': default_acs_group_transform,
-        'postprocess': default_acs_postprocess,
-        'preprocess': unemployment_filter,
-        'target': 'ESR',
-        'target_transform': unemployment_target_transform,
-        'threshold': None,
-    }),
-    'pubcov_causal': ACSTaskConfig(**{
-        'features_to_use': ACS_PUBCOV_FEATURES_CAUSAL,
-        'group_transform': default_acs_group_transform,
-        'postprocess': default_acs_postprocess,
-        'preprocess': folktables.acs.public_coverage_filter,
-        'target': 'PUBCOV',
-        'target_transform': pubcov_target_transform,
-        'threshold': None,
-    }),
-    'foodstamps_causal': ACSTaskConfig(**{
-        'features_to_use': ACS_FOODSTAMPS_FEATURES_CAUSAL,
-        'group_transform': default_acs_group_transform,
-        'postprocess': default_acs_postprocess,
-        'preprocess': foodstamps_filter,
-        'target': 'FS',
-        'target_transform': foodstamps_target_transform,
-        'threshold': None,
-    }),
+    })
 })
 
 
@@ -1254,6 +969,7 @@ ACS_PUBCOV_FEATURES_ARGUABLYCAUSAL_SUPERSETS = get_arguablycausal_robust(ACS_PUB
                                                                          ACS_PUBCOV_FEATURES.features + ACS_SHARED_FEATURES.features)
 ACS_PUBCOV_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER = len(ACS_PUBCOV_FEATURES_ARGUABLYCAUSAL_SUPERSETS)
 
+# UNEMPLOYMENT
 
 ACS_UNEMPLOYMENT_FEATURES_CAUSAL = FeatureList(features=[
     Feature('ESR', int, "Employment status (is unemployed)", is_target=True),
@@ -1517,3 +1233,226 @@ ACS_UNEMPLOYMENT_FEATURES_ANTICAUSAL = FeatureList(features=[
     documentation="https://www2.census.gov/programs-surveys/acs/tech_docs"
                   "/pums/data_dict/PUMS_Data_Dictionary_2019.pdf"
 )
+
+# FOODSTAMPS
+
+ACS_FOODSTAMPS_FEATURES_CAUSAL = FeatureList(features=[
+    Feature('FS', int, """Yearly food stamp/Supplemental Nutrition Assistance
+    Program (SNAP) recipiency (household) b .N/A (vacant) 5 1 .Yes 2 .No""",
+            is_target=True),
+    Feature('DIVISION', cat_dtype,
+            "Division code based on 2010 Census definitions.",
+            name_extended='geographic region',
+            value_mapping={
+                0: 'Puerto Rico',
+                1: 'New England (Northeast region)',
+                2: 'Middle Atlantic (Northeast region)',
+                3: 'East North Central (Midwest region)',
+                4: 'West North Central (Midwest region)',
+                5: 'South Atlantic (South region)',
+                6: 'East South Central (South region)',
+                7: 'West South Central (South Region)',
+                8: 'Mountain (West region)',
+                9: 'Pacific (West region)',
+            }),
+    Feature('AGEP', int, "Age", name_extended='age in years'),
+    Feature('SEX', int, "Sex",
+            name_extended='sex',
+            value_mapping={
+                1: "Male", 2: "Female",
+            }),
+    Feature('RAC1P', int, """Recoded detailed race code""",
+            name_extended='race',
+            value_mapping={
+                1: 'White alone',
+                2: 'Black or African American alone',
+                3: 'American Indian alone',
+                4: 'Alaska Native alone',
+                5: 'American Indian and Alaska Native tribes specified; or'
+                   ' American Indian or Alaska Native, not specified and '
+                   'no other races',
+                6: 'Asian alone',
+                7: 'Native Hawaiian and Other Pacific Islander alone',
+                8: 'Some Other Race alone',
+                9: 'Two or More Races'}),
+    POBP_FEATURE,
+    DIS_FEATURE,
+    ANC_FEATURE,
+    NATIVITY_FEATURE,
+    DEAR_FEATURE,
+    DEYE_FEATURE,
+    DREM_FEATURE,
+    Feature('ST', cat_dtype, "State Code based on 2010 Census definitions.",
+            name_extended="State"),
+    Feature('MAR', cat_dtype, "Marital status",
+            name_extended='marital status',
+            value_mapping={
+                1: 'Married',
+                2: 'Widowed',
+                3: 'Divorced',
+                4: 'Separated',
+                5: 'Never married or under 15 years old'
+            }),
+],
+    documentation="https://www2.census.gov/programs-surveys/acs/tech_docs"
+                  "/pums/data_dict/PUMS_Data_Dictionary_2019.pdf"
+)
+
+target = Feature('FS', int, """Yearly food stamp/Supplemental Nutrition Assistance
+    Program (SNAP) recipiency (household) b .N/A (vacant) 5 1 .Yes 2 .No""",
+                 is_target=True)
+domain = Feature('DIVISION', cat_dtype,
+                 "Division code based on 2010 Census definitions.",
+                 name_extended='geographic region',
+                 value_mapping={
+                     0: 'Puerto Rico',
+                     1: 'New England (Northeast region)',
+                     2: 'Middle Atlantic (Northeast region)',
+                     3: 'East North Central (Midwest region)',
+                     4: 'West North Central (Midwest region)',
+                     5: 'South Atlantic (South region)',
+                     6: 'East South Central (South region)',
+                     7: 'West South Central (South Region)',
+                     8: 'Mountain (West region)',
+                     9: 'Pacific (West region)',
+                 })
+ACS_FOODSTAMPS_FEATURES_CAUSAL_SUBSETS = get_causal_robust(ACS_FOODSTAMPS_FEATURES_CAUSAL,
+                                                           target, domain)
+ACS_FOODSTAMPS_FEATURES_CAUSAL_SUBSETS_NUMBER = len(ACS_FOODSTAMPS_FEATURES_CAUSAL_SUBSETS)
+
+ACS_FOODSTAMPS_FEATURES_ARGUABLYCAUSAL = FeatureList(features=[
+    Feature('FS', int, """Yearly food stamp/Supplemental Nutrition Assistance
+    Program (SNAP) recipiency (household) b .N/A (vacant) 5 1 .Yes 2 .No""",
+            is_target=True),
+    Feature('DIVISION', cat_dtype,
+            "Division code based on 2010 Census definitions.",
+            name_extended='geographic region',
+            value_mapping={
+                0: 'Puerto Rico',
+                1: 'New England (Northeast region)',
+                2: 'Middle Atlantic (Northeast region)',
+                3: 'East North Central (Midwest region)',
+                4: 'West North Central (Midwest region)',
+                5: 'South Atlantic (South region)',
+                6: 'East South Central (South region)',
+                7: 'West South Central (South Region)',
+                8: 'Mountain (West region)',
+                9: 'Pacific (West region)',
+            }),
+    # Causal Features
+    Feature('AGEP', int, "Age", name_extended='age in years'),
+    Feature('SEX', int, "Sex",
+            name_extended='sex',
+            value_mapping={
+                1: "Male", 2: "Female",
+            }),
+    Feature('RAC1P', int, """Recoded detailed race code""",
+            name_extended='race',
+            value_mapping={
+                1: 'White alone',
+                2: 'Black or African American alone',
+                3: 'American Indian alone',
+                4: 'Alaska Native alone',
+                5: 'American Indian and Alaska Native tribes specified; or'
+                   ' American Indian or Alaska Native, not specified and '
+                   'no other races',
+                6: 'Asian alone',
+                7: 'Native Hawaiian and Other Pacific Islander alone',
+                8: 'Some Other Race alone',
+                9: 'Two or More Races'}),
+    POBP_FEATURE,
+    DIS_FEATURE,
+    ANC_FEATURE,
+    NATIVITY_FEATURE,
+    DEAR_FEATURE,
+    DEYE_FEATURE,
+    DREM_FEATURE,
+    Feature('ST', cat_dtype, "State Code based on 2010 Census definitions.",
+            name_extended="State"),
+    Feature('MAR', cat_dtype, "Marital status",
+            name_extended='marital status',
+            value_mapping={
+                1: 'Married',
+                2: 'Widowed',
+                3: 'Divorced',
+                4: 'Separated',
+                5: 'Never married or under 15 years old'
+            }),
+    # Arguably causal features
+    ENG_FEATURE,
+    FER_FEATURE,
+    Feature('CIT', cat_dtype, """Citizenship status""",
+            name_extended='citizenship status',
+            value_mapping={
+                1: 'Born in the U.S.',
+                2: 'Born in Puerto Rico, Guam, the U.S. Virgin Islands, '
+                   'or the Northern Marianas',
+                3: 'Born abroad of American parent(s)',
+                4: 'U.S. citizen by naturalization',
+                5: 'Not a citizen of the U.S.',
+            }),
+    Feature('SCHL', cat_dtype, "Educational attainment",
+            name_extended="Educational attainment",
+            value_mapping={
+                np.nan: 'NA (less than 3 years old)',
+                1: 'No schooling completed',
+                2: 'Nursery school, preschool',
+                3: 'Kindergarten',
+                4: 'Grade 1',
+                5: 'Grade 2',
+                6: 'Grade 3',
+                7: 'Grade 4',
+                8: 'Grade 5',
+                9: 'Grade 6',
+                10: 'Grade 7',
+                11: 'Grade 8',
+                12: 'Grade 9',
+                13: 'Grade 10',
+                14: 'Grade 11',
+                15: '12th grade - no diploma',
+                16: 'Regular high school diploma',
+                17: 'GED or alternative credential',
+                18: 'Some college, but less than 1 year',
+                19: '1 or more years of college credit, no degree',
+                20: "Associate's degree",
+                21: "Bachelor's degree",
+                22: "Master's degree",
+                23: "Professional degree beyond a bachelor's degree",
+                24: 'Doctorate degree',
+            }),
+    Feature('HUPAC', int, "Household presence and age of children",
+            name_extended="Household presence and age of children",
+            value_mapping={
+                '00': 'N/A (GQ/vacant)',
+                '01': 'With children under 6 years only',
+                '02': 'With children 6 to 17 years only',
+                '03': 'With children under 6 years and 6 to 17 years',
+                '04': 'No children'
+            }),
+    OCCP_FEATURE,
+    MIL_FEATURE,
+    Feature('WIF', int, "Workers in family during the past 12 months",
+            name_extended="Workers in family during the past 12 months",
+            value_mapping={
+                0: 'No workers',
+                1: '1 worker',
+                2: '2 workers',
+                3: '3 or more workers'}),
+    WKHP_FEATURE,
+    Feature('WKW', int,
+            "Weeks worked during past 12 months.",
+            name_extended="Weeks worked during past 12 months",
+            ),
+    Feature('WRK', cat_dtype, "Worked last week",
+            name_extended="worked last week",
+            value_mapping={'01': 'worked', '02': 'did not work'}),
+    NWLA_FEATURE,
+    NWLK_FEATURE,
+],
+    documentation="https://www2.census.gov/programs-surveys/acs/tech_docs"
+                  "/pums/data_dict/PUMS_Data_Dictionary_2019.pdf"
+)
+
+ACS_FOODSTAMPS_FEATURES_ARGUABLYCAUSAL_SUPERSETS = get_arguablycausal_robust(ACS_FOODSTAMPS_FEATURES_ARGUABLYCAUSAL,
+                                                                             ACS_FOODSTAMPS_FEATURES.features + ACS_SHARED_FEATURES.features)
+ACS_FOODSTAMPS_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER = len(ACS_FOODSTAMPS_FEATURES_ARGUABLYCAUSAL_SUPERSETS)
