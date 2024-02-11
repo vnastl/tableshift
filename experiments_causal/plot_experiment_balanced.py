@@ -1,3 +1,4 @@
+"""Python script to load json files of experiments and return balanced accuracy."""
 import json
 import numpy as np
 import pandas as pd
@@ -6,12 +7,28 @@ from pathlib import Path
 from tableshift import get_dataset
 from statsmodels.stats.proportion import proportion_confint
 import ast
+from experiments_causal.plot_config_tasks import dic_domain_label, dic_tableshift
 
 
-def get_dic_experiments_value(name):
+def get_dic_experiments_value(name: str) -> list:
+    """
+
+
+    Parameters
+    ----------
+    name : str
+        The name of the task.
+
+    Returns
+    -------
+    list
+        List of experiment names (all features, causal features, arguably causal features.
+
+    """
     return [name, f"{name}_causal", f"{name}_arguablycausal"]
 
 
+# Define dictionary of all considered experiments
 dic_experiments = {
     "acsemployment": get_dic_experiments_value("acsemployment"),
     "acsfoodstamps": get_dic_experiments_value("acsfoodstamps"),
@@ -32,92 +49,27 @@ dic_experiments = {
     "sipp": get_dic_experiments_value("sipp"),
 }
 
-dic_domain_label = {
-    "acsemployment": "SCHL",
-    "acsfoodstamps": "DIVISION",
-    "acsincome": "DIVISION",
-    "acspubcov": "DIS",
-    "acsunemployment": "SCHL",
-    "anes": "VCF0112",  # region
-    "assistments": "school_id",
-    "brfss_blood_pressure": "BMI5CAT",
-    "brfss_diabetes": "PRACE1",
-    "college_scorecard": "CCBASIC",
-    "diabetes_readmission": "admission_source_id",
-    "meps": "INSCOV19",
-    "mimic_extract_los_3": "insurance",
-    "mimic_extract_mort_hosp": "insurance",
-    "nhanes_lead": "INDFMPIRBelowCutoff",
-    "physionet": "ICULOS",  # ICU length of stay
-    "sipp": "CITIZENSHIP_STATUS",
-}
 
-dic_id_domain = {
-    "acsemployment": "High school diploma or higher",
-    "acsfoodstamps": "Other U.S. Census divisions",
-    "acsincome": "Other U.S. Census divisions",  # Mid-Atlantic, East North Central, West North Central, South Atlantic, East South Central, West South Central, Mountain, Pacific
-    "acspubcov": "Without disability",
-    "acsunemployment": "High school diploma or higher",
-    "anes": "Other U.S. Census regions",  # region
-    "assistments": "approximately 700 schools",
-    "brfss_blood_pressure": "Underweight and normal weight",
-    "brfss_diabetes": "White",
-    "college_scorecard": "Carnegie Classification: other institutional types",
-    "diabetes_readmission": "Other admission sources",
-    "meps": "Public insurance",
-    "mimic_extract_los_3": "Private, Medicaid, Government, Self Pay",
-    "mimic_extract_mort_hosp": "Private, Medicaid, Government, Self Pay",
-    "nhanes_lead": "poverty-income ratio > 1.3",
-    "physionet": "ICU length of stay <= 47 hours",  # ICU length of stay
-    "sipp": "U.S. citizen",
-}
-
-dic_ood_domain = {
-    "acsemployment": "No high school diploma",
-    "acsfoodstamps": "East South Central",
-    "acsincome": "New England",
-    "acspubcov": "With disability",
-    "acsunemployment": "No high school diploma",
-    "anes": "South",  # region
-    "assistments": "10 new schools",
-    "brfss_blood_pressure": "Overweight and obese",
-    "brfss_diabetes": "Non white",
-    "college_scorecard": "Special Focus Institutions [Faith-related, art & design and other fields],\n Baccalaureate/Associates Colleges,\n Master's Colleges and Universities [larger programs]",
-    "diabetes_readmission": "Emergency Room",
-    "meps": "Private insurance",
-    "mimic_extract_los_3": "Medicare",
-    "mimic_extract_mort_hosp": "Medicare",
-    "nhanes_lead": "poverty-income ratio <= 1.3",
-    "physionet": "ICU length of stay > 47 hours",  # ICU length of stay
-    "sipp": "non U.S. citizen",
-}
-
-dic_title = {
-    "acsemployment": "Tableshift: Employment",
-    "acsfoodstamps": "Tableshift: Food Stamps",
-    "acsincome": "Tableshift: Income",
-    "acspubcov": "Tableshift: PublicCoverage",
-    "acsunemployment": "Tableshift: Unemployment",
-    "anes": "Tableshift: Voting",
-    "assistments": "Tableshift: ASSISTments",
-    "brfss_blood_pressure": "Tableshift: Hypertension",
-    "brfss_diabetes": "Tableshift: Diabetes",
-    "college_scorecard": "Tableshift: College Scorecard",
-    "diabetes_readmission": "Tableshift: Hospital Readmission",
-    "meps": "MEPS: Utilization",
-    "mimic_extract_los_3": "Tableshift: ICU Length of Stay",
-    "mimic_extract_mort_hosp": "Tableshift: Hospital Mortality",
-    "nhanes_lead": "Tableshift: Childhood Lead",
-    "physionet": "Tableshift: Sepsis",  # ICU length of stay
-    "sipp": "SIPP: Poverty",
-}
+def get_results(experiment_name: str) -> pd.DataFrame:
+    """Load json files of experiments from results folder, concat them into a dataframe and save it.
 
 
-def get_results(experiment_name):
+    Parameters
+    ----------
+    experiment_name : str
+        The name of the task.
+
+    Returns
+    -------
+    TYPE
+        Dataframe containing the results of the experiment, using balanced accuracy.
+
+    """
     cache_dir = "tmp"
     experiments = dic_experiments[experiment_name]
     domain_label = dic_domain_label[experiment_name]
 
+    # Load all json files of experiments
     eval_all = pd.DataFrame()
     feature_selection = []
     for experiment in experiments:
@@ -187,11 +139,13 @@ def get_results(experiment_name):
                     print(str(RESULTS_DIR / run))
     RESULTS_DIR = Path(__file__).parents[0] / "results"
 
+    # Add results for constant prediction
     eval_constant = {}
     for test_split in ["id_test", "ood_test"]:
         eval_constant[test_split] = 0.5
         eval_constant[test_split + "_conf"] = (0.5, 0.5)
 
+    # Select model with highest in-domain validation accuracy
     list_model_data = []
     for set in eval_all["features"].unique():
         eval_feature = eval_all[eval_all["features"] == set]
@@ -218,6 +172,4 @@ def get_results(experiment_name):
         ]
     )
     eval_all = pd.concat([eval_all, eval_pd], ignore_index=True)
-
-    # eval_all.to_csv(str(RESULTS_DIR / f"{experiment_name}_balanced_eval.csv"))
     return eval_all, causal_features, extra_features

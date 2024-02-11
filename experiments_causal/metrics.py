@@ -1,13 +1,30 @@
+"""Python script to calculate balanced accuracy."""
 import torch
 import pandas as pd
+import numpy as np
 
 
-def binary_stat_scores_format(target, prediction, threshold=0.5):
-    """Convert all input to label format.
+def binary_stat_scores_format(
+        target: pd.Series | np.array,
+        prediction: np.array,
+        threshold: float = 0.5) -> (torch.tensor, torch.tensor):
+    """Transform inputs into binary torch.
 
-    - If prediction tensor is floating point, applies sigmoid if pred tensor not in [0,1] range
-    - If prediction tensor is floating point, thresholds afterwards
-    - Mask all datapoints that should be ignored with negative values
+    Parameters
+    ----------
+    target : pd.Series | np.array
+        Binary target of prediction task.
+    prediction : np.array
+        Prediction.
+    threshold : float, optional
+        Threshold to convert floating predictions to binary. The default is 0.5.
+
+    Returns
+    -------
+    target : torch.tensor
+        Binary target of prediction task.
+    prediction : torch.tensor
+        Binary prediction.
 
     """
     if isinstance(target, pd.Series):
@@ -26,17 +43,25 @@ def binary_stat_scores_format(target, prediction, threshold=0.5):
     return target, prediction
 
 
-def balanced_accuracy_score(target, prediction):
-    """Calculates balanced accuracy.
+def balanced_accuracy_score(
+        target: pd.Series | np.array,
+        prediction: np.array,) -> (torch.number, torch.number):
+    """Compute balanced accuracy and its standard error.
 
-    Args:
-        target (np.array): Vector containing the target values for each sample.
-        prediction (np.array): Vector containing the predictions for each sample.
-        inference (bool, optional): If set to True, calculate standard errors of balanced accuracy. Defaults to False.
+    Parameters
+    ----------
+    target : pd.Series | np.array
+        Binary target of prediction task.
+    prediction : np.array
+        Prediction.
 
-    Returns:
-        list | float64: If inference is set to True, return list of balanced accuracy and standard error of balanced accuracy.
-            Else return balanced accuracy.
+    Returns
+    -------
+    torch.number
+        Balanced accuracy.
+    torch.number
+        Standard error of balanced accuracy.
+
     """
     target, prediction = binary_stat_scores_format(target, prediction)
     n = len(prediction)

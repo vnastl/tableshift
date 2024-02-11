@@ -1,8 +1,7 @@
-#!/usr/bin/env python3
+"""Python script to launch condor jobs for tasks and feature subsets.
+
+Each condor job launches itself multiple condor jobs to train models and record the performance.
 """
-Python script to launch condor jobs for task.
-"""
-# %%
 import sys
 import random
 import dataclasses
@@ -53,14 +52,13 @@ if __name__ == "__main__":
 
 # Number of task to run per algorithm, per dataset
 # N_TRIALS    = 10
-N_TRIALS = 25
+N_TRIALS = 50
 # N_TRIALS    = 100
 
 # Cluster settings
 JOB_MIN_BID = 100  # htcondor bid (min. is 15 apparently...)
 JOB_CPUS = 1  # number of CPUs per experiment (per cluster job)
 JOB_MEMORY_GB = 128  # GBs of memory
-BIG_JOB_MEMORY_GB = 256
 
 VERBOSE = True
 
@@ -120,7 +118,7 @@ TASKS = [
     "meps_arguablycausal",
 ]
 
-# Robustness checks
+# Tasks for robustness tests
 for index in range(ACS_INCOME_FEATURES_CAUSAL_SUBSETS_NUMBER):
     TASKS.append("acsincome_causal_test_" + f"{index}")
 
@@ -354,6 +352,7 @@ if __name__ == "__main__":
 
     for i, exp_obj in enumerate(all_task):
         print(f"{i}. Launching {exp_obj.n_trials} trials for the task '{exp_obj.name}'")
+
         success = False
         while not success:
             try:

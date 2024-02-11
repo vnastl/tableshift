@@ -1,4 +1,5 @@
-# %%
+"""Python script to plot experiments for appendix."""
+
 from experiments_causal.plot_experiment import get_results
 from experiments_causal.plot_experiment_arguablycausal_robust import get_results as get_results_arguablycausal_robust
 from experiments_causal.plot_experiment_causal_robust import get_results as get_results_causal_robust
@@ -8,6 +9,7 @@ from experiments_causal.plot_experiment_balanced import get_results as get_resul
 from experiments_causal.plot_experiment_causal_robust import dic_robust_number as dic_robust_number_causal
 from experiments_causal.plot_experiment_arguablycausal_robust import dic_robust_number as dic_robust_number_arguablycausal
 from experiments_causal.plot_config_colors import *
+from experiments_causal.plot_config_tasks import dic_title
 from scipy.spatial import ConvexHull
 from paretoset import paretoset
 import seaborn as sns
@@ -18,38 +20,13 @@ import matplotlib.pyplot as plt
 import pandas as pd
 from pathlib import Path
 import warnings
-
 warnings.filterwarnings("ignore")
 
-
+# Set plot configurations
 sns.set_context("paper")
 sns.set_style("white")
-
-
 plt.rcParams["figure.dpi"] = 300
 plt.rcParams["savefig.dpi"] = 1200
-
-
-dic_title = {
-    "acsemployment": "Employment",
-    "acsfoodstamps": "Food Stamps",
-    "acsincome": "Income",
-    "acspubcov": "PublicCoverage",
-    "acsunemployment": "Unemployment",
-    "anes": "Voting",
-    "assistments": "ASSISTments",
-    "brfss_blood_pressure": "Hypertension",
-    "brfss_diabetes": "Diabetes",
-    "college_scorecard": "College Scorecard",
-    "diabetes_readmission": "Hospital Readmission",
-    "meps": "Utilization",
-    "mimic_extract_los_3": "ICU Length of Stay",
-    "mimic_extract_mort_hosp": "Hospital Mortality",
-    "nhanes_lead": "Childhood Lead",
-    "physionet": "Sepsis",
-    "sipp": "Poverty",
-}
-
 list_mak = [
     mmark.MarkerStyle("s"),
     mmark.MarkerStyle("D"),
@@ -77,7 +54,7 @@ class MarkerHandler(HandlerBase):
         ]
 
 
-# %%
+# Define list of experiments to plot
 experiments = [
     "acsfoodstamps",
     "acsincome",
@@ -109,7 +86,7 @@ for index, experiment_name in enumerate(experiments):
                 gridspec_kw={"width_ratios": [0.3, 0.3, 0.3], "wspace": 0.6, "top": 0.8},
             )  # create 3x2 subplots on fig
 
-            eval_all, causal_features, extra_features = get_results(experiment_name)
+            eval_all = get_results(experiment_name)
             eval_constant = eval_all[eval_all["features"] == "constant"]
             dic_shift = {}
             dic_shift_acc = {}
@@ -517,7 +494,7 @@ for index, experiment_name in enumerate(experiments):
                         alpha=0.05,
                     )
 
-            eval_all, causal_features, extra_features = get_results_balanced(
+            eval_all = get_results_balanced(
                 experiment_name
             )
             eval_constant = eval_all[eval_all["features"] == "constant"]
@@ -862,7 +839,7 @@ for index, experiment_name in enumerate(experiments):
             if (
                 Path(__file__).parents[0] / "results" / f"{experiment_name}_causal_test_0"
             ).is_dir():
-                eval_all, _ = get_results_causal_robust(experiment_name)
+                eval_all = get_results_causal_robust(experiment_name)
                 eval_constant = eval_all[eval_all["features"] == "constant"]
                 dic_shift = {}
 
@@ -981,7 +958,7 @@ for index, experiment_name in enumerate(experiments):
                 / "results"
                 / f"{experiment_name}_arguablycausal_test_0"
             ).is_dir():
-                eval_all, _ = get_results_arguablycausal_robust(experiment_name)
+                eval_all = get_results_arguablycausal_robust(experiment_name)
                 eval_constant = eval_all[eval_all["features"] == "constant"]
                 dic_shift = {}
 
@@ -1099,8 +1076,6 @@ for index, experiment_name in enumerate(experiments):
                     bbox_inches="tight",
                 )
 
-
-# %%
 
 experiment_groups = {
     "group1": [
@@ -1647,8 +1622,6 @@ for experiment_group, experiments in experiment_groups.items():
     )
 
 
-# %%
-
 experiment_groups = {
     "group1": [
         "acsincome",
@@ -1672,14 +1645,14 @@ for experiment_group, experiments in experiment_groups.items():
         subfig.suptitle(
             dic_title[experiment_name], fontsize=11
         )  # set suptitle for subfig1
-        eval_all, causal_features, extra_features = get_results_anticausal(
+        eval_all = get_results_anticausal(
             experiment_name
         )
         eval_constant = eval_all[eval_all["features"] == "constant"]
         dic_shift = {}
         dic_shift_acc = {}
 
-        eval_all, causal_features, extra_features = get_results_anticausal(
+        eval_all = get_results_anticausal(
             experiment_name
         )
         eval_constant = eval_all[eval_all["features"] == "constant"]

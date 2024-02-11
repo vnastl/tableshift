@@ -1,13 +1,11 @@
-# %%
+"""Python script to plot experiments without robustness test for arguably causal features."""
+
 from experiments_causal.plot_experiment import get_results
-from experiments_causal.plot_experiment_arguablycausal_robust import get_results as get_results_arguablycausal_robust
 from experiments_causal.plot_experiment_causal_robust import get_results as get_results_causal_robust
-from experiments_causal.plot_experiment_anticausal import get_results as get_results_anticausal
-from experiments_causal.plot_experiment_causalml import get_results as get_results_causalml
 from experiments_causal.plot_experiment_balanced import get_results as get_results_balanced
 from experiments_causal.plot_experiment_causal_robust import dic_robust_number as dic_robust_number_causal
-from experiments_causal.plot_experiment_arguablycausal_robust import dic_robust_number as dic_robust_number_arguablycausal
 from experiments_causal.plot_config_colors import *
+from experiments_causal.plot_config_tasks import dic_title
 from scipy.spatial import ConvexHull
 from paretoset import paretoset
 import seaborn as sns
@@ -18,37 +16,13 @@ import matplotlib.pyplot as plt
 import pandas as pd
 from pathlib import Path
 import warnings
-
 warnings.filterwarnings("ignore")
 
-
+# Set plot configurations
 sns.set_context("paper")
 sns.set_style("white")
-
-
 plt.rcParams["figure.dpi"] = 300
 plt.rcParams["savefig.dpi"] = 1200
-
-dic_title = {
-    "acsemployment": "Employment",
-    "acsfoodstamps": "Food Stamps",
-    "acsincome": "Income",
-    "acspubcov": "PublicCoverage",
-    "acsunemployment": "Unemployment",
-    "anes": "Voting",
-    "assistments": "ASSISTments",
-    "brfss_blood_pressure": "Hypertension",
-    "brfss_diabetes": "Diabetes",
-    "college_scorecard": "College Scorecard",
-    "diabetes_readmission": "Hospital Readmission",
-    "meps": "Utilization",
-    "mimic_extract_los_3": "ICU Length of Stay",
-    "mimic_extract_mort_hosp": "Hospital Mortality",
-    "nhanes_lead": "Childhood Lead",
-    "physionet": "Sepsis",
-    "sipp": "Poverty",
-}
-
 list_mak = [
     mmark.MarkerStyle("s"),
     mmark.MarkerStyle("D"),
@@ -76,7 +50,7 @@ class MarkerHandler(HandlerBase):
         ]
 
 
-# %%
+# Define list of experiments to plot
 experiments = [
     # "acsfoodstamps",
     # "acsincome",
@@ -98,7 +72,6 @@ experiments = [
 
 for index, experiment_name in enumerate(experiments):
     for ax_index in range(2):
-
         if ax_index == 0:
             sns.set_style("white")
             subfig1 = plt.figure(figsize=[6.75, 1.75])
@@ -108,7 +81,7 @@ for index, experiment_name in enumerate(experiments):
                 gridspec_kw={"width_ratios": [0.3, 0.3, 0.3], "wspace": 0.6, "top": 0.8},
             )  # create 3x2 subplots on fig
 
-            eval_all, causal_features, extra_features = get_results(experiment_name)
+            eval_all = get_results(experiment_name)
             eval_constant = eval_all[eval_all["features"] == "constant"]
             dic_shift = {}
             dic_shift_acc = {}
@@ -120,8 +93,8 @@ for index, experiment_name in enumerate(experiments):
             ax[2].xaxis.set_major_formatter(FormatStrFormatter("%.3f"))
             ax[2].yaxis.set_major_formatter(FormatStrFormatter("%.3f"))
 
-            ax[0].set_xlabel(f"Id accuracy")  # \n({dic_id_domain[experiment_name]})")
-            ax[0].set_ylabel(f"Ood accuracy")  # \n({dic_ood_domain[experiment_name]})")
+            ax[0].set_xlabel(f"Id accuracy")
+            ax[0].set_ylabel(f"Ood accuracy")
 
             #############################################################################
             # plot errorbars and shift gap for constant
@@ -172,13 +145,12 @@ for index, experiment_name in enumerate(experiments):
                 capsize=capsize,
                 label="causal",
             )
-            # highlight bar
+            # extract for shift gap
             shift = eval_plot[mask]
             shift = shift[shift["ood_test"] == shift["ood_test"].max()]
             shift["type"] = "causal"
             dic_shift["causal"] = shift
-            # ax[0].hlines(y=shift["ood_test"], xmin=shift["ood_test"], xmax=shift['id_test'],
-            #            color=color_causal, linewidth=linewidth_shift, alpha=0.7)
+
             # get pareto set for shift vs accuracy
             shift_acc = eval_plot[
                 eval_plot["ood_test"] == eval_plot["ood_test"].max()
@@ -215,7 +187,7 @@ for index, experiment_name in enumerate(experiments):
                     capsize=capsize,
                     label="arguably\ncausal",
                 )
-                # highlight bar
+                # extract for shift gap
                 shift = eval_plot[mask]
                 shift = shift[shift["ood_test"] == shift["ood_test"].max()]
                 shift["type"] = "arguably\ncausal"
@@ -256,7 +228,7 @@ for index, experiment_name in enumerate(experiments):
                 capsize=capsize,
                 label="all",
             )
-            # highlight bar
+            # extract for shift gap
             shift = eval_plot[mask]
             shift = shift[shift["ood_test"] == shift["ood_test"].max()]
             shift["type"] = "all"
@@ -518,7 +490,7 @@ for index, experiment_name in enumerate(experiments):
                         alpha=0.05,
                     )
 
-            eval_all, causal_features, extra_features = get_results_balanced(
+            eval_all = get_results_balanced(
                 experiment_name
             )
             eval_constant = eval_all[eval_all["features"] == "constant"]
@@ -571,7 +543,7 @@ for index, experiment_name in enumerate(experiments):
                 capsize=capsize,
                 label="causal",
             )
-            # highlight bar
+            # extract for shift gap
             shift = eval_plot[
                 eval_plot["ood_test"] == eval_plot["ood_test"].max()
             ].drop_duplicates()
@@ -608,7 +580,7 @@ for index, experiment_name in enumerate(experiments):
                     capsize=capsize,
                     label="arguably causal",
                 )
-                # highlight bar
+                # extract for shift gap
                 shift = eval_plot[
                     eval_plot["ood_test"] == eval_plot["ood_test"].max()
                 ].drop_duplicates()
@@ -644,7 +616,7 @@ for index, experiment_name in enumerate(experiments):
                 capsize=capsize,
                 label="all",
             )
-            # highlight bar
+            # extract for shift gap
             shift = eval_plot[
                 eval_plot["ood_test"] == eval_plot["ood_test"].max()
             ].drop_duplicates()
@@ -862,7 +834,7 @@ for index, experiment_name in enumerate(experiments):
             if (
                 Path(__file__).parents[0] / "results" / f"{experiment_name}_causal_test_0"
             ).is_dir():
-                eval_all, _ = get_results_causal_robust(experiment_name)
+                eval_all = get_results_causal_robust(experiment_name)
                 eval_constant = eval_all[eval_all["features"] == "constant"]
                 dic_shift = {}
 

@@ -1,14 +1,12 @@
 """Python script to run experiment and record the performance."""
 import argparse
-import logging
 from pathlib import Path
-import pickle
-import pandas as pd
 import torch
 from sklearn.metrics import accuracy_score
 import json
 from statsmodels.stats.proportion import proportion_confint
 
+from tableshift import get_dataset
 from tableshift.models.training import train
 from tableshift.models.utils import get_estimator
 from tableshift.models.default_hparams import get_default_config
@@ -20,7 +18,6 @@ def main(
         model: str,
         cache_dir: str,
         save_dir: str,
-        trial: str | int,
         debug: bool):
     """Run the experiment with the specified model.
 
@@ -31,11 +28,9 @@ def main(
     model : str
         The name of the model to train.
     cache_dir : str
-        Directory to the preprocessed data.
+        Directory to cache raw data files to.
     save_dir : str
         Directory to save result files to.
-    trial : str | int
-        Number of trial.
     debug : bool
         Debug mode.
 
@@ -48,8 +43,7 @@ def main(
     save_dir = Path(save_dir)
     save_dir.mkdir(exist_ok=True, parents=False)
 
-    with open(f"{str(cache_dir)}/{experiment}.pickle", "rb") as f:
-        dset = pickle.load(f)
+    dset = get_dataset(experiment, cache_dir)
 
     if debug:
         print("[INFO] running in debug mode.")
@@ -98,7 +92,7 @@ def main(
         # Open a file in write mode
         SAVE_DIR_EXP = save_dir / experiment
         SAVE_DIR_EXP.mkdir(exist_ok=True)
-        with open(f"{str(SAVE_DIR_EXP)}/{model}_eval_{trial}.json", "w") as f:
+        with open(f"{str(SAVE_DIR_EXP)}/{model}_eval.json", "w") as f:
             # Use json.dump to write the dictionary into the file
             evaluation["features"] = dset.predictors
             json.dump(evaluation, f)
@@ -135,7 +129,7 @@ def main(
         # Open a file in write mode
         SAVE_DIR_EXP = save_dir / experiment
         SAVE_DIR_EXP.mkdir(exist_ok=True)
-        with open(f"{str(SAVE_DIR_EXP)}/{model}_eval_{trial}.json", "w") as f:
+        with open(f"{str(SAVE_DIR_EXP)}/{model}_eval.json", "w") as f:
             evaluation["features"] = dset.predictors
             json.dump(evaluation, f)
 
@@ -162,6 +156,5 @@ if __name__ == "__main__":
         help="Experiment to run. Overridden when debug=True.",
     )
     parser.add_argument("--model", default="histgbm", help="model to use.")
-    parser.add_argument("--trial", default=0, help="Number of trial.")
     args = parser.parse_args()
     main(**vars(args))

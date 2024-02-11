@@ -1,6 +1,7 @@
-# %%
+"""Python script to plot experiments for introduction."""
 from experiments_causal.plot_experiment import get_results
 from experiments_causal.plot_config_colors import *
+from experiments_causal.plot_config_tasks import dic_title
 import seaborn as sns
 from matplotlib.legend_handler import HandlerBase
 import matplotlib.markers as mmark
@@ -8,38 +9,13 @@ import matplotlib.pyplot as plt
 import pandas as pd
 from pathlib import Path
 import warnings
-
 warnings.filterwarnings("ignore")
 
-
+# Set plot configurations
 sns.set_context("paper")
 sns.set_style("white")
-
-
 plt.rcParams["figure.dpi"] = 300
 plt.rcParams["savefig.dpi"] = 1200
-
-
-dic_title = {
-    "acsemployment": "Employment",
-    "acsfoodstamps": "Food Stamps",
-    "acsincome": "Income",
-    "acspubcov": "PublicCoverage",
-    "acsunemployment": "Unemployment",
-    "anes": "Voting",
-    "assistments": "ASSISTments",
-    "brfss_blood_pressure": "Hypertension",
-    "brfss_diabetes": "Diabetes",
-    "college_scorecard": "College Scorecard",
-    "diabetes_readmission": "Hospital Readmission",
-    "meps": "Utilization",
-    "mimic_extract_los_3": "ICU Length of Stay",
-    "mimic_extract_mort_hosp": "Hospital Mortality",
-    "nhanes_lead": "Childhood Lead",
-    "physionet": "Sepsis",
-    "sipp": "Poverty",
-}
-
 list_mak = [
     mmark.MarkerStyle("s"),
     mmark.MarkerStyle("D"),
@@ -67,7 +43,7 @@ class MarkerHandler(HandlerBase):
         ]
 
 
-# %%
+# Define list of experiments to plot
 experiments = [
     "acsfoodstamps",
     "acsincome",
@@ -90,7 +66,7 @@ experiments = [
 
 eval_experiments = pd.DataFrame()
 for index, experiment_name in enumerate(experiments):
-    eval_all, _, _ = get_results(experiment_name)
+    eval_all = get_results(experiment_name)
     eval_all["task"] = dic_title[experiment_name]
 
     eval_plot = pd.DataFrame()
@@ -105,7 +81,6 @@ for index, experiment_name in enumerate(experiments):
     dic_shift = {}
     dic_shift_acc = {}
 
-# %%
 
 fig = plt.figure(figsize=(6.75, 1.5))
 ax = fig.subplots(

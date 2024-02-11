@@ -1,3 +1,4 @@
+"""Python script to preprocess data and launch condor jobs to train models and record the performance."""
 import sys
 import random
 import dataclasses
@@ -19,15 +20,7 @@ if __name__ == "__main__":
 ####################################################
 #  START of: details on which experiments to run.  #
 ####################################################
-NOT_DG_TASKS = (
-    "acspubcov",
-    "physionet",
-    "nhanes_lead",
-    "brfss_blood_pressure" "brfss_diabetes",
-    "sipp",
-    "assistments",
-    "meps",
-)
+# List of models
 MODELS = (
     "ft_transformer",
     "histgbm",
@@ -43,6 +36,7 @@ MODELS = (
     "group_dro",
     "label_group_dro",
 )
+# List of domain generalization models
 DG_MODELS = (
     "dann",
     "irm",
@@ -52,8 +46,34 @@ DG_MODELS = (
     "deepcoral",
 )
 
+# List of task that do not allow domain generalization
+NOT_DG_TASKS = (
+    "acspubcov",
+    "physionet",
+    "nhanes_lead",
+    "brfss_blood_pressure",
+    "brfss_diabetes",
+    "sipp",
+    "assistments",
+    "meps",
+)
 
-def IS_TASK_DG(task):
+
+def IS_TASK_DG(task: str) -> bool:
+    """Classify whether a tasks allows domain generalization.
+
+
+    Parameters
+    ----------
+    task : str
+        The name of task to classify whether it allows domain generalization.
+
+    Returns
+    -------
+    bool
+        The task allows domain generalization if True.
+
+    """
     for dg_task in NOT_DG_TASKS:
         if task.startswith(dg_task):
             return False
@@ -144,11 +164,10 @@ if __name__ == "__main__":
             )
         )
 
-    # Set up preprocessing of data for the task
+    # Process data for the task and save processed data
     dset = get_dataset(dic_args["task"], dic_args["DATA_DIR"])
     with open(f"{str(DATA_DIR_PREPROCESSED)}/{dic_args['task']}.pickle", "wb") as f:
         pickle.dump(dset, f)
-    # pickle dset into cache_dir under the name of dset_task
 
     ##################################################
     #  END of: details on which experiments to run.  #
