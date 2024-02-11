@@ -353,155 +353,6 @@ ACS_PUBCOV_FEATURES = FeatureList(features=[
     health coverage 0=Without public health coverage""", is_target=True)],
     documentation="https://www2.census.gov/programs-surveys/acs/tech_docs/pums/data_dict/PUMS_Data_Dictionary_2014-2018.pdf")
 
-ACS_PUBCOV_FEATURES_CAUSAL = FeatureList(features=[
-    Feature('AGEP', int, "Age", name_extended='age in years'),
-    Feature('SEX', int, "Sex",
-            name_extended='sex',
-            value_mapping={
-                1: "Male", 2: "Female",
-            }),
-    Feature('RAC1P', int, """Recoded detailed race code""",
-            name_extended='race',
-            value_mapping={
-                1: 'White alone',
-                2: 'Black or African American alone',
-                3: 'American Indian alone',
-                4: 'Alaska Native alone',
-                5: 'American Indian and Alaska Native tribes specified; or'
-                   ' American Indian or Alaska Native, not specified and '
-                   'no other races',
-                6: 'Asian alone',
-                7: 'Native Hawaiian and Other Pacific Islander alone',
-                8: 'Some Other Race alone',
-                9: 'Two or More Races'}),
-    DIS_FEATURE,
-    DEAR_FEATURE,
-    DEYE_FEATURE,
-    DREM_FEATURE,
-    ANC_FEATURE,
-    NATIVITY_FEATURE,
-    Feature('PUBCOV', int, """Public health coverage recode =With public
-    health coverage 0=Without public health coverage""", is_target=True)],
-)
-
-target = Feature('PUBCOV', int, """Public health coverage recode =With public
-    health coverage 0=Without public health coverage""", is_target=True)
-domain = DIS_FEATURE
-causal_features = ACS_PUBCOV_FEATURES_CAUSAL.features.copy()
-causal_features.remove(target)
-causal_features.remove(domain)
-causal_subsets = select_subset_minus_one(causal_features)
-ACS_PUBCOV_FEATURES_CAUSAL_SUBSETS = []
-for subset in causal_subsets:
-    subset.append(target)
-    subset.append(domain)
-    ACS_PUBCOV_FEATURES_CAUSAL_SUBSETS.append(FeatureList(subset))
-ACS_PUBCOV_FEATURES_CAUSAL_SUBSETS_NUMBER = len(causal_subsets)
-
-ACS_PUBCOV_FEATURES_ARGUABLYCAUSAL = FeatureList(features=[
-    DIS_FEATURE,
-    ESP_FEATURE,
-    MIG_FEATURE,
-    ANC_FEATURE,
-    NATIVITY_FEATURE,
-    DEAR_FEATURE,
-    DEYE_FEATURE,
-    DREM_FEATURE,
-    Feature('PINCP', float, "Total person's income",
-            name_extended="Total person's income in dollars"),
-    Feature('ESR', cat_dtype, """Employment status recode b .N/A (less than
-    16 years old) 1 .Civilian employed, at work 2 .Civilian employed, with a
-    job but not at work 3 .Unemployed 4 .Armed forces, at work 5 .Armed
-    forces, with a job but not at work 6 .Not in labor force""",
-            name_extended="Employment status",
-            value_mapping={
-                '00': 'N/A (less than 16 years old)',
-                '01': 'Civilian employed, at work',
-                '02': 'Civilian employed, with a job but not at work',
-                '03': 'Unemployed',
-                '04': 'Armed forces, at work',
-                '05': 'Armed forces, with a job but not at work',
-                '06': 'Not in labor force'}),
-    FER_FEATURE,
-    Feature('PUBCOV', int, """Public health coverage recode =With public
-    health coverage 0=Without public health coverage""", is_target=True),
-    Feature('AGEP', int, "Age", name_extended='age in years'),
-    Feature('SEX', int, "Sex",
-            name_extended='sex',
-            value_mapping={
-                1: "Male", 2: "Female",
-            }),
-    Feature('MAR', cat_dtype, "Marital status",
-            name_extended='marital status',
-            value_mapping={
-                1: 'Married',
-                2: 'Widowed',
-                3: 'Divorced',
-                4: 'Separated',
-                5: 'Never married or under 15 years old'
-            }),
-    Feature('CIT', cat_dtype, """Citizenship status""",
-            name_extended='citizenship status',
-            value_mapping={
-                1: 'Born in the U.S.',
-                2: 'Born in Puerto Rico, Guam, the U.S. Virgin Islands, '
-                   'or the Northern Marianas',
-                3: 'Born abroad of American parent(s)',
-                4: 'U.S. citizen by naturalization',
-                5: 'Not a citizen of the U.S.',
-            }),
-    Feature('RAC1P', int, """Recoded detailed race code""",
-            name_extended='race',
-            value_mapping={
-                1: 'White alone',
-                2: 'Black or African American alone',
-                3: 'American Indian alone',
-                4: 'Alaska Native alone',
-                5: 'American Indian and Alaska Native tribes specified; or'
-                   ' American Indian or Alaska Native, not specified and '
-                   'no other races',
-                6: 'Asian alone',
-                7: 'Native Hawaiian and Other Pacific Islander alone',
-                8: 'Some Other Race alone',
-                9: 'Two or More Races'}),
-    Feature('SCHL', cat_dtype, "Educational attainment",
-            name_extended="Educational attainment",
-            value_mapping={
-                np.nan: 'NA (less than 3 years old)',
-                1: 'No schooling completed',
-                2: 'Nursery school, preschool',
-                3: 'Kindergarten',
-                4: 'Grade 1',
-                5: 'Grade 2',
-                6: 'Grade 3',
-                7: 'Grade 4',
-                8: 'Grade 5',
-                9: 'Grade 6',
-                10: 'Grade 7',
-                11: 'Grade 8',
-                12: 'Grade 9',
-                13: 'Grade 10',
-                14: 'Grade 11',
-                15: '12th grade - no diploma',
-                16: 'Regular high school diploma',
-                17: 'GED or alternative credential',
-                18: 'Some college, but less than 1 year',
-                19: '1 or more years of college credit, no degree',
-                20: "Associate's degree",
-                21: "Bachelor's degree",
-                22: "Master's degree",
-                23: "Professional degree beyond a bachelor's degree",
-                24: 'Doctorate degree',
-            }),],
-    documentation="https://www2.census.gov/programs-surveys/acs/tech_docs/pums/data_dict/PUMS_Data_Dictionary_2014-2018.pdf")
-arguablycausal_supersets = select_superset_plus_one(
-    ACS_PUBCOV_FEATURES_ARGUABLYCAUSAL.features, ACS_PUBCOV_FEATURES.features + ACS_SHARED_FEATURES.features)
-ACS_PUBCOV_FEATURES_ARGUABLYCAUSAL_SUPERSETS = []
-for superset in arguablycausal_supersets:
-    ACS_PUBCOV_FEATURES_ARGUABLYCAUSAL_SUPERSETS.append(FeatureList(superset))
-ACS_PUBCOV_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER = len(arguablycausal_supersets)
-
-
 # UNEMPLOYMENT
 
 ACS_UNEMPLOYMENT_FEATURES = FeatureList(features=[
@@ -1324,6 +1175,9 @@ def preprocess_acs(df: pd.DataFrame):
 ################################################################################
 # Feature list for causal, arguably causal and (if applicable) anticausal features
 ################################################################################
+
+# INCOME
+
 ACS_INCOME_FEATURES_CAUSAL = FeatureList([
     Feature('PINCP', float, """Total person's income >= threshold.""",
             is_target=True),
@@ -1532,3 +1386,142 @@ ACS_INCOME_FEATURES_ANTICAUSAL = FeatureList([
     NWLK_FEATURE,
 ],
     documentation="https://www2.census.gov/programs-surveys/acs/tech_docs/pums/data_dict/PUMS_Data_Dictionary_2014-2018.pdf")
+
+# PUBLIC COVERAGE
+ACS_PUBCOV_FEATURES_CAUSAL = FeatureList(features=[
+    Feature('AGEP', int, "Age", name_extended='age in years'),
+    Feature('SEX', int, "Sex",
+            name_extended='sex',
+            value_mapping={
+                1: "Male", 2: "Female",
+            }),
+    Feature('RAC1P', int, """Recoded detailed race code""",
+            name_extended='race',
+            value_mapping={
+                1: 'White alone',
+                2: 'Black or African American alone',
+                3: 'American Indian alone',
+                4: 'Alaska Native alone',
+                5: 'American Indian and Alaska Native tribes specified; or'
+                   ' American Indian or Alaska Native, not specified and '
+                   'no other races',
+                6: 'Asian alone',
+                7: 'Native Hawaiian and Other Pacific Islander alone',
+                8: 'Some Other Race alone',
+                9: 'Two or More Races'}),
+    DIS_FEATURE,
+    DEAR_FEATURE,
+    DEYE_FEATURE,
+    DREM_FEATURE,
+    ANC_FEATURE,
+    NATIVITY_FEATURE,
+    Feature('PUBCOV', int, """Public health coverage recode =With public
+    health coverage 0=Without public health coverage""", is_target=True)],
+)
+
+target = Feature('PUBCOV', int, """Public health coverage recode =With public
+    health coverage 0=Without public health coverage""", is_target=True)
+domain = DIS_FEATURE
+ACS_PUBCOV_FEATURES_CAUSAL_SUBSETS = get_causal_robust(ACS_PUBCOV_FEATURES_CAUSAL, target, domain)
+ACS_PUBCOV_FEATURES_CAUSAL_SUBSETS_NUMBER = len(ACS_PUBCOV_FEATURES_CAUSAL_SUBSETS)
+
+ACS_PUBCOV_FEATURES_ARGUABLYCAUSAL = FeatureList(features=[
+    DIS_FEATURE,
+    ESP_FEATURE,
+    MIG_FEATURE,
+    ANC_FEATURE,
+    NATIVITY_FEATURE,
+    DEAR_FEATURE,
+    DEYE_FEATURE,
+    DREM_FEATURE,
+    Feature('PINCP', float, "Total person's income",
+            name_extended="Total person's income in dollars"),
+    Feature('ESR', cat_dtype, """Employment status recode b .N/A (less than
+    16 years old) 1 .Civilian employed, at work 2 .Civilian employed, with a
+    job but not at work 3 .Unemployed 4 .Armed forces, at work 5 .Armed
+    forces, with a job but not at work 6 .Not in labor force""",
+            name_extended="Employment status",
+            value_mapping={
+                '00': 'N/A (less than 16 years old)',
+                '01': 'Civilian employed, at work',
+                '02': 'Civilian employed, with a job but not at work',
+                '03': 'Unemployed',
+                '04': 'Armed forces, at work',
+                '05': 'Armed forces, with a job but not at work',
+                '06': 'Not in labor force'}),
+    FER_FEATURE,
+    Feature('PUBCOV', int, """Public health coverage recode =With public
+    health coverage 0=Without public health coverage""", is_target=True),
+    Feature('AGEP', int, "Age", name_extended='age in years'),
+    Feature('SEX', int, "Sex",
+            name_extended='sex',
+            value_mapping={
+                1: "Male", 2: "Female",
+            }),
+    Feature('MAR', cat_dtype, "Marital status",
+            name_extended='marital status',
+            value_mapping={
+                1: 'Married',
+                2: 'Widowed',
+                3: 'Divorced',
+                4: 'Separated',
+                5: 'Never married or under 15 years old'
+            }),
+    Feature('CIT', cat_dtype, """Citizenship status""",
+            name_extended='citizenship status',
+            value_mapping={
+                1: 'Born in the U.S.',
+                2: 'Born in Puerto Rico, Guam, the U.S. Virgin Islands, '
+                   'or the Northern Marianas',
+                3: 'Born abroad of American parent(s)',
+                4: 'U.S. citizen by naturalization',
+                5: 'Not a citizen of the U.S.',
+            }),
+    Feature('RAC1P', int, """Recoded detailed race code""",
+            name_extended='race',
+            value_mapping={
+                1: 'White alone',
+                2: 'Black or African American alone',
+                3: 'American Indian alone',
+                4: 'Alaska Native alone',
+                5: 'American Indian and Alaska Native tribes specified; or'
+                   ' American Indian or Alaska Native, not specified and '
+                   'no other races',
+                6: 'Asian alone',
+                7: 'Native Hawaiian and Other Pacific Islander alone',
+                8: 'Some Other Race alone',
+                9: 'Two or More Races'}),
+    Feature('SCHL', cat_dtype, "Educational attainment",
+            name_extended="Educational attainment",
+            value_mapping={
+                np.nan: 'NA (less than 3 years old)',
+                1: 'No schooling completed',
+                2: 'Nursery school, preschool',
+                3: 'Kindergarten',
+                4: 'Grade 1',
+                5: 'Grade 2',
+                6: 'Grade 3',
+                7: 'Grade 4',
+                8: 'Grade 5',
+                9: 'Grade 6',
+                10: 'Grade 7',
+                11: 'Grade 8',
+                12: 'Grade 9',
+                13: 'Grade 10',
+                14: 'Grade 11',
+                15: '12th grade - no diploma',
+                16: 'Regular high school diploma',
+                17: 'GED or alternative credential',
+                18: 'Some college, but less than 1 year',
+                19: '1 or more years of college credit, no degree',
+                20: "Associate's degree",
+                21: "Bachelor's degree",
+                22: "Master's degree",
+                23: "Professional degree beyond a bachelor's degree",
+                24: 'Doctorate degree',
+            }),],
+    documentation="https://www2.census.gov/programs-surveys/acs/tech_docs/pums/data_dict/PUMS_Data_Dictionary_2014-2018.pdf")
+
+ACS_PUBCOV_FEATURES_ARGUABLYCAUSAL_SUPERSETS = get_arguablycausal_robust(ACS_PUBCOV_FEATURES_ARGUABLYCAUSAL,
+                                                                         ACS_PUBCOV_FEATURES.features + ACS_SHARED_FEATURES.features)
+ACS_PUBCOV_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER = len(ACS_PUBCOV_FEATURES_ARGUABLYCAUSAL_SUPERSETS)
