@@ -7,6 +7,8 @@ to access it.
 For more information on datasets and access in TableShift, see:
 * https://tableshift.org/datasets.html
 * https://github.com/mlfoundations/tableshift
+
+Modified for 'Predictors from Causal Features Do Not Generalize Better to New Domains'
 """
 from dataclasses import dataclass
 from typing import Callable, Union
@@ -20,7 +22,7 @@ from itertools import combinations
 
 from tableshift.core.features import Feature, FeatureList, cat_dtype
 
-from tableshift.datasets.robustness import select_subset_minus_one, select_superset_plus_one
+from tableshift.datasets.robustness import get_causal_robust, get_arguablycausal_robust
 
 ################################################################################
 # Shared features used in more than one task
@@ -139,7 +141,6 @@ DEAR_FEATURE = Feature('DEAR', cat_dtype, "Hearing difficulty",
 ################################################################################
 # Various ACS-related constants
 ################################################################################
-
 
 ACS_YEARS = [2014, 2015, 2016, 2017, 2018]
 
@@ -321,238 +322,6 @@ ACS_INCOME_FEATURES = FeatureList([
 ],
     documentation="https://www2.census.gov/programs-surveys/acs/tech_docs/pums/data_dict/PUMS_Data_Dictionary_2014-2018.pdf")
 
-ACS_INCOME_FEATURES_CAUSAL = FeatureList([
-    Feature('PINCP', float, """Total person's income >= threshold.""",
-            is_target=True),
-    Feature('DIVISION', cat_dtype,
-            "Division code based on 2010 Census definitions.",
-            name_extended='geographic region',
-            value_mapping={
-                0: 'Puerto Rico',
-                1: 'New England (Northeast region)',
-                2: 'Middle Atlantic (Northeast region)',
-                3: 'East North Central (Midwest region)',
-                4: 'West North Central (Midwest region)',
-                5: 'South Atlantic (South region)',
-                6: 'East South Central (South region)',
-                7: 'West South Central (South Region)',
-                8: 'Mountain (West region)',
-                9: 'Pacific (West region)',
-            }),
-    # Causal features
-    Feature('AGEP', int, "Age", name_extended='age in years'),
-    Feature('SEX', int, "Sex",
-            name_extended='sex',
-            value_mapping={
-                1: "Male", 2: "Female",
-            }),
-    Feature('RAC1P', int, """Recoded detailed race code""",
-            name_extended='race',
-            value_mapping={
-                1: 'White alone',
-                2: 'Black or African American alone',
-                3: 'American Indian alone',
-                4: 'Alaska Native alone',
-                5: 'American Indian and Alaska Native tribes specified; or'
-                   ' American Indian or Alaska Native, not specified and '
-                   'no other races',
-                6: 'Asian alone',
-                7: 'Native Hawaiian and Other Pacific Islander alone',
-                8: 'Some Other Race alone',
-                9: 'Two or More Races'}),
-    POBP_FEATURE,
-],
-    documentation="https://www2.census.gov/programs-surveys/acs/tech_docs/pums/data_dict/PUMS_Data_Dictionary_2014-2018.pdf")
-
-causal_features = ACS_INCOME_FEATURES_CAUSAL.features.copy()
-causal_features.remove(
-    Feature('PINCP', float, """Total person's income >= threshold.""", is_target=True))
-causal_features.remove(Feature('DIVISION', cat_dtype,
-                               "Division code based on 2010 Census definitions.",
-                               name_extended='geographic region',
-                               value_mapping={
-                                   0: 'Puerto Rico',
-                                   1: 'New England (Northeast region)',
-                                   2: 'Middle Atlantic (Northeast region)',
-                                   3: 'East North Central (Midwest region)',
-                                   4: 'West North Central (Midwest region)',
-                                   5: 'South Atlantic (South region)',
-                                   6: 'East South Central (South region)',
-                                   7: 'West South Central (South Region)',
-                                   8: 'Mountain (West region)',
-                                   9: 'Pacific (West region)',
-                               }))
-causal_subsets = select_subset_minus_one(causal_features)
-ACS_INCOME_FEATURES_CAUSAL_SUBSETS = []
-for subset in causal_subsets:
-    subset.append(
-        Feature('PINCP', float, """Total person's income >= threshold.""", is_target=True))
-    subset.append(Feature('DIVISION', cat_dtype,
-                          "Division code based on 2010 Census definitions.",
-                          name_extended='geographic region',
-                          value_mapping={
-                              0: 'Puerto Rico',
-                              1: 'New England (Northeast region)',
-                              2: 'Middle Atlantic (Northeast region)',
-                              3: 'East North Central (Midwest region)',
-                              4: 'West North Central (Midwest region)',
-                              5: 'South Atlantic (South region)',
-                              6: 'East South Central (South region)',
-                              7: 'West South Central (South Region)',
-                              8: 'Mountain (West region)',
-                              9: 'Pacific (West region)',
-                          }))
-    ACS_INCOME_FEATURES_CAUSAL_SUBSETS.append(FeatureList(subset))
-ACS_INCOME_FEATURES_CAUSAL_SUBSETS_NUMBER = len(causal_subsets)
-
-ACS_INCOME_FEATURES_ARGUABLYCAUSAL = FeatureList([
-    Feature('PINCP', float, """Total person's income >= threshold.""",
-            is_target=True),
-    Feature('DIVISION', cat_dtype,
-            "Division code based on 2010 Census definitions.",
-            name_extended='geographic region',
-            value_mapping={
-                0: 'Puerto Rico',
-                1: 'New England (Northeast region)',
-                2: 'Middle Atlantic (Northeast region)',
-                3: 'East North Central (Midwest region)',
-                4: 'West North Central (Midwest region)',
-                5: 'South Atlantic (South region)',
-                6: 'East South Central (South region)',
-                7: 'West South Central (South Region)',
-                8: 'Mountain (West region)',
-                9: 'Pacific (West region)',
-            }),
-    # Causal features
-    Feature('AGEP', int, "Age", name_extended='age in years'),
-    Feature('SEX', int, "Sex",
-            name_extended='sex',
-            value_mapping={
-                1: "Male", 2: "Female",
-            }),
-    Feature('RAC1P', int, """Recoded detailed race code""",
-            name_extended='race',
-            value_mapping={
-                1: 'White alone',
-                2: 'Black or African American alone',
-                3: 'American Indian alone',
-                4: 'Alaska Native alone',
-                5: 'American Indian and Alaska Native tribes specified; or'
-                   ' American Indian or Alaska Native, not specified and '
-                   'no other races',
-                6: 'Asian alone',
-                7: 'Native Hawaiian and Other Pacific Islander alone',
-                8: 'Some Other Race alone',
-                9: 'Two or More Races'}),
-    POBP_FEATURE,
-    # Arguably causal features
-    Feature('ST', cat_dtype, "State Code based on 2010 Census definitions.",
-            name_extended="State"),
-    FER_FEATURE,
-    ENG_FEATURE,
-    Feature('CIT', cat_dtype, """Citizenship status""",
-            name_extended='citizenship status',
-            value_mapping={
-                1: 'Born in the U.S.',
-                2: 'Born in Puerto Rico, Guam, the U.S. Virgin Islands, '
-                   'or the Northern Marianas',
-                3: 'Born abroad of American parent(s)',
-                4: 'U.S. citizen by naturalization',
-                5: 'Not a citizen of the U.S.',
-            }),
-    Feature('SCHL', cat_dtype, "Educational attainment",
-            name_extended="Educational attainment",
-            value_mapping={
-                np.nan: 'NA (less than 3 years old)',
-                1: 'No schooling completed',
-                2: 'Nursery school, preschool',
-                3: 'Kindergarten',
-                4: 'Grade 1',
-                5: 'Grade 2',
-                6: 'Grade 3',
-                7: 'Grade 4',
-                8: 'Grade 5',
-                9: 'Grade 6',
-                10: 'Grade 7',
-                11: 'Grade 8',
-                12: 'Grade 9',
-                13: 'Grade 10',
-                14: 'Grade 11',
-                15: '12th grade - no diploma',
-                16: 'Regular high school diploma',
-                17: 'GED or alternative credential',
-                18: 'Some college, but less than 1 year',
-                19: '1 or more years of college credit, no degree',
-                20: "Associate's degree",
-                21: "Bachelor's degree",
-                22: "Master's degree",
-                23: "Professional degree beyond a bachelor's degree",
-                24: 'Doctorate degree',
-            }),
-    OCCP_FEATURE,
-    Feature('COW', cat_dtype, """Class of worker.""",
-            name_extended='class of worker',
-            value_mapping={
-                '01': "Employee of a private for-profit company or business, "
-                      "or of an individual, for wages, salary, or commissions",
-                '02': "Employee of a private not-for-profit, tax-exempt, or charitable organization",
-                '03': "Local government employee (city, county, etc.)",
-                '04': "State government employee",
-                '05': "Federal government employee",
-                '06': "Self-employed in own not incorporated business, professional practice, or farm",
-                '07': "Self-employed in own incorporated business, professional practice or farm",
-                '08': "Working without pay in family business or farm"}),
-    WKHP_FEATURE,
-    Feature('WKW', int, "Weeks worked during past 12 months.",
-            name_extended="Weeks worked during past 12 months"),
-    Feature('WRK', cat_dtype, "Worked last week",
-            name_extended="Worked last week",
-            value_mapping={'00': 'NA (not reported)',
-                           '01': 'Worked',
-                           '02': 'Did not work'}),
-    NWLA_FEATURE,
-],
-    documentation="https://www2.census.gov/programs-surveys/acs/tech_docs/pums/data_dict/PUMS_Data_Dictionary_2014-2018.pdf")
-
-arguablycausal_supersets = select_superset_plus_one(
-    ACS_INCOME_FEATURES_ARGUABLYCAUSAL.features, ACS_INCOME_FEATURES.features + ACS_SHARED_FEATURES.features)
-ACS_INCOME_FEATURES_ARGUABLYCAUSAL_SUPERSETS = []
-for superset in arguablycausal_supersets:
-    ACS_INCOME_FEATURES_ARGUABLYCAUSAL_SUPERSETS.append(FeatureList(superset))
-ACS_INCOME_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER = len(arguablycausal_supersets)
-
-ACS_INCOME_FEATURES_ANTICAUSAL = FeatureList([
-    Feature('PINCP', float, """Total person's income >= threshold.""",
-            is_target=True),
-    Feature('DIVISION', cat_dtype,
-            "Division code based on 2010 Census definitions.",
-            name_extended='geographic region',
-            value_mapping={
-                0: 'Puerto Rico',
-                1: 'New England (Northeast region)',
-                2: 'Middle Atlantic (Northeast region)',
-                3: 'East North Central (Midwest region)',
-                4: 'West North Central (Midwest region)',
-                5: 'South Atlantic (South region)',
-                6: 'East South Central (South region)',
-                7: 'West South Central (South Region)',
-                8: 'Mountain (West region)',
-                9: 'Pacific (West region)',
-            }),
-    # Anticausal features
-    Feature('HINS2', cat_dtype,
-            "Insurance purchased directly from an insurance company",
-            name_extended="Has insurance purchased directly from an insurance company",
-            value_mapping={'01': 'Yes', '02': 'No'}),
-    Feature('HINS4', cat_dtype, """-""",
-            name_extended="Has Medicaid, medical assistance, or any kind of "
-                          "government-assistance plan for those with low "
-                          "incomes or a disability",
-            value_mapping={'01': 'Yes', '02': 'No'}),
-    NWLK_FEATURE,
-],
-    documentation="https://www2.census.gov/programs-surveys/acs/tech_docs/pums/data_dict/PUMS_Data_Dictionary_2014-2018.pdf")
-
 # PUBLIC COVERAGE
 
 ACS_PUBCOV_FEATURES = FeatureList(features=[
@@ -566,9 +335,9 @@ ACS_PUBCOV_FEATURES = FeatureList(features=[
     DREM_FEATURE,
     Feature('PINCP', float, "Total person's income",
             name_extended="Total person's income in dollars"),
-    Feature('ESR', cat_dtype, """Employment status recode b .N/A (less than 
-    16 years old) 1 .Civilian employed, at work 2 .Civilian employed, with a 
-    job but not at work 3 .Unemployed 4 .Armed forces, at work 5 .Armed 
+    Feature('ESR', cat_dtype, """Employment status recode b .N/A (less than
+    16 years old) 1 .Civilian employed, at work 2 .Civilian employed, with a
+    job but not at work 3 .Unemployed 4 .Armed forces, at work 5 .Armed
     forces, with a job but not at work 6 .Not in labor force""",
             name_extended="Employment status",
             value_mapping={
@@ -580,7 +349,7 @@ ACS_PUBCOV_FEATURES = FeatureList(features=[
                 '05': 'Armed forces, with a job but not at work',
                 '06': 'Not in labor force'}),
     FER_FEATURE,
-    Feature('PUBCOV', int, """Public health coverage recode =With public 
+    Feature('PUBCOV', int, """Public health coverage recode =With public
     health coverage 0=Without public health coverage""", is_target=True)],
     documentation="https://www2.census.gov/programs-surveys/acs/tech_docs/pums/data_dict/PUMS_Data_Dictionary_2014-2018.pdf")
 
@@ -611,11 +380,11 @@ ACS_PUBCOV_FEATURES_CAUSAL = FeatureList(features=[
     DREM_FEATURE,
     ANC_FEATURE,
     NATIVITY_FEATURE,
-    Feature('PUBCOV', int, """Public health coverage recode =With public 
+    Feature('PUBCOV', int, """Public health coverage recode =With public
     health coverage 0=Without public health coverage""", is_target=True)],
 )
 
-target = Feature('PUBCOV', int, """Public health coverage recode =With public 
+target = Feature('PUBCOV', int, """Public health coverage recode =With public
     health coverage 0=Without public health coverage""", is_target=True)
 domain = DIS_FEATURE
 causal_features = ACS_PUBCOV_FEATURES_CAUSAL.features.copy()
@@ -640,9 +409,9 @@ ACS_PUBCOV_FEATURES_ARGUABLYCAUSAL = FeatureList(features=[
     DREM_FEATURE,
     Feature('PINCP', float, "Total person's income",
             name_extended="Total person's income in dollars"),
-    Feature('ESR', cat_dtype, """Employment status recode b .N/A (less than 
-    16 years old) 1 .Civilian employed, at work 2 .Civilian employed, with a 
-    job but not at work 3 .Unemployed 4 .Armed forces, at work 5 .Armed 
+    Feature('ESR', cat_dtype, """Employment status recode b .N/A (less than
+    16 years old) 1 .Civilian employed, at work 2 .Civilian employed, with a
+    job but not at work 3 .Unemployed 4 .Armed forces, at work 5 .Armed
     forces, with a job but not at work 6 .Not in labor force""",
             name_extended="Employment status",
             value_mapping={
@@ -654,7 +423,7 @@ ACS_PUBCOV_FEATURES_ARGUABLYCAUSAL = FeatureList(features=[
                 '05': 'Armed forces, with a job but not at work',
                 '06': 'Not in labor force'}),
     FER_FEATURE,
-    Feature('PUBCOV', int, """Public health coverage recode =With public 
+    Feature('PUBCOV', int, """Public health coverage recode =With public
     health coverage 0=Without public health coverage""", is_target=True),
     Feature('AGEP', int, "Age", name_extended='age in years'),
     Feature('SEX', int, "Sex",
@@ -1045,7 +814,7 @@ ACS_UNEMPLOYMENT_FEATURES_ANTICAUSAL = FeatureList(features=[
 # FOODSTAMPS
 
 ACS_FOODSTAMPS_FEATURES = FeatureList(features=[
-    Feature('FS', int, """Yearly food stamp/Supplemental Nutrition Assistance 
+    Feature('FS', int, """Yearly food stamp/Supplemental Nutrition Assistance
     Program (SNAP) recipiency (household) b .N/A (vacant) 5 1 .Yes 2 .No""",
             is_target=True),
     ENG_FEATURE,
@@ -1096,7 +865,7 @@ ACS_FOODSTAMPS_FEATURES = FeatureList(features=[
 )
 
 ACS_FOODSTAMPS_FEATURES_CAUSAL = FeatureList(features=[
-    Feature('FS', int, """Yearly food stamp/Supplemental Nutrition Assistance 
+    Feature('FS', int, """Yearly food stamp/Supplemental Nutrition Assistance
     Program (SNAP) recipiency (household) b .N/A (vacant) 5 1 .Yes 2 .No""",
             is_target=True),
     Feature('DIVISION', cat_dtype,
@@ -1158,7 +927,7 @@ ACS_FOODSTAMPS_FEATURES_CAUSAL = FeatureList(features=[
 )
 
 causal_features = ACS_FOODSTAMPS_FEATURES_CAUSAL.features.copy()
-causal_features.remove(Feature('FS', int, """Yearly food stamp/Supplemental Nutrition Assistance 
+causal_features.remove(Feature('FS', int, """Yearly food stamp/Supplemental Nutrition Assistance
     Program (SNAP) recipiency (household) b .N/A (vacant) 5 1 .Yes 2 .No""",
                                is_target=True))
 causal_features.remove(Feature('DIVISION', cat_dtype,
@@ -1180,7 +949,7 @@ causal_subsets = select_subset_minus_one(causal_features)
 ACS_FOODSTAMPS_FEATURES_CAUSAL_SUBSETS = []
 for subset in causal_subsets:
     subset.append(Feature('FS', int,
-                          """Yearly food stamp/Supplemental Nutrition Assistance 
+                          """Yearly food stamp/Supplemental Nutrition Assistance
                                Program (SNAP) recipiency (household) b .N/A (vacant) 5 1 .Yes 2 .No""",
                           is_target=True))
     subset.append(Feature('DIVISION', cat_dtype,
@@ -1202,7 +971,7 @@ for subset in causal_subsets:
 ACS_FOODSTAMPS_FEATURES_CAUSAL_SUBSETS_NUMBER = len(causal_subsets)
 
 ACS_FOODSTAMPS_FEATURES_ARGUABLYCAUSAL = FeatureList(features=[
-    Feature('FS', int, """Yearly food stamp/Supplemental Nutrition Assistance 
+    Feature('FS', int, """Yearly food stamp/Supplemental Nutrition Assistance
     Program (SNAP) recipiency (household) b .N/A (vacant) 5 1 .Yes 2 .No""",
             is_target=True),
     Feature('DIVISION', cat_dtype,
@@ -1550,3 +1319,216 @@ def preprocess_acs(df: pd.DataFrame):
         df['ST'] = df['ST'].map(ST_CODE_TO_STATE)
         assert pd.isnull(df['ST']).sum() == 0
     return df
+
+
+################################################################################
+# Feature list for causal, arguably causal and (if applicable) anticausal features
+################################################################################
+ACS_INCOME_FEATURES_CAUSAL = FeatureList([
+    Feature('PINCP', float, """Total person's income >= threshold.""",
+            is_target=True),
+    Feature('DIVISION', cat_dtype,
+            "Division code based on 2010 Census definitions.",
+            name_extended='geographic region',
+            value_mapping={
+                0: 'Puerto Rico',
+                1: 'New England (Northeast region)',
+                2: 'Middle Atlantic (Northeast region)',
+                3: 'East North Central (Midwest region)',
+                4: 'West North Central (Midwest region)',
+                5: 'South Atlantic (South region)',
+                6: 'East South Central (South region)',
+                7: 'West South Central (South Region)',
+                8: 'Mountain (West region)',
+                9: 'Pacific (West region)',
+            }),
+    # Causal features
+    Feature('AGEP', int, "Age", name_extended='age in years'),
+    Feature('SEX', int, "Sex",
+            name_extended='sex',
+            value_mapping={
+                1: "Male", 2: "Female",
+            }),
+    Feature('RAC1P', int, """Recoded detailed race code""",
+            name_extended='race',
+            value_mapping={
+                1: 'White alone',
+                2: 'Black or African American alone',
+                3: 'American Indian alone',
+                4: 'Alaska Native alone',
+                5: 'American Indian and Alaska Native tribes specified; or'
+                   ' American Indian or Alaska Native, not specified and '
+                   'no other races',
+                6: 'Asian alone',
+                7: 'Native Hawaiian and Other Pacific Islander alone',
+                8: 'Some Other Race alone',
+                9: 'Two or More Races'}),
+    POBP_FEATURE,
+],
+    documentation="https://www2.census.gov/programs-surveys/acs/tech_docs/pums/data_dict/PUMS_Data_Dictionary_2014-2018.pdf")
+
+# Get feature lists for robustness test
+target = Feature('PINCP', float, """Total person's income >= threshold.""", is_target=True)
+domain = Feature('DIVISION', cat_dtype,
+                 "Division code based on 2010 Census definitions.",
+                 name_extended='geographic region',
+                 value_mapping={
+                     0: 'Puerto Rico',
+                     1: 'New England (Northeast region)',
+                     2: 'Middle Atlantic (Northeast region)',
+                     3: 'East North Central (Midwest region)',
+                     4: 'West North Central (Midwest region)',
+                     5: 'South Atlantic (South region)',
+                     6: 'East South Central (South region)',
+                     7: 'West South Central (South Region)',
+                     8: 'Mountain (West region)',
+                     9: 'Pacific (West region)',
+                 })
+ACS_INCOME_FEATURES_CAUSAL_SUBSETS = get_causal_robust(ACS_INCOME_FEATURES_CAUSAL, target, domain)
+ACS_INCOME_FEATURES_CAUSAL_SUBSETS_NUMBER = len(ACS_INCOME_FEATURES_CAUSAL_SUBSETS)
+
+ACS_INCOME_FEATURES_ARGUABLYCAUSAL = FeatureList([
+    Feature('PINCP', float, """Total person's income >= threshold.""",
+            is_target=True),
+    Feature('DIVISION', cat_dtype,
+            "Division code based on 2010 Census definitions.",
+            name_extended='geographic region',
+            value_mapping={
+                0: 'Puerto Rico',
+                1: 'New England (Northeast region)',
+                2: 'Middle Atlantic (Northeast region)',
+                3: 'East North Central (Midwest region)',
+                4: 'West North Central (Midwest region)',
+                5: 'South Atlantic (South region)',
+                6: 'East South Central (South region)',
+                7: 'West South Central (South Region)',
+                8: 'Mountain (West region)',
+                9: 'Pacific (West region)',
+            }),
+    # Causal features
+    Feature('AGEP', int, "Age", name_extended='age in years'),
+    Feature('SEX', int, "Sex",
+            name_extended='sex',
+            value_mapping={
+                1: "Male", 2: "Female",
+            }),
+    Feature('RAC1P', int, """Recoded detailed race code""",
+            name_extended='race',
+            value_mapping={
+                1: 'White alone',
+                2: 'Black or African American alone',
+                3: 'American Indian alone',
+                4: 'Alaska Native alone',
+                5: 'American Indian and Alaska Native tribes specified; or'
+                   ' American Indian or Alaska Native, not specified and '
+                   'no other races',
+                6: 'Asian alone',
+                7: 'Native Hawaiian and Other Pacific Islander alone',
+                8: 'Some Other Race alone',
+                9: 'Two or More Races'}),
+    POBP_FEATURE,
+    # Arguably causal features
+    Feature('ST', cat_dtype, "State Code based on 2010 Census definitions.",
+            name_extended="State"),
+    FER_FEATURE,
+    ENG_FEATURE,
+    Feature('CIT', cat_dtype, """Citizenship status""",
+            name_extended='citizenship status',
+            value_mapping={
+                1: 'Born in the U.S.',
+                2: 'Born in Puerto Rico, Guam, the U.S. Virgin Islands, '
+                   'or the Northern Marianas',
+                3: 'Born abroad of American parent(s)',
+                4: 'U.S. citizen by naturalization',
+                5: 'Not a citizen of the U.S.',
+            }),
+    Feature('SCHL', cat_dtype, "Educational attainment",
+            name_extended="Educational attainment",
+            value_mapping={
+                np.nan: 'NA (less than 3 years old)',
+                1: 'No schooling completed',
+                2: 'Nursery school, preschool',
+                3: 'Kindergarten',
+                4: 'Grade 1',
+                5: 'Grade 2',
+                6: 'Grade 3',
+                7: 'Grade 4',
+                8: 'Grade 5',
+                9: 'Grade 6',
+                10: 'Grade 7',
+                11: 'Grade 8',
+                12: 'Grade 9',
+                13: 'Grade 10',
+                14: 'Grade 11',
+                15: '12th grade - no diploma',
+                16: 'Regular high school diploma',
+                17: 'GED or alternative credential',
+                18: 'Some college, but less than 1 year',
+                19: '1 or more years of college credit, no degree',
+                20: "Associate's degree",
+                21: "Bachelor's degree",
+                22: "Master's degree",
+                23: "Professional degree beyond a bachelor's degree",
+                24: 'Doctorate degree',
+            }),
+    OCCP_FEATURE,
+    Feature('COW', cat_dtype, """Class of worker.""",
+            name_extended='class of worker',
+            value_mapping={
+                '01': "Employee of a private for-profit company or business, "
+                      "or of an individual, for wages, salary, or commissions",
+                '02': "Employee of a private not-for-profit, tax-exempt, or charitable organization",
+                '03': "Local government employee (city, county, etc.)",
+                '04': "State government employee",
+                '05': "Federal government employee",
+                '06': "Self-employed in own not incorporated business, professional practice, or farm",
+                '07': "Self-employed in own incorporated business, professional practice or farm",
+                '08': "Working without pay in family business or farm"}),
+    WKHP_FEATURE,
+    Feature('WKW', int, "Weeks worked during past 12 months.",
+            name_extended="Weeks worked during past 12 months"),
+    Feature('WRK', cat_dtype, "Worked last week",
+            name_extended="Worked last week",
+            value_mapping={'00': 'NA (not reported)',
+                           '01': 'Worked',
+                           '02': 'Did not work'}),
+    NWLA_FEATURE,
+],
+    documentation="https://www2.census.gov/programs-surveys/acs/tech_docs/pums/data_dict/PUMS_Data_Dictionary_2014-2018.pdf")
+
+# Get feature lists for robustness test
+ACS_INCOME_FEATURES_ARGUABLYCAUSAL_SUPERSETS = get_arguablycausal_robust(
+    ACS_INCOME_FEATURES_ARGUABLYCAUSAL, ACS_INCOME_FEATURES.features + ACS_SHARED_FEATURES.features)
+ACS_INCOME_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER = len(ACS_INCOME_FEATURES_ARGUABLYCAUSAL_SUPERSETS)
+
+ACS_INCOME_FEATURES_ANTICAUSAL = FeatureList([
+    Feature('PINCP', float, """Total person's income >= threshold.""",
+            is_target=True),
+    Feature('DIVISION', cat_dtype,
+            "Division code based on 2010 Census definitions.",
+            name_extended='geographic region',
+            value_mapping={
+                0: 'Puerto Rico',
+                1: 'New England (Northeast region)',
+                2: 'Middle Atlantic (Northeast region)',
+                3: 'East North Central (Midwest region)',
+                4: 'West North Central (Midwest region)',
+                5: 'South Atlantic (South region)',
+                6: 'East South Central (South region)',
+                7: 'West South Central (South Region)',
+                8: 'Mountain (West region)',
+                9: 'Pacific (West region)',
+            }),
+    # Anticausal features
+    Feature('HINS2', cat_dtype,
+            "Insurance purchased directly from an insurance company",
+            name_extended="Has insurance purchased directly from an insurance company",
+            value_mapping={'01': 'Yes', '02': 'No'}),
+    Feature('HINS4', cat_dtype, """-""",
+            name_extended="Has Medicaid, medical assistance, or any kind of "
+                          "government-assistance plan for those with low "
+                          "incomes or a disability",
+            value_mapping={'01': 'Yes', '02': 'No'}),
+    NWLK_FEATURE,
+],
+    documentation="https://www2.census.gov/programs-surveys/acs/tech_docs/pums/data_dict/PUMS_Data_Dictionary_2014-2018.pdf")
