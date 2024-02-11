@@ -47,7 +47,7 @@ The datasets we use in our paper are either publicly available, or provide open 
 The datasets with open credentialized access require signing a data use agreement. For the tasks `ICU Mortality` and `ICU Length of Stay`, it is required to complete  training CITI Data or Specimens Only Research, as they contain sensitive personal information.
 Hence, these datasets must be manually fetched and stored locally.
 
-A list of datasets, their names in our code, and the corresponding access levels are below. The string identifier is the value that should be passed as the `experiment` parameter to the `--experiment` flag of `experiments_causal/run_experiment_on_cluster.py`.
+A list of datasets, their names in our code, and the corresponding access levels are below. The string identifier is the value that should be passed as the `experiment` parameter to the `--experiment` flag of `experiments_causal/run_experiment.py`.
 The causal, arguably causal, and anti-causal feature sets are obtained by appending `_causal`, `_arguablycausal` and `_anticausal` to the string identifier.
 
 
@@ -74,7 +74,7 @@ TableShift includes the preprocessing of the data files in their implementation.
 
 # Reproduction of experiments
 
-The training script we run is located at `experiments_causal/run_experiment_on_cluster.py`.
+The training script we run is located at `experiments_causal/run_experiment.py`.
 It takes the following arguments:
 * `experiment` (experiment to run)
 * `model` (model to use)
