@@ -8,15 +8,20 @@ For more information on datasets and access in TableShift, see:
 * https://tableshift.org/datasets.html
 * https://github.com/mlfoundations/tableshift
 
+
+Modified for 'Predictors from Causal Features Do Not Generalize Better to New Domains'
 """
 import pandas as pd
 
 from tableshift.core.features import Feature, FeatureList, cat_dtype
-from tableshift.datasets.robustness import select_subset_minus_one, select_superset_plus_one
+
+from tableshift.datasets.robustness import get_causal_robust, get_arguablycausal_robust
 
 ################################################################################
 # Feature list
 ################################################################################
+
+
 PHYSIONET_FEATURES = FeatureList(features=[
     Feature("HR", float, name_extended="Heart rate (in beats per minute)"),
     Feature("O2Sat", float, name_extended="Pulse oximetry (%)"),
@@ -83,6 +88,15 @@ PHYSIONET_FEATURES = FeatureList(features=[
 ], documentation="https://physionet.org/content/challenge-2019/1.0.0"
                  "/physionet_challenge_2019_ccm_manuscript.pdf")
 
+
+def preprocess_physionet(df: pd.DataFrame) -> pd.DataFrame:
+    return df
+
+################################################################################
+# Feature list for causal, arguably causal and (if applicable) anticausal features
+################################################################################
+
+
 PHYSIONET_FEATURES_CAUSAL = FeatureList(features=[
     Feature("Age", int, name_extended="Age (years)"),
     Feature("Gender", int, name_extended="Female (0) or male (1)"),
@@ -104,23 +118,16 @@ PHYSIONET_FEATURES_CAUSAL = FeatureList(features=[
             is_target=True),
 ], documentation="https://physionet.org/content/challenge-2019/1.0.0"
                  "/physionet_challenge_2019_ccm_manuscript.pdf")
+
 target = Feature("SepsisLabel", int,
-            name_extended="For septic patients, SepsisLabel is 1 if t ≥ "
-                          "t_sepsis − 6 and 0 if t < t_sepsis − 6. For "
-                          "non-septic patients, SepsisLabel is 0.",
-            is_target=True)
+                 name_extended="For septic patients, SepsisLabel is 1 if t ≥ "
+                 "t_sepsis − 6 and 0 if t < t_sepsis − 6. For "
+                 "non-septic patients, SepsisLabel is 0.",
+                 is_target=True)
 domain = Feature("ICULOS", float,
-            name_extended="ICU length of stay (hours since ICU admission)")
-causal_features = PHYSIONET_FEATURES_CAUSAL.features.copy()
-causal_features.remove(target)
-causal_features.remove(domain)
-causal_subsets = select_subset_minus_one(causal_features)
-PHYSIONET_FEATURES_CAUSAL_SUBSETS = []
-for subset in causal_subsets:
-    subset.append(target)
-    subset.append(domain)
-    PHYSIONET_FEATURES_CAUSAL_SUBSETS.append(FeatureList(subset))
-PHYSIONET_FEATURES_CAUSAL_SUBSETS_NUMBER = len(causal_subsets)
+                 name_extended="ICU length of stay (hours since ICU admission)")
+PHYSIONET_FEATURES_CAUSAL_SUBSETS = get_causal_robust(PHYSIONET_FEATURES_CAUSAL, target, domain)
+PHYSIONET_FEATURES_CAUSAL_SUBSETS_NUMBER = len(PHYSIONET_FEATURES_CAUSAL_SUBSETS)
 
 PHYSIONET_FEATURES_ARGUABLYCAUSAL = FeatureList(features=[
     Feature("HR", float, name_extended="Heart rate (in beats per minute)"),
@@ -187,11 +194,7 @@ PHYSIONET_FEATURES_ARGUABLYCAUSAL = FeatureList(features=[
             "unique (values: 'a', 'b').")
 ], documentation="https://physionet.org/content/challenge-2019/1.0.0"
                  "/physionet_challenge_2019_ccm_manuscript.pdf")
-arguablycausal_supersets = select_superset_plus_one(PHYSIONET_FEATURES_ARGUABLYCAUSAL.features, PHYSIONET_FEATURES.features)
-PHYSIONET_FEATURES_ARGUABLYCAUSAL_SUPERSETS = []
-for superset in arguablycausal_supersets:
-    PHYSIONET_FEATURES_ARGUABLYCAUSAL_SUPERSETS.append(FeatureList(superset))
-PHYSIONET_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER = len(arguablycausal_supersets)
 
-def preprocess_physionet(df: pd.DataFrame) -> pd.DataFrame:
-    return df
+PHYSIONET_FEATURES_ARGUABLYCAUSAL_SUPERSETS = get_arguablycausal_robust(
+    PHYSIONET_FEATURES_ARGUABLYCAUSAL, PHYSIONET_FEATURES.features)
+PHYSIONET_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER = len(PHYSIONET_FEATURES_ARGUABLYCAUSAL_SUPERSETS)
