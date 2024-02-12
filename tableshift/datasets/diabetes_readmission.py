@@ -8,6 +8,7 @@ For more information on datasets and access in TableShift, see:
 * https://tableshift.org/datasets.html
 * https://github.com/mlfoundations/tableshift
 
+Modified for 'Predictors from Causal Features Do Not Generalize Better to New Domains'
 """
 import json
 import os
@@ -17,7 +18,7 @@ from typing import Dict
 import pandas as pd
 from tableshift.core.features import Feature, FeatureList, cat_dtype
 
-from tableshift.datasets.robustness import select_subset_minus_one, select_superset_plus_one
+from tableshift.datasets.robustness import get_causal_robust, get_arguablycausal_robust
 
 
 DIABETES_READMISSION_RESOURCES = [
@@ -118,7 +119,7 @@ def get_icd9(depths=(3, 4)) -> dict:
         try:
             return re.sub("^0+", "", x)
         except:
-            import ipdb;
+            import ipdb
             ipdb.set_trace()
 
     mapping = {}
@@ -371,6 +372,23 @@ DIABETES_READMISSION_FEATURES = FeatureList(features=[
             is_target=True),
 ], documentation="http://www.hindawi.com/journals/bmri/2014/781670/")
 
+
+def preprocess_diabetes_readmission(df: pd.DataFrame):
+    # Drop 2273 obs with missing race (2.2336% of total data)
+    df.dropna(subset=["race"], inplace=True)
+
+    tgt_col = DIABETES_READMISSION_FEATURES.target
+    df[tgt_col] = (df[tgt_col] != "NO").astype(float)
+
+    # Some columns contain a small fraction of missing values (~1%); fill them.
+    df.fillna("MISSING")
+    return df
+
+################################################################################
+# Feature list for causal, arguably causal and (if applicable) anticausal features
+################################################################################
+
+
 DIABETES_READMISSION_FEATURES_CAUSAL = FeatureList(features=[
     Feature('admission_source_id', int, """Integer identifier corresponding 
     to 21 distinct values.""",
@@ -422,45 +440,37 @@ DIABETES_READMISSION_FEATURES_CAUSAL = FeatureList(features=[
             is_target=True),
 ], documentation="http://www.hindawi.com/journals/bmri/2014/781670/")
 
-causal_features = DIABETES_READMISSION_FEATURES_CAUSAL.features.copy()
 target = Feature('readmitted', float, "30 days, '>30' if the patient was "
-                                 "readmitted in more than 30 days, and 'No' "
-                                 "for no record of readmission.",
-            is_target=True)
+                 "readmitted in more than 30 days, and 'No' "
+                 "for no record of readmission.",
+                 is_target=True)
 domain = Feature('admission_source_id', int, """Integer identifier corresponding 
     to 21 distinct values.""",
-            name_extended="Admission source",
-            value_mapping={
-                1: 'Physician Referral', 2: 'Clinic Referral ',
-                3: 'HMO Referral', 4: 'Transfer from a hospital',
-                5: 'Transfer from a Skilled Nursing Facility (SNF)',
-                6: 'Transfer from another health care facility',
-                7: 'Emergency Room',
-                8: 'Court/Law Enforcement',
-                9: 'Not Available',
-                10: 'Transfer from critial access hospital',
-                11: 'Normal Delivery',
-                12: 'Premature Delivery',
-                13: 'Sick Baby', 14: 'Extramural Birth', 15: 'Not Available',
-                17: 'NULL',
-                18: 'Transfer From Another Home Health Agency',
-                19: 'Readmission to Same Home Health Agency',
-                20: 'Not Mapped', 21: 'Unknown/Invalid',
-                22: 'Transfer from hospital inpt/same fac reslt in a sep claim',
-                23: 'Born inside this hospital',
-                24: 'Born outside this hospital',
-                25: 'Transfer from Ambulatory Surgery Center',
-                26: 'Transfer from Hospice',
-            })
-causal_features.remove(target)
-causal_features.remove(domain)
-causal_subsets = select_subset_minus_one(causal_features)
-DIABETES_READMISSION_FEATURES_CAUSAL_SUBSETS = []
-for subset in causal_subsets:
-    subset.append(target)
-    subset.append(domain)
-    DIABETES_READMISSION_FEATURES_CAUSAL_SUBSETS.append(FeatureList(subset))
-DIABETES_READMISSION_FEATURES_CAUSAL_NUMBER = len(causal_subsets)
+                 name_extended="Admission source",
+                 value_mapping={
+                     1: 'Physician Referral', 2: 'Clinic Referral ',
+                     3: 'HMO Referral', 4: 'Transfer from a hospital',
+                     5: 'Transfer from a Skilled Nursing Facility (SNF)',
+                     6: 'Transfer from another health care facility',
+                     7: 'Emergency Room',
+                     8: 'Court/Law Enforcement',
+                     9: 'Not Available',
+                     10: 'Transfer from critial access hospital',
+                     11: 'Normal Delivery',
+                     12: 'Premature Delivery',
+                     13: 'Sick Baby', 14: 'Extramural Birth', 15: 'Not Available',
+                     17: 'NULL',
+                     18: 'Transfer From Another Home Health Agency',
+                     19: 'Readmission to Same Home Health Agency',
+                     20: 'Not Mapped', 21: 'Unknown/Invalid',
+                     22: 'Transfer from hospital inpt/same fac reslt in a sep claim',
+                     23: 'Born inside this hospital',
+                     24: 'Born outside this hospital',
+                     25: 'Transfer from Ambulatory Surgery Center',
+                     26: 'Transfer from Hospice',
+                 })
+DIABETES_READMISSION_FEATURES_CAUSAL_SUBSETS = get_causal_robust(DIABETES_READMISSION_FEATURES_CAUSAL, target, domain)
+DIABETES_READMISSION_FEATURES_CAUSAL_NUMBER = len(DIABETES_READMISSION_FEATURES_CAUSAL_SUBSETS)
 
 DIABETES_READMISSION_FEATURES_ARGUABLYCAUSAL = FeatureList(features=[
     Feature('race', cat_dtype, """Nominal. Values: Caucasian, Asian, African 
@@ -668,19 +678,8 @@ DIABETES_READMISSION_FEATURES_ARGUABLYCAUSAL = FeatureList(features=[
                                  "for no record of readmission.",
             is_target=True),
 ], documentation="http://www.hindawi.com/journals/bmri/2014/781670/")
-arguablycausal_supersets = select_superset_plus_one(DIABETES_READMISSION_FEATURES_ARGUABLYCAUSAL.features, DIABETES_READMISSION_FEATURES.features)
-DIABETES_READMISSION_FEATURES_ARGUABLYCAUSAL_SUPERSETS = []
-for superset in arguablycausal_supersets:
-    DIABETES_READMISSION_FEATURES_ARGUABLYCAUSAL_SUPERSETS.append(FeatureList(superset))
-DIABETES_READMISSION_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER = len(arguablycausal_supersets)
 
-def preprocess_diabetes_readmission(df: pd.DataFrame):
-    # Drop 2273 obs with missing race (2.2336% of total data)
-    df.dropna(subset=["race"], inplace=True)
-
-    tgt_col = DIABETES_READMISSION_FEATURES.target
-    df[tgt_col] = (df[tgt_col] != "NO").astype(float)
-
-    # Some columns contain a small fraction of missing values (~1%); fill them.
-    df.fillna("MISSING")
-    return df
+DIABETES_READMISSION_FEATURES_ARGUABLYCAUSAL_SUPERSETS = get_arguablycausal_robust(DIABETES_READMISSION_FEATURES_ARGUABLYCAUSAL,
+                                                                                   DIABETES_READMISSION_FEATURES.features)
+DIABETES_READMISSION_FEATURES_ARGUABLYCAUSAL_SUPERSETS_NUMBER = len(
+    DIABETES_READMISSION_FEATURES_ARGUABLYCAUSAL_SUPERSETS)
