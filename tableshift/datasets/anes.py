@@ -536,30 +536,6 @@ ANES_FEATURES = FeatureList(features=[
 ],
     documentation="https://electionstudies.org/data-center/anes-time-series-cumulative-data-file/")
 
-causal_features = ANES_FEATURES_CAUSAL.features.copy()
-target = Feature('VCF0702', int, "DID RESPONDENT VOTE IN THE NATIONAL "
-                 "ELECTIONS 1. No, did not vote 2. Yes, "
-                 "voted 0. DK; NA; no Post IW; refused to "
-                 "say if voted; Washington D.C. ("
-                 "presidential years only)",
-                 is_target=True,
-                 name_extended='voted in national election')
-domain = Feature('VCF0112', cat_dtype, """Region - U.S. Census 1. Northeast (CT, 
-    ME, MA, NH, NJ, NY, PA, RI, VT) 2. North Central (IL, IN, IA, KS, MI, MN, 
-    MO, NE, ND, OH, SD, WI) 3. South (AL, AR, DE, D.C., FL, GA, KY, LA, MD, 
-    MS, NC, OK, SC,TN, TX, VA, WV) 4. West (AK, AZ, CA, CO, HI, ID, MT, NV, 
-    NM, OR, UT, WA, WY)""",
-                 name_extended='US census region',
-                 value_mapping={
-                     # (CT, ME, MA, NH, NJ, NY, PA, RI, VT)
-                     '1.0': "Northeast",
-                     # (IL, IN, IA, KS, MI, MN, MO, NE, ND, OH, SD, WI)
-                     '2.0': "North Central",
-                     # (AL, AR, DE, D.C., FL, GA, KY, LA, MD, MS, NC, OK, SC,TN, TX, VA, WV) 4. West (AK, AZ, CA, CO, HI, ID, MT, NV, NM, OR, UT, WA, WY)
-                     '3.0': "South",
-                     # (AK, AZ, CA, CO, HI, ID, MT, NV, NM, OR, UT, WA, WY)
-                     '4.0': 'West', })
-
 
 def preprocess_anes(df: pd.DataFrame) -> pd.DataFrame:
     df = df.dropna(subset=[ANES_FEATURES.target])
