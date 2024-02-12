@@ -1,6 +1,6 @@
 """Python script to define functions for creating robustness tests.
 
-Created for 'Predictors from Causal Features Do Not Generalize Better to New Domains'
+Created for 'Predictors from Causal Features Do Not Generalize Better to New Domains'.
 """
 
 import numpy as np

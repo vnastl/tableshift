@@ -7,7 +7,7 @@ For more information on the SIPP dataset, see:
 For access of the SIPP dataset, see adapted code from Kim & Hardt (2023):
     /backward_predictor/sipp/data/README.md
 
-Created for 'Predictors from Causal Features Do Not Generalize Better to New Domains'
+Created for 'Predictors from Causal Features Do Not Generalize Better to New Domains'.
 """
 import pandas as pd
 import json

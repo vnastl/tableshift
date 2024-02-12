@@ -12,7 +12,7 @@ Accessed via https://www.kaggle.com/datasets/cdc/behavioral-risk-factor-surveill
 Raw Data: https://www.cdc.gov/brfss/annual_data/annual_data.htm
 Data Dictionary: https://www.cdc.gov/brfss/annual_data/2015/pdf/codebook15_llcp.pdf
 
-Modified for 'Predictors from Causal Features Do Not Generalize Better to New Domains'
+Modified for 'Predictors from Causal Features Do Not Generalize Better to New Domains'.
 """
 
 import re

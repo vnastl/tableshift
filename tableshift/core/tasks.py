@@ -3,7 +3,9 @@ Contains task configurations.
 
 A task is a set of features (including both predictors and a target variable)
 along with a DataSource. Tasks are the fundamental benchmarks that comprise
-the tableshift benchmark.
+the tableshift benchmark, as well as causal feature selections of these fundamental benchmarks.
+
+Modified for 'Predictors from Causal Features Do Not Generalize Better to New Domains'.
 """
 
 from dataclasses import dataclass
@@ -12,6 +14,7 @@ from .data_source import *
 from .features import FeatureList
 
 from tableshift.datasets import *
+
 
 @dataclass
 class TaskConfig:
@@ -22,7 +25,6 @@ class TaskConfig:
     # preprocess_fn is applied. It is used to check the output of the
     # preprocess_fn, and features are dropped or type-cast as necessary.
     feature_list: FeatureList
-
 
 
 # Mapping of task names to their configs. An arbitrary number of tasks
@@ -162,7 +164,7 @@ _TASK_REGISTRY: Dict[str, TaskConfig] = {
         TaskConfig(MOOCDataSource, MOOC_FEATURES),
     "nhanes_cholesterol":
         TaskConfig(NHANESDataSource,
-                   NHANES_CHOLESTEROL_FEATURES + \
+                   NHANES_CHOLESTEROL_FEATURES +
                    NHANES_SHARED_FEATURES),
     "nhanes_lead":
         TaskConfig(NHANESDataSource,
@@ -309,6 +311,10 @@ _TASK_REGISTRY: Dict[str, TaskConfig] = {
         TaskConfig(SIPPDataSource, SIPP_FEATURES_ANTICAUSAL),
 }
 
+################################################################################
+# Tasks for robustness tests
+################################################################################
+
 for index, subset in enumerate(ACS_INCOME_FEATURES_CAUSAL_SUBSETS):
     _TASK_REGISTRY["acsincome_causal_test_"+f"{index}"] = TaskConfig(ACSDataSource, subset)
 
@@ -349,7 +355,8 @@ for index, subset in enumerate(DIABETES_READMISSION_FEATURES_CAUSAL_SUBSETS):
     _TASK_REGISTRY["diabetes_readmission_causal_test_"+f"{index}"] = TaskConfig(DiabetesReadmissionDataSource, subset)
 
 for index, superset in enumerate(DIABETES_READMISSION_FEATURES_ARGUABLYCAUSAL_SUPERSETS):
-    _TASK_REGISTRY["diabetes_readmission_arguablycausal_test_"+f"{index}"] = TaskConfig(DiabetesReadmissionDataSource, superset)
+    _TASK_REGISTRY["diabetes_readmission_arguablycausal_test_" +
+                   f"{index}"] = TaskConfig(DiabetesReadmissionDataSource, superset)
 
 for index, subset in enumerate(ANES_FEATURES_CAUSAL_SUBSETS):
     _TASK_REGISTRY["anes_causal_test_"+f"{index}"] = TaskConfig(ANESDataSource, subset)
@@ -367,19 +374,15 @@ for index, subset in enumerate(COLLEGE_SCORECARD_FEATURES_CAUSAL_SUBSETS):
     _TASK_REGISTRY["college_scorecard_causal_test_"+f"{index}"] = TaskConfig(CollegeScorecardDataSource, subset)
 
 for index, superset in enumerate(COLLEGE_SCORECARD_FEATURES_ARGUABLYCAUSAL_SUPERSETS):
-    _TASK_REGISTRY["college_scorecard_arguablycausal_test_"+f"{index}"] = TaskConfig(CollegeScorecardDataSource, superset)
+    _TASK_REGISTRY["college_scorecard_arguablycausal_test_" +
+                   f"{index}"] = TaskConfig(CollegeScorecardDataSource, superset)
 
 for index, subset in enumerate(MIMIC_EXTRACT_LOS_3_FEATURES_CAUSAL_SUBSETS):
     _TASK_REGISTRY["mimic_extract_los_3_causal_test_"+f"{index}"] = TaskConfig(MIMICExtractDataSource, subset)
 
-# for index, superset in enumerate(COLLEGE_SCORECARD_FEATURES_ARGUABLYCAUSAL_SUPERSETS):
-#     _TASK_REGISTRY["mimic_extract_los_3_arguablycausal_test_"+f"{index}"] = TaskConfig(MIMICExtractDataSource, superset)
-
 for index, subset in enumerate(MIMIC_EXTRACT_MORT_HOSP_FEATURES_CAUSAL_SUBSETS):
     _TASK_REGISTRY["mimic_extract_mort_hosp_causal_test_"+f"{index}"] = TaskConfig(MIMICExtractDataSource, subset)
 
-# for index, superset in enumerate(MIMIC_EXTRACT_MORT_HOSP_FEATURES_ARGUABLYCAUSAL_SUPERSETS):
-#     _TASK_REGISTRY["mimic_extract_mort_hosp_arguablycausal_test_"+f"{index}"] = TaskConfig(MIMICExtractDataSource, superset)
 
 for index, subset in enumerate(SIPP_FEATURES_CAUSAL_SUBSETS):
     _TASK_REGISTRY["sipp_causal_test_"+f"{index}"] = TaskConfig(SIPPDataSource, subset)
@@ -404,6 +407,7 @@ for index, subset in enumerate(NHANES_LEAD_FEATURES_CAUSAL_SUBSETS):
 
 for index, superset in enumerate(NHANES_LEAD_FEATURES_ARGUABLYCAUSAL_SUPERSETS):
     _TASK_REGISTRY["nhanes_lead_arguablycausal_test_"+f"{index}"] = TaskConfig(NHANESDataSource, superset)
+
 
 def get_task_config(name: str) -> TaskConfig:
     if name in _TASK_REGISTRY:

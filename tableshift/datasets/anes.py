@@ -8,7 +8,7 @@ For more information on datasets and access in TableShift, see:
 List of variables: https://electionstudies.org/wp-content/uploads/2019/09/anes_timeseries_cdf_codebook_Varlist.pdf
 Codebook: https://electionstudies.org/wp-content/uploads/2022/09/anes_timeseries_cdf_codebook_var_20220916.pdf
 
-Modified for 'Predictors from Causal Features Do Not Generalize Better to New Domains'
+Modified for 'Predictors from Causal Features Do Not Generalize Better to New Domains'.
 """
 import pandas as pd
 

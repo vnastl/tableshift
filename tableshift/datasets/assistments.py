@@ -3,7 +3,7 @@ For more information on datasets and access in TableShift, see:
 * https://tableshift.org/datasets.html
 * https://github.com/mlfoundations/tableshift
 
-Modified for 'Predictors from Causal Features Do Not Generalize Better to New Domains'
+Modified for 'Predictors from Causal Features Do Not Generalize Better to New Domains'.
 """
 import numpy as np
 from pandas import DataFrame

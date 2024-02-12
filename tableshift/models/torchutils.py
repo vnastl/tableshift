@@ -1,3 +1,9 @@
+"""
+Definition of functions for evaluation of pytorch models.
+
+
+Modified for 'Predictors from Causal Features Do Not Generalize Better to New Domains'.
+"""
 from typing import Union, Dict, Tuple
 
 import numpy as np
@@ -71,14 +77,14 @@ def apply_model(model: torch.nn.Module, x):
 
 @torch.no_grad()
 def get_predictions_and_labels(model, loader, device=None, as_logits=False) -> Tuple[
-    np.ndarray, np.ndarray]:
+        np.ndarray, np.ndarray]:
     """Get the predictions (as logits, or probabilities) and labels."""
     prediction = []
     label = []
 
     if not device:
         device = f"cuda:{torch.cuda.current_device()}" \
-        if torch.cuda.is_available() else "cpu"
+            if torch.cuda.is_available() else "cpu"
 
     modelname = model.__class__.__name__
     for batch in tqdm(loader, desc=f"{modelname}:getpreds"):

@@ -7,7 +7,7 @@ For more information on the MEPS dataset, see:
 For access of the MEPS dataset, see adapted code from Kim & Hardt (2023):
     /backward_predictor/meps/data/README.md
 
-Created for 'Predictors from Causal Features Do Not Generalize Better to New Domains'
+Created for 'Predictors from Causal Features Do Not Generalize Better to New Domains'.
 """
 import pandas as pd
 from tableshift.core.features import Feature, FeatureList, cat_dtype
