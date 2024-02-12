@@ -21,7 +21,6 @@ import pandas as pd
 from itertools import combinations
 
 from tableshift.core.features import Feature, FeatureList, cat_dtype
-
 from tableshift.datasets.robustness import get_causal_robust, get_arguablycausal_robust
 
 ################################################################################
